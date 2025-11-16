@@ -1,0 +1,14 @@
+# Visual Studio cache files
+.vs/
+*.suo
+*.user
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Other
+packages/
+*.vspscc
+*.vssscc
+_ReSharper*/
