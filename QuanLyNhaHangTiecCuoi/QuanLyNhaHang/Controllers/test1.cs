@@ -8,6 +8,7 @@ namespace QuanLyNhaHang.Controllers
         {
             return View();
             // anh lai đz vai lon//
+            //fuck you liule
         }
     }
 }
