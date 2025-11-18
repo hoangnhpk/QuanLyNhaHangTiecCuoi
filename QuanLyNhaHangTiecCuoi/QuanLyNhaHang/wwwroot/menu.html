@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Thực đơn Chính - Restaurantly</title>
+  <meta name="description" content="Thực đơn đầy đủ các món ăn Việt Nam đặc sắc của nhà hàng Restaurantly.">
+  <meta name="keywords" content="thực đơn, món Việt, hải sản, bò, gà, đặt bàn">
+
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <link href="assets/css/menu.css" rel="stylesheet">
+
+  <style>
+    /* Additional CSS for search and filters */
+    .menu .menu-search-container {
+        margin-bottom: 30px;
+    }
+
+    .menu .menu-search-container .form-control {
+        background-color: var(--surface-color);
+        border: 1px solid color-mix(in srgb, var(--accent-color), transparent 70%);
+        color: var(--default-color);
+        border-radius: 50px;
+        padding: 12px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .menu .menu-search-container .form-control:focus {
+        background-color: var(--surface-color);
+        border-color: var(--accent-color);
+        color: var(--default-color);
+        box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--accent-color), transparent 80%);
+    }
+
+    .menu .menu-search-container .form-control::placeholder {
+        color: color-mix(in srgb, var(--default-color), transparent 50%);
+    }
+
+    .menu .filter-group-title {
+        color: var(--accent-color);
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        text-align: center;
+        font-family: var(--heading-font);
+    }
+
+    .menu .filter-detail-group {
+        margin-bottom: 20px !important;
+    }
+
+    .menu .menu-filters {
+        padding: 0;
+        margin: 0 auto 30px auto;
+        list-style: none;
+        text-align: center;
+        border-radius: 50px;
+    }
+
+    .menu .menu-filters li {
+        color: var(--default-color);
+        margin: 5px;
+        cursor: pointer;
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        transition: all ease-in-out 0.3s;
+        font-family: var(--heading-font);
+        border: 2px solid transparent;
+        border-radius: 50px;
+    }
+
+    .menu .menu-filters li:hover,
+    .menu .menu-filters li.filter-active {
+        color: var(--accent-color);
+        border-color: var(--accent-color);
+        background: color-mix(in srgb, var(--accent-color), transparent 95%);
+    }
+
+    .menu .menu-filters li:last-child {
+        margin-right: 0;
+    }
+
+    .menu .no-results {
+        text-align: center;
+        padding: 40px 20px;
+        color: color-mix(in srgb, var(--default-color), transparent 50%);
+        font-style: italic;
+        display: none;
+    }
+
+    .menu .no-results.show {
+        display: block;
+    }
+
+    .menu .search-highlight {
+        background-color: color-mix(in srgb, var(--accent-color), transparent 80%);
+        padding: 2px 4px;
+        border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header fixed-top">
+
+    <div class="topbar d-flex align-items-center">
+      <div class="container d-flex justify-content-center justify-content-md-between">
+        <div class="contact-info d-flex align-items-center">
+          <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:contact@example.com">contact@example.com</a></i>
+          <i class="bi bi-phone d-flex align-items-center ms-4"><span>+1 5589 55488 55</span></i>
+        </div>
+        <div class="languages d-none d-md-flex align-items-center">
+          <ul>
+            <li>Vi</li>
+            <li><a href="#">En</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="branding d-flex align-items-center">
+
+      <div class="container position-relative d-flex align-items-center justify-content-between">
+        <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+          <h1 class="sitename">Restaurantly</h1>
+        </a>
+
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <li><a href="index.html">Trang Chủ</a></li>
+            <li><a href="index.html#about">Giới Thiệu</a></li>
+            <li><a href="menu.html" class="active">Thực Đơn</a></li> 
+            <li><a href="index.html#specials">Đặc Biệt</a></li>
+            <li><a href="index.html#events">Sự Kiện</a></li>
+            <li><a href="index.html#chefs">Đầu Bếp</a></li>
+            <li><a href="index.html#gallery">Thư Viện</a></li>
+            <li class="dropdown"><a href="#"><span>Khác</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <ul>
+                <li><a href="#">Dịch vụ 1</a></li>
+                <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                  <ul>
+                    <li><a href="#">Mục con 1</a></li>
+                    <li><a href="#">Mục con 2</a></li>
+                  </ul>
+                </li>
+                <li><a href="#">Dịch vụ 2</a></li>
+              </ul>
+            </li>
+            <li><a href="index.html#contact">Liên Hệ</a></li>
+          </ul>
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        </nav>
+
+        <a class="btn-book-a-table d-none d-xl-block" href="index.html#book-a-table">Đặt Bàn</a>
+
+      </div>
+
+    </div>
+
+  </header>
+
+<main class="main">
+
+    <section id="menu-viet" class="menu section" style="padding-top: 140px;">
+
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Thực Đơn</h2>
+        <p>Thưởng Thức Thực Đơn Đặc Sắc Của Chúng Tôi</p>
+      </div>
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+          
+          <div class="row justify-content-center mb-5">
+              <div class="col-lg-8">
+                  <div class="input-group menu-search-container">
+                    <input type="text" id="menu-search-input" class="form-control" placeholder="Tìm kiếm món ăn theo tên hoặc nguyên liệu..." onkeyup="filterMenu()">
+                    <button class="btn btn-outline-secondary" type="button" id="search-button" onclick="filterMenu()" style="border-radius: 0 50px 50px 0; border: 1px solid; border-left: none; background: #cda45e; color: #fff;">
+                        <i class="bi bi-search"></i>
+                    </button>
+                  </div>
+                  </div>
+          </div>
+          
+          <div class="row" data-aos="fade-up" data-aos-delay="150">
+              <div class="col-lg-12 d-flex justify-content-center mb-4">
+                  <ul class="menu-filters isotope-filters filter-detail-group">
+                      <li data-filter="*" class="filter-active">Tất Cả</li>
+                      <li data-filter=".filter-starter">Khai vị</li>
+                      <li data-filter=".filter-main-course">Món chính</li>
+                      <li data-filter=".filter-dessert">Tráng miệng</li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+    
+      </div>
+
+      <div class="container isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+
+        <div class="row isotope-container" id="menu-items-container" data-aos="fade-up" data-aos-delay="200">
+
+          <div class="col-lg-6 menu-item isotope-item filter-starter filter-starter-soup">
+            <img src="assets/img/menu/SupCua.png" class="menu-img" alt="Súp Cua">
+            <div class="menu-content">
+              <a href="#">Súp Cua</a><span>~85,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Súp cua tươi, trứng bắc thảo, nấm tuyết.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-starter filter-starter-salad">
+            <img src="assets/img/menu/GoiBoKhoCuKieu.png" class="menu-img" alt="Gỏi Bò Khô Kiểu">
+            <div class="menu-content">
+              <a href="#">Gỏi Bò Khô Củ Kiệu</a><span>~130,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Thịt bò khô, đu đủ xanh, rau thơm, nước mắm chua ngọt.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-starter filter-starter-soup">
+            <img src="assets/img/menu/SupCuaMangTay.png" class="menu-img" alt="Súp Cua Măng Tây">
+            <div class="menu-content">
+              <a href="#">Súp Cua Măng Tây</a><span>~95,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Súp gà, thịt cua, măng tây tươi.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-starter filter-starter-salad">
+            <img src="assets/img/menu/GoiGaLaChanh.png" class="menu-img" alt="Gỏi Gà Lá Chanh">
+            <div class="menu-content">
+              <a href="#">Gỏi Gà Lá Chanh</a><span>~120,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Thịt gà xé, bắp cải, cà rốt, lá chanh, nước trộn gỏi.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-starter filter-starter-salad">
+            <img src="assets/img/menu/BanhMan.png" class="menu-img" alt="Bánh Mặn Bruschetta">
+            <div class="menu-content">
+              <a href="#">Bánh Mặn Kiểu Ý (Bruschetta)</a><span>~70,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Bánh mì nướng giòn, cà chua, phô mai, dầu ô liu.
+            </div>
+          </div>
+          
+
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-bo-tom">
+            <img src="assets/img/menu/BoMySotTrufffe.png" class="menu-img" alt="Bò Mỹ Sốt Truffle">
+            <div class="menu-content">
+              <a href="#">Bò Mỹ Sốt Truffle</a><span>~350,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Thịt bò Mỹ mềm mọng, sốt nấm Truffle thơm lừng.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-bo-tom">
+            <img src="assets/img/menu/TomHoangBaoChienGion.png" class="menu-img" alt="Tôm Hoàng Bào Chiên Giòn">
+            <div class="menu-content">
+              <a href="#">Tôm Hoàng Bào Chiên Giòn</a><span>~280,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Tôm bọc trứng muối chiên xù, ăn kèm sốt đặc biệt.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-bo-tom">
+            <img src="assets/img/menu/TomSuRangMuoiHONGKONG.png" class="menu-img" alt="Tôm Sú Rang Muối Hong Kong">
+            <div class="menu-content">
+              <a href="#">Tôm Sú Rang Muối HK</a><span>~260,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Tôm sú rang muối tỏi ớt kiểu Hong Kong.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-ga-heo">
+            <img src="assets/img/menu/GaQuayNuocDua.png" class="menu-img" alt="Gà Quay Nước Dừa">
+            <div class="menu-content">
+              <a href="#">Gà Quay Nước Dừa</a><span>~300,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Gà ta quay trong nước dừa tươi, thịt ngọt thơm.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-ga-heo">
+            <img src="assets/img/menu/HeoSuaQuay.png" class="menu-img" alt="Heo Quay Sữa">
+            <div class="menu-content">
+              <a href="#">Heo Quay Sữa</a><span>~280,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Da giòn rụm, thịt mềm ngọt, tẩm ướp đặc biệt.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-ca-cua">
+            <img src="assets/img/menu/CuaHuynhDeHapDuwa.png" class="menu-img" alt="Cua Huỳnh Đế Hấp Dừa">
+            <div class="menu-content">
+              <a href="#">Cua Huỳnh Đế Hấp Dừa</a><span>Giá theo thời giá</span>
+            </div>
+            <div class="menu-ingredients">
+              Cua Huỳnh Đế tươi ngon hấp cùng nước dừa.
+            </div>
+          </div>
+          
+          <div class="col-lg-6 menu-item isotope-item filter-dessert filter-dessert-che">
+            <img src="assets/img/menu/CheTauHuHanhNhan.png" class="menu-img" alt="Chè Tàu Hũ Hạnh Nhân">
+            <div class="menu-content">
+              <a href="#">Chè Tàu Hũ Hạnh Nhân</a><span>~45,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Tàu hũ non, nước đường gừng, hạnh nhân rang.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-dessert filter-dessert-che">
+            <img src="assets/img/menu/CheKhucBach.png" class="menu-img" alt="Chè Khúc Bạch">
+            <div class="menu-content">
+              <a href="#">Chè Khúc Bạch</a><span>~55,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Khúc bạch phô mai, trái cây, nước nhãn.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-dessert filter-dessert-modern">
+            <img src="assets/img/menu/PanaCottarDauTay.png" class="menu-img" alt="Panna Cotta Dâu Tây">
+            <div class="menu-content">
+              <a href="#">Panna Cotta Dâu Tây</a><span>~75,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Panna cotta mềm mịn, sốt dâu tây tươi và trái cây.
+            </div>
+          </div>
+          <div class="col-lg-6 menu-item isotope-item filter-dessert filter-dessert-fruit">
+            <img src="assets/img/menu/TraiCayTheoMua.png" class="menu-img" alt="Trái Cây Theo Mùa">
+            <div class="menu-content">
+              <a href="#">Trái Cây Theo Mùa</a><span>~90,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Thập cẩm trái cây tươi, đa dạng theo mùa.
+            </div>
+          </div>
+
+          <div class="col-lg-6 menu-item isotope-item filter-starter filter-ca-cua">
+            <img src="assets/img/menu/GoiCoHuDuaTomThit.png" class="menu-img" alt="Gỏi Hải Sản Tươi Sống">
+            <div class="menu-content">
+              <a href="#">Gỏi Hải Sản Tươi Sống</a><span>~150,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Tôm, mực, bạch tuộc tươi trộn rau sống, nước mắm chua ngọt.
+            </div>
+          </div>
+
+          <div class="col-lg-6 menu-item isotope-item filter-starter filter-ca-cua">
+            <img src="assets/img/menu/SupBaoNguHaiSam.png" class="menu-img" alt="Súp Hải Sản Đặc Biệt">
+            <div class="menu-content">
+              <a href="#">Súp Hải Sản Đặc Biệt</a><span>~120,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Súp tổng hợp tôm, mực, cua, nấm hương, bắp non.
+            </div>
+          </div>
+
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-ca-cua">
+            <img src="assets/img/menu/CaHoiNaUySotChanhDay.png" class="menu-img" alt="Cá Hồi Áp Chảo Sốt Tiêu Xanh">
+            <div class="menu-content">
+              <a href="#">Cá Hồi Áp Chảo Sốt Tiêu Xanh</a><span>~320,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Cá hồi phi lê tươi, sốt tiêu xanh, khoai tây nghiền.
+            </div>
+          </div>
+
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-ca-cua">
+            <img src="assets/img/menu/TomSuHapTrungMuoi.png" class="menu-img" alt="Tôm Hùm Hấp Bia">
+            <div class="menu-content">
+              <a href="#">Tôm Hùm Hấp Bia</a><span>~850,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Tôm hùm Alaska hấp bia, sả, gừng, chấm muối tiêu chanh.
+            </div>
+          </div>
+
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-ca-cua">
+            <img src="assets/img/menu/MucOngNhoiThit.png" class="menu-img" alt="Mực Xào Sa Tế">
+            <div class="menu-content">
+              <a href="#">Mực Xào Sa Tế</a><span>~180,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Mực tươi xào sa tế thơm cay, hành tây, ớt chuông.
+            </div>
+          </div>
+
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-ca-cua">
+            <img src="assets/img/menu/CaChemHapKieuHONGKONG.png" class="menu-img" alt="Cá Chẽm Hấp Xì Dầu">
+            <div class="menu-content">
+              <a href="#">Cá Chẽm Hấp Xì Dầu</a><span>~280,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Cá chẽm tươi hấp xì dầu kiểu Hong Kong, hành phi.
+            </div>
+          </div>
+
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-ga-heo">
+            <img src="assets/img/menu/HeoSuaQuay.png" class="menu-img" alt="Heo Rừng Nướng Mật Ong">
+            <div class="menu-content">
+              <a href="#">Heo Rừng Nướng Mật Ong</a><span>~380,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Thịt heo rừng nướng mật ong rừng, sốt đặc biệt.
+            </div>
+          </div>
+
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-ga-heo">
+            <img src="assets/img/menu/GaQuayNuocDua.png" class="menu-img" alt="Gà Đồi Nướng Lu">
+            <div class="menu-content">
+              <a href="#">Gà Đồi Nướng Lu</a><span>~320,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Gà đồi nướng nguyên con, thịt chắc, da giòn.
+            </div>
+          </div>
+
+          <div class="col-lg-6 menu-item isotope-item filter-main-course filter-bo-tom">
+            <img src="assets/img/menu/BoSotTieuXanh.png" class="menu-img" alt="Bò Úc Nướng Đá">
+            <div class="menu-content">
+              <a href="#">Bò Úc Nướng Đá</a><span>~450,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Thịt bò Úc nướng đá núi lửa, giữ nguyên vị ngọt.
+            </div>
+          </div>
+
+
+          <div class="col-lg-6 menu-item isotope-item filter-dessert filter-dessert-fruit">
+            <img src="assets/img/menu/SaLadUcVitSongKhoi.png" class="menu-img" alt="Salad Ức Vịt Sống Khói">
+            <div class="menu-content">
+              <a href="#">Salad Ức Vịt Sống Khói</a><span>~60,000đ</span>
+            </div>
+            <div class="menu-ingredients">
+              Salad ức vịt sống khói, rau củ tươi, sốt đặc biệt.
+            </div>
+          </div>
+        </div>
+
+        <div class="no-results" id="no-results">
+          <p>Không tìm thấy món ăn phù hợp với từ khóa tìm kiếm.</p>
+          <p>Vui lòng thử lại với từ khóa khác.</p>
+        </div>
+
+      </div>	
+
+    </section>
+
+  </main>
+
+  <footer id="footer" class="footer">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">Restaurantly</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p>A108 Adam Street</p>
+            <p>New York, NY 535022</p>
+            <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
+            <p><strong>Email:</strong> <span>info@example.com</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Terms of service</a></li>
+            <li><a href="#">Privacy policy</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="#">Web Design</a></li>
+            <li><a href="#">Web Development</a></li>
+            <li><a href="#">Product Management</a></li>
+            <li><a href="#">Marketing</a></li>
+            <li><a href="#">Graphic Design</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-4 col-md-12 footer-newsletter">
+          <h4>Our Newsletter</h4>
+          <p>Subscribe to our newsletter and receive the latest news about our products and services!</p>
+          <form action="forms/newsletter.php" method="post" class="php-email-form">
+            <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Subscribe"></div>
+            <div class="loading">Loading</div>
+            <div class="error-message"></div>
+            <div class="sent-message">Your subscription request has been sent. Thank you!</div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">Restaurantly</strong> <span>All Rights Reserved</span></p>
+      <div class="credits">
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+
+  </footer>
+
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <div id="preloader"></div>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <script src="assets/js/main.js"></script>
+
+  <script>
+    var $grid;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const container = document.querySelector('.isotope-container');
+        if (typeof Isotope !== 'undefined' && container) {
+            $grid = new Isotope(container, {
+                itemSelector: '.menu-item',
+                layoutMode: 'fitRows'
+            });
+
+            // Bind filter buttons
+            document.querySelectorAll('.menu-filters li').forEach(li => {
+                li.addEventListener('click', function() {
+                    const filterValue = this.getAttribute('data-filter');
+                    $grid.arrange({ filter: filterValue });
+
+                    // Update active class
+                    document.querySelectorAll('.menu-filters li').forEach(item => item.classList.remove('filter-active'));
+                    this.classList.add('filter-active');
+                });
+            });
+        }
+    });
+
+    // Custom search function to filter items by text content
+    function filterMenu() {
+        const searchValue = document.getElementById('menu-search-input').value.toLowerCase();
+        const noResults = document.getElementById('no-results');
+        
+        if ($grid) {
+            $grid.arrange({
+                filter: function() {
+                    const name = this.querySelector('.menu-content a').textContent.toLowerCase();
+                    const ingredients = this.querySelector('.menu-ingredients').textContent.toLowerCase();
+                    const match = name.includes(searchValue) || ingredients.includes(searchValue);
+                    
+                    // Show/hide no results message
+                    const visibleItems = document.querySelectorAll('.menu-item:not(.isotope-hidden)');
+                    if (searchValue && visibleItems.length === 0) {
+                        noResults.classList.add('show');
+                    } else {
+                        noResults.classList.remove('show');
+                    }
+                    
+                    return match;
+                }
+            });
+        }
+    }
+  </script>
+
+</body>
+
+</html>
