@@ -1,4 +1,16 @@
+﻿using Microsoft.EntityFrameworkCore;
+using QuanLyNhaHang.Models;
 var builder = WebApplication.CreateBuilder(args);
+
+// --- BẮT ĐẦU ĐOẠN CẦN THÊM ---
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<QuanLyNhaHangContext>(options =>
+    options.UseSqlServer(connectionString));
+// --- KẾT THÚC ĐOẠN CẦN THÊM ---
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
