@@ -1,0 +1,97 @@
+﻿@model IEnumerable<QuanLyNhaHang.Models.MonAn>
+
+@{
+    ViewData["Title"] = "Quản Lý Thực Đơn";
+    Layout = "_LayoutAdmin";
+}
+
+<link href="~/css/QuanTri.css" rel="stylesheet">
+
+<div class="module-view active" style="display:block;">
+    <div class="module-header">
+        <div>
+            <div class="module-title">QUẢN LÝ THỰC ĐƠN</div>
+            <div class="module-desc">Quản lý danh sách món ăn và combo.</div>
+        </div>
+        <div class="toolbar">
+            <button class="btn" onclick="alert('Chức năng đang phát triển')" style="border-radius: 999px; padding: 10px 20px;">
+                Thêm combo
+            </button>
+            <a href="@Url.Action("Them", "QuanLyThucDon")" class="btn" style="border-radius: 999px; padding: 10px 20px;">
+                Thêm món lẻ
+            </a>
+        </div>
+    </div>
+
+    @* Hiển thị thông báo thành công/lỗi *@
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div style="background: #1a4d2e; color: #4ade80; padding: 12px 20px; margin: 20px; border-radius: 8px; border: 1px solid #4ade80;">
+            ✓ @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div style="background: #4d1a1a; color: #f87171; padding: 12px 20px; margin: 20px; border-radius: 8px; border: 1px solid #f87171;">
+            ✕ @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="split-columns">
+        <div class="card">
+            <div class="card-title">DANH SÁCH COMBO</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">MÓN LẺ CHO KHÁCH TỰ MIX</div>
+            <div class="data-card" style="margin-top:6px; max-height: 600px; overflow:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tên món</th>
+                            <th>ĐVT</th>
+                            <th>Giá</th>
+                            <th>Danh mục</th>
+                            <th style="width: 100px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><span class="badge badge-neutral">@item.MaMonAn</span></td>
+                                    <td style="color:#f3e5c8; font-weight:500;">@item.TenMonAn</td>
+                                    <td>@item.DonViTinh</td>
+                                    <td>@(item.DonGia?.ToString("#,##0"))</td>
+                                    <td>@item.LoaiMonAn</td>
+                                    <td>
+                                        <div class="table-actions" style="justify-content: flex-end; gap: 8px;">
+                                            <a href="@Url.Action("Sua", "QuanLyThucDon", new { id = item.MaMonAn })"
+                                                                       class="btn-icon" title="Sửa" style="text-decoration:none;">✎</a>
+
+                                            <form method="post" asp-action="Xoa" asp-route-id="@item.MaMonAn" style="display:inline; margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn-icon" title="Xóa"
+                                                                                    onclick="return confirm('Bạn chắc chắn muốn xóa món @item.TenMonAn?');"
+                                                                                    style="border:none; background:transparent; cursor:pointer; padding: 4px 8px;">
+                                                    🗑
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6" class="empty-state">Chưa có dữ liệu món ăn.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -7,28 +7,46 @@ namespace QuanLyNhaHang.Models
     public class MonAn
     {
         [Key]
+        [Required(ErrorMessage = "Mã món ăn không được để trống")]
         [StringLength(20)]
-        public string MaMonAn { get; set; } // Ví dụ: MA001
+        [Column("MaMonAn")]
+        [Display(Name = "Mã món ăn")]
+        public string MaMonAn { get; set; } = null!;
 
         [StringLength(100)]
-        public string? TenMonAn { get; set; }
+        [Required(ErrorMessage = "Tên món ăn không được để trống")]
+        [Display(Name = "Tên món ăn")]
+        public string TenMonAn { get; set; }
 
         [StringLength(20)]
-        public string? DonViTinh { get; set; }
+        [Required(ErrorMessage = "Đơn vị tính món ăn không được để trống")]
+        [Display(Name = "Đơn vị tính")]
+        public string DonViTinh { get; set; }
 
+
+        [Required(ErrorMessage = "Đơn giá món ăn không được để trống")]
+        [Display(Name = "Đơn giá")]
+        [Range(0, double.MaxValue, ErrorMessage = "Đơn giá phải lớn hơn hoặc bằng 0")]
         public decimal? DonGia { get; set; }
 
         [StringLength(500)]
-        public string? MoTaMonAn { get; set; }
+        [Required(ErrorMessage = "Mô tả món ăn không được để trống")]
+        [Display(Name = "Mô tả món ăn")]
+        public string MoTaMonAn { get; set; }
 
         [StringLength(50)]
-        public string? LoaiMonAn { get; set; }
+        [Required(ErrorMessage = "Loại món ăn không được để trống")]
+        [Display(Name = "Loại món ăn")]
+        public string LoaiMonAn { get; set; }
 
         [StringLength(30)]
+        [Column("TrangThaiMonAn")]
+        [Display(Name = "Trạng thái món ăn")]
         public string? TrangThaiMonAn { get; set; }
 
+        [Column("GhiChu")]
+        [Display(Name = "Ghi chú")]
         public string? GhiChu { get; set; }
-
-        public virtual ICollection<ChiTietThucDon> ChiTietThucDons { get; set; }
+        public virtual ICollection<ChiTietThucDon>? ChiTietThucDons { get; set; }
     }
 }
