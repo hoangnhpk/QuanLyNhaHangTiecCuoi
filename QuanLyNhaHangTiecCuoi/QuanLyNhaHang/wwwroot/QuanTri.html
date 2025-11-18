@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quản Trị Nhà Hàng Tiệc Cưới</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #cda45e;
+      --primary-soft: rgba(205, 164, 94, 0.12);
+      --bg: #0c0b09;
+      --bg-elevated: #15120f;
+      --bg-elevated-soft: #1d1914;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --text-main: #f4f4f4;
+      --text-muted: #a6a6a6;
+      --danger: #ff5c5c;
+      --success: #4caf50;
+      --warning: #ffb74d;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #262015 0, #0c0b09 45%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* Layout */
+    .admin-shell {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0c0b09 0, #15120f 45%, #0c0b09 100%);
+    }
+
+    .sidebar {
+      width: 260px;
+      background: rgba(12, 11, 9, 0.96);
+      border-right: 1px solid var(--border-subtle);
+      backdrop-filter: blur(20px);
+      padding: 18px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      left: 0;
+      top: 0;
+      max-height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 8px 22px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 12px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 25% 0, #ffeac0, #cda45e 45%, #6f5224 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
+      font-family: "Playfair Display", serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: #120f0a;
+    }
+
+    .brand-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title-main {
+      font-family: "Playfair Display", serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 15px;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .sidebar-section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin: 18px 6px 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+    }
+
+    .nav-item {
+      margin-bottom: 4px;
+    }
+
+    .nav-link {
+      width: 100%;
+      border-radius: 10px;
+      padding: 9px 11px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      cursor: pointer;
+      background: transparent;
+      transition: all 0.18s ease-out;
+    }
+
+    .nav-link span.icon {
+      width: 22px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .nav-link.active {
+      background: linear-gradient(120deg, rgba(205, 164, 94, 0.16), rgba(205, 164, 94, 0.03));
+      border-color: rgba(205, 164, 94, 0.55);
+      color: #fdf6e8;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
+    }
+
+    .nav-link:not(.active):hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.06);
+      color: #f7f3ea;
+      transform: translateY(-1px);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .role-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: rgba(205, 164, 94, 0.08);
+      border: 1px solid rgba(205, 164, 94, 0.5);
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .main {
+      flex: 1;
+      padding: 18px 26px 26px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-family: "Playfair Display", serif;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .page-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px dashed rgba(255, 255, 255, 0.22);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #cda45e, #b4883d);
+      color: #120f0a;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.16s ease-out;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.75);
+      filter: brightness(1.04);
+    }
+
+    .btn.btn-ghost {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: none;
+      padding-inline: 12px;
+    }
+
+    .btn.btn-ghost:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .content {
+      flex: 1;
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top left, rgba(205, 164, 94, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(205, 164, 94, 0.1), transparent 50%),
+        rgba(12, 11, 9, 0.96);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 18px 18px 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tabs-header {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .tab-pill {
+      white-space: nowrap;
+      border-radius: var(--radius-pill);
+      padding: 5px 11px;
+      font-size: 12px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      color: var(--text-muted);
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.16s ease-out;
+    }
+
+    .tab-pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .tab-pill.active {
+      background: rgba(205, 164, 94, 0.14);
+      border-color: rgba(205, 164, 94, 0.7);
+      color: #fff7e7;
+    }
+
+    .tab-pill:not(.active):hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.14);
+      color: #f3eee3;
+    }
+
+    .module-view {
+      display: none;
+      flex: 1;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .module-view.active {
+      display: block;
+    }
+
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .module-title {
+      font-size: 17px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: "Playfair Display", serif;
+    }
+
+    .module-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .search-input {
+      min-width: 230px;
+      padding: 7px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(12, 11, 9, 0.92);
+      color: var(--text-main);
+      font-size: 12px;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .filter-select {
+      padding: 7px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(12, 11, 9, 0.92);
+      color: var(--text-main);
+      font-size: 12px;
+    }
+
+    .data-card {
+      background: linear-gradient(135deg, #15120f, #110f0c);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 10px 10px 6px;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    thead {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    th,
+    td {
+      padding: 8px 6px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    th {
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge.badge-warning {
+      border-color: rgba(255, 183, 77, 0.6);
+      background: rgba(255, 183, 77, 0.15);
+      color: #ffcc80;
+    }
+
+    .badge.badge-success {
+      border-color: rgba(76, 175, 80, 0.6);
+      background: rgba(76, 175, 80, 0.14);
+      color: #b9f6ca;
+    }
+
+    .badge.badge-info {
+      border-color: rgba(144, 202, 249, 0.7);
+      background: rgba(144, 202, 249, 0.13);
+      color: #e3f2fd;
+    }
+
+    .badge.badge-neutral {
+      border-color: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: transparent;
+      color: var(--text-main);
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.16s ease-out;
+    }
+
+    .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 26px 10px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Split layout helpers */
+    .split-columns {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .card {
+      background: #15120f;
+      border-radius: var(--radius-md);
+      padding: 10px 10px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
+    }
+
+    .card-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 8px;
+      color: #f3e5c8;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 10px;
+      font-size: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-muted);
+    }
+
+    .input,
+    .select,
+    textarea {
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 7px 9px;
+      background: rgba(12, 11, 9, 0.92);
+      color: var(--text-main);
+      font-size: 12px;
+      resize: vertical;
+      min-height: 32px;
+    }
+
+    textarea {
+      min-height: 70px;
+    }
+
+    .input::placeholder,
+    textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-footer {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* Simple chart placeholder */
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 150px;
+      padding-top: 8px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(205, 164, 94, 0.9), rgba(205, 164, 94, 0.16));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-bar span {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      color: #120f0a;
+      font-weight: 600;
+    }
+
+    .chart-legend {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      padding: 4px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      width: min(960px, 96vw);
+      max-height: 88vh;
+      background: #15120f;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 14px 18px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(circle at top left, rgba(205, 164, 94, 0.22), transparent 60%);
+    }
+
+    .modal-title {
+      font-family: "Playfair Display", serif;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 14px;
+    }
+
+    .modal-body {
+      padding: 12px 16px 14px;
+      overflow: auto;
+      font-size: 13px;
+    }
+
+    .modal-footer {
+      padding: 10px 16px 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .pill {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .sidebar {
+        display: none;
+      }
+
+      body {
+        display: block;
+      }
+
+      .admin-shell {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .split-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">LP</div>
+        <div class="brand-title">
+          <div class="brand-title-main">Long Phụng</div>
+          <div class="brand-sub">Wedding &amp; Catering</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section-title">Điều hướng</div>
+      <ul class="nav-list">
+        <li class="nav-item">
+          <button class="nav-link active" data-module="orders">
+            <span class="icon">📜</span>
+            <span>Duyệt đơn đặt tiệc</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-module="menu">
+            <span class="icon">🍽️</span>
+            <span>Quản lý thực đơn</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-module="customers">
+            <span class="icon">👤</span>
+            <span>Quản lý khách hàng</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-module="managers">
+            <span class="icon">🧑‍💼</span>
+            <span>Nhân viên quản lý</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-module="staff">
+            <span class="icon">👥</span>
+            <span>Nhân viên nhà hàng &amp; Part-time</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-module="services">
+            <span class="icon">🎁</span>
+            <span>Quản lý dịch vụ</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-module="payments">
+            <span class="icon">💳</span>
+            <span>Quản lý thanh toán</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-module="events">
+            <span class="icon">🏛️</span>
+            <span>Quản lý bữa tiệc</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-module="analytics">
+            <span class="icon">📊</span>
+            <span>Thống kê</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="role-pill">
+          <span>●</span> Admin &amp; Quản lý
+        </div>
+        <div>Phiên làm việc: <strong>Hôm nay</strong></div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="page-title">Bảng điều khiển quản trị</div>
+          <div class="page-subtitle">Quản lý toàn bộ hoạt động của nhà hàng tiệc cưới Long Phụng.</div>
+        </div>
+        <div class="topbar-actions">
+          <div class="chip">Vai trò hiện tại: <strong>Admin / Quản lý</strong></div>
+          <button class="btn btn-ghost">Đăng xuất</button>
+        </div>
+      </div>
+
+      <section class="content">
+        <div class="tabs-header" id="tabsHeader">
+          <button class="tab-pill active" data-module="orders">
+            <span class="dot"></span> Đơn đặt tiệc
+          </button>
+          <button class="tab-pill" data-module="menu">
+            <span class="dot"></span> Thực đơn
+          </button>
+          <button class="tab-pill" data-module="customers">
+            <span class="dot"></span> Khách hàng
+          </button>
+          <button class="tab-pill" data-module="managers">
+            <span class="dot"></span> Nhân viên quản lý
+          </button>
+          <button class="tab-pill" data-module="staff">
+            <span class="dot"></span> Nhân viên nhà hàng &amp; Part-time
+          </button>
+          <button class="tab-pill" data-module="services">
+            <span class="dot"></span> Dịch vụ
+          </button>
+          <button class="tab-pill" data-module="payments">
+            <span class="dot"></span> Thanh toán
+          </button>
+          <button class="tab-pill" data-module="events">
+            <span class="dot"></span> Bữa tiệc
+          </button>
+          <button class="tab-pill" data-module="analytics">
+            <span class="dot"></span> Thống kê
+          </button>
+        </div>
+
+        <!-- MODULE: ORDERS -->
+        <div class="module-view active" id="module-orders">
+          <div class="module-header">
+            <div>
+              <div class="module-title">Duyệt đơn đặt tiệc</div>
+              <div class="module-desc">Dành cho Admin: duyệt, cập nhật trạng thái các đơn đặt từ quản lý hoặc khách hàng.</div>
+            </div>
+            <div class="toolbar">
+              <input type="text" class="search-input" placeholder="Tìm theo tên cô dâu / chú rể / SĐT..." />
+              <select class="filter-select">
+                <option>Tất cả trạng thái</option>
+                <option>Chờ duyệt</option>
+                <option>Đã duyệt</option>
+                <option>Mới thay đổi - chờ duyệt</option>
+                <option>Mới thay đổi - đã duyệt</option>
+              </select>
+              <button class="btn btn-ghost" id="btnViewOrderDetail">Xem chi tiết mẫu</button>
+            </div>
+          </div>
+
+          <div class="data-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã đơn</th>
+                  <th>Họ &amp; tên</th>
+                  <th>Cô dâu / Chú rể</th>
+                  <th>Ngày đặt</th>
+                  <th>Ngày tổ chức</th>
+                  <th>Số khách</th>
+                  <th>Thực đơn</th>
+                  <th>Dịch vụ</th>
+                  <th>Trạng thái duyệt</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#OD2301</td>
+                  <td>Nguyễn Minh An</td>
+                  <td>An &amp; Lan</td>
+                  <td>12/11/2025</td>
+                  <td>25/11/2025</td>
+                  <td>250</td>
+                  <td><span class="badge badge-info">Combo Bạch Kim</span></td>
+                  <td><span class="badge badge-neutral">Combo VIP Trang trí</span></td>
+                  <td><span class="badge badge-warning">Chờ duyệt</span></td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="btn-icon" title="Duyệt">✓</button>
+                      <button class="btn-icon" title="Sửa">✎</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#OD2297</td>
+                  <td>Trần Quốc Huy</td>
+                  <td>Huy &amp; Vy</td>
+                  <td>08/11/2025</td>
+                  <td>20/11/2025</td>
+                  <td>180</td>
+                  <td><span class="badge badge-info">Tự mix (8 món)</span></td>
+                  <td><span class="badge badge-neutral">Âm thanh ánh sáng</span></td>
+                  <td><span class="badge badge-success">Đã duyệt</span></td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="btn-icon" title="Chi tiết">👁</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>#OD2288</td>
+                  <td>Phạm Thảo Vy</td>
+                  <td>Vy &amp; Khánh</td>
+                  <td>02/11/2025</td>
+                  <td>15/12/2025</td>
+                  <td>320</td>
+                  <td><span class="badge badge-info">Combo Vàng</span></td>
+                  <td><span class="badge badge-neutral">Trang trí tiêu chuẩn</span></td>
+                  <td><span class="badge badge-warning">Mới thay đổi - chờ duyệt</span></td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="btn-icon" title="Duyệt lại">✓</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- MODULE: MENU -->
+        <div class="module-view" id="module-menu">
+          <div class="module-header">
+            <div>
+              <div class="module-title">Quản lý thực đơn</div>
+              <div class="module-desc">Thêm / sửa / xóa combo và món lẻ cho khách tự mix.</div>
+            </div>
+            <div class="toolbar">
+              <button class="btn" data-open-modal="modalCombo">Thêm combo</button>
+              <button class="btn btn-ghost" data-open-modal="modalDish">Thêm món lẻ</button>
+            </div>
+          </div>
+
+          <div class="split-columns">
+            <div class="card">
+              <div class="card-title">Danh sách combo món ăn</div>
+              <div class="data-card" style="margin-top:6px;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Mã combo</th>
+                      <th>Tên combo</th>
+                      <th>Đơn giá (VNĐ)</th>
+                      <th>Mô tả</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>CB_VANG</td>
+                      <td>Thực đơn Vàng</td>
+                      <td>1.000.000</td>
+                      <td>8 món truyền thống, phù hợp 10 khách/bàn.</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa combo" data-open-modal="modalCombo">✎</button>
+                          <button class="btn-icon" title="Xóa combo" data-open-modal="modalConfirmDelete">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>CB_BACHKIM</td>
+                      <td>Thực đơn Bạch Kim</td>
+                      <td>2.000.000</td>
+                      <td>10 món hải sản cao cấp.</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa combo" data-open-modal="modalCombo">✎</button>
+                          <button class="btn-icon" title="Xóa combo" data-open-modal="modalConfirmDelete">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Món lẻ cho khách tự mix</div>
+              <div class="data-card" style="margin-top:6px; max-height:260px; overflow:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Mã món</th>
+                      <th>Tên món</th>
+                      <th>Đơn vị</th>
+                      <th>Đơn giá</th>
+                      <th>Danh mục</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>MN001</td>
+                      <td>Súp tôm hùm</td>
+                      <td>Tô</td>
+                      <td>145.000</td>
+                      <td>Khai vị</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon">✎</button>
+                          <button class="btn-icon">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>MN021</td>
+                      <td>Salad Caesar</td>
+                      <td>Đĩa</td>
+                      <td>219.000</td>
+                      <td>Salad</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa món" data-open-modal="modalDish">✎</button>
+                          <button class="btn-icon" title="Xóa món" data-open-modal="modalConfirmDelete">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>MN045</td>
+                      <td>Gà nướng Tuscan</td>
+                      <td>Phần</td>
+                      <td>245.000</td>
+                      <td>Món chính</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa món" data-open-modal="modalDish">✎</button>
+                          <button class="btn-icon" title="Xóa món" data-open-modal="modalConfirmDelete">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODULE: CUSTOMERS -->
+        <div class="module-view" id="module-customers">
+          <div class="module-header">
+            <div>
+              <div class="module-title">Quản lý khách hàng</div>
+              <div class="module-desc">Gồm 2 tab: Thông tin khách hàng &amp; Tài khoản đăng nhập.</div>
+            </div>
+            <div class="toolbar">
+              <button class="btn" data-open-modal="modalCustomer">Thêm khách hàng</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="tabs-header" style="margin-bottom:8px; border-bottom:none; padding-bottom:0;">
+              <button class="tab-pill active" data-subtab="customer-info">
+                <span class="dot"></span> Thông tin khách hàng
+              </button>
+              <button class="tab-pill" data-subtab="customer-account">
+                <span class="dot"></span> Tài khoản đăng nhập
+              </button>
+            </div>
+
+            <div id="subtab-customer-info" class="data-card" style="margin-top:4px;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mã KH</th>
+                    <th>Tên khách hàng</th>
+                    <th>CCCD</th>
+                    <th>SĐT</th>
+                    <th>Địa chỉ</th>
+                    <th>Email</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>KH001</td>
+                    <td>Nguyễn Thảo My</td>
+                    <td>0791 23 4567</td>
+                    <td>0901 234 567</td>
+                    <td>Q.1, TP.HCM</td>
+                    <td>my.nguyen@example.com</td>
+                    <td><span class="badge badge-success">Đang hoạt động</span></td>
+                    <td>
+                      <div class="table-actions">
+                        <button class="btn-icon" title="Sửa khách hàng" data-open-modal="modalCustomer">✎</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div id="subtab-customer-account" class="data-card" style="margin-top:4px; display:none;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mã KH</th>
+                    <th>Tài khoản</th>
+                    <th>Mật khẩu</th>
+                    <th>Email</th>
+                    <th>Trạng thái TK</th>
+                    <th>Ghi chú</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>KH001</td>
+                    <td>thaomy.kh</td>
+                    <td>••••••••</td>
+                    <td>my.nguyen@example.com</td>
+                    <td><span class="badge badge-success">Hoạt động</span></td>
+                    <td>Đặt tiệc 2 lần / năm</td>
+                    <td>
+                      <div class="table-actions">
+                        <button class="btn-icon" title="Sửa tài khoản" data-open-modal="modalCustomerAccount">✎</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODULE: MANAGERS -->
+        <div class="module-view" id="module-managers">
+          <div class="module-header">
+            <div>
+              <div class="module-title">Quản lý nhân viên quản lý</div>
+              <div class="module-desc">Chỉ Admin được thêm / sửa / cập nhật trạng thái nhân viên quản lý.</div>
+            </div>
+            <div class="toolbar">
+              <button class="btn" data-open-modal="modalManager">Thêm nhân viên quản lý</button>
+            </div>
+          </div>
+
+          <div class="data-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã NV</th>
+                  <th>Tên nhân viên</th>
+                  <th>CCCD</th>
+                  <th>SĐT</th>
+                  <th>Địa chỉ</th>
+                  <th>Email</th>
+                  <th>Trạng thái</th>
+                  <th>Tài khoản</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>QL001</td>
+                  <td>Lê Nhật Khoa</td>
+                  <td>0794 56 7890</td>
+                  <td>0909 999 123</td>
+                  <td>TP. Thủ Đức</td>
+                  <td>khoa.le@example.com</td>
+                  <td><span class="badge badge-success">Đang làm</span></td>
+                  <td>khoa.le_admin</td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="btn-icon" title="Sửa nhân viên" data-open-modal="modalManager">✎</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>QL002</td>
+                  <td>Phạm Thu Hà</td>
+                  <td>0744 22 7890</td>
+                  <td>0911 111 888</td>
+                  <td>Q.3, TP.HCM</td>
+                  <td>ha.pham@example.com</td>
+                  <td><span class="badge badge-warning">Tạm nghỉ</span></td>
+                  <td>ha.pham_mgr</td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="btn-icon" title="Sửa nhân viên" data-open-modal="modalManager">✎</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- MODULE: STAFF -->
+        <div class="module-view" id="module-staff">
+          <div class="module-header">
+            <div>
+              <div class="module-title">Nhân viên nhà hàng &amp; Part-time</div>
+              <div class="module-desc">Quản lý đội ngũ nhân viên chính thức và nhân viên làm thêm.</div>
+            </div>
+            <div class="toolbar">
+              <button class="btn" data-open-modal="modalStaff">Thêm NV nhà hàng</button>
+              <button class="btn btn-ghost" data-open-modal="modalStaffPt">Thêm NV part-time</button>
+            </div>
+          </div>
+
+          <div class="split-columns">
+            <div class="card">
+              <div class="card-title">Nhân viên nhà hàng (lâu dài)</div>
+              <div class="data-card" style="margin-top:6px; max-height:260px; overflow:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Mã NV</th>
+                      <th>Tên NV</th>
+                      <th>CCCD</th>
+                      <th>SĐT</th>
+                      <th>Chức vụ</th>
+                      <th>Trạng thái</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>NH001</td>
+                      <td>Võ Hoài Nam</td>
+                      <td>0796 11 2222</td>
+                      <td>0907 333 222</td>
+                      <td>Bếp trưởng</td>
+                      <td><span class="badge badge-success">Đang làm</span></td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa NV nhà hàng" data-open-modal="modalStaff">✎</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>NH042</td>
+                      <td>Đỗ Gia Huy</td>
+                      <td>0743 99 8888</td>
+                      <td>0907 543 987</td>
+                      <td>Phục vụ</td>
+                      <td><span class="badge badge-warning">Tạm nghỉ</span></td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa NV nhà hàng" data-open-modal="modalStaff">✎</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Nhân viên part-time</div>
+              <div class="data-card" style="margin-top:6px; max-height:260px; overflow:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Mã NV PT</th>
+                      <th>Tên NV</th>
+                      <th>SĐT</th>
+                      <th>Địa chỉ</th>
+                      <th>Số buổi đã làm</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>PT010</td>
+                      <td>Ngô Bảo Anh</td>
+                      <td>0934 567 111</td>
+                      <td>Q.7, TP.HCM</td>
+                      <td>12</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa NV part-time" data-open-modal="modalStaffPt">✎</button>
+                          <button class="btn-icon" title="Xóa NV part-time" data-open-modal="modalConfirmDelete">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>PT024</td>
+                      <td>Phan Minh Tín</td>
+                      <td>0938 234 777</td>
+                      <td>Q. Bình Thạnh</td>
+                      <td>5</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa NV part-time" data-open-modal="modalStaffPt">✎</button>
+                          <button class="btn-icon" title="Xóa NV part-time" data-open-modal="modalConfirmDelete">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODULE: SERVICES -->
+        <div class="module-view" id="module-services">
+          <div class="module-header">
+            <div>
+              <div class="module-title">Quản lý dịch vụ</div>
+              <div class="module-desc">Thêm / sửa / xóa dịch vụ lẻ và combo dịch vụ.</div>
+            </div>
+            <div class="toolbar">
+              <button class="btn" data-open-modal="modalServiceCombo">Thêm combo dịch vụ</button>
+              <button class="btn btn-ghost" data-open-modal="modalServiceSingle">Thêm dịch vụ lẻ</button>
+            </div>
+          </div>
+
+          <div class="split-columns">
+            <div class="card">
+              <div class="card-title">Combo dịch vụ</div>
+              <div class="data-card" style="margin-top:6px;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Mã combo DV</th>
+                      <th>Tên combo</th>
+                      <th>Đơn giá</th>
+                      <th>Mô tả</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>CB_TRANGTRI_VIP</td>
+                      <td>Combo VIP Trang trí</td>
+                      <td>50.000.000</td>
+                      <td>Hoa tươi cao cấp, đèn LED, robot phục vụ, màn hình LED lớn.</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa combo DV" data-open-modal="modalServiceCombo">✎</button>
+                          <button class="btn-icon" title="Xóa combo DV" data-open-modal="modalConfirmDelete">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Dịch vụ lẻ</div>
+              <div class="data-card" style="margin-top:6px; max-height:260px; overflow:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Mã DV</th>
+                      <th>Tên dịch vụ</th>
+                      <th>Đơn giá</th>
+                      <th>Mô tả</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>DV_TRANGTRI_HOA</td>
+                      <td>Trang trí hoa tươi</td>
+                      <td>5.000.000</td>
+                      <td>Hoa tươi chủ đề theo màu tiệc.</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa dịch vụ lẻ" data-open-modal="modalServiceSingle">✎</button>
+                          <button class="btn-icon" title="Xóa dịch vụ lẻ" data-open-modal="modalConfirmDelete">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>DV_AMTHANH</td>
+                      <td>Hệ thống âm thanh cao cấp</td>
+                      <td>6.000.000</td>
+                      <td>Dàn loa line-array, micro không dây.</td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Sửa dịch vụ lẻ" data-open-modal="modalServiceSingle">✎</button>
+                          <button class="btn-icon" title="Xóa dịch vụ lẻ" data-open-modal="modalConfirmDelete">🗑</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODULE: PAYMENTS -->
+        <div class="module-view" id="module-payments">
+          <div class="module-header">
+            <div>
+              <div class="module-title">Quản lý thanh toán</div>
+              <div class="module-desc">Theo dõi tiền cọc 30% và thanh toán hoàn tất cho từng bữa tiệc.</div>
+            </div>
+            <div class="toolbar">
+              <input type="date" class="input" style="min-width:160px;" />
+              <select class="filter-select">
+                <option>Tất cả trạng thái</option>
+                <option>Đã cọc 30%</option>
+                <option>Đã thanh toán hoàn toàn</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="data-card">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mã thanh toán</th>
+                  <th>Mã tiệc</th>
+                  <th>Mã KH</th>
+                  <th>Tổng giá trị</th>
+                  <th>Giá trị 30%</th>
+                  <th>Trạng thái</th>
+                  <th>Ngày đặt cọc</th>
+                  <th>Ngày thanh toán</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>TT_2301</td>
+                  <td>TIEC_2301</td>
+                  <td>KH001</td>
+                  <td>150.000.000</td>
+                  <td>45.000.000</td>
+                  <td><span class="badge badge-warning">Đã cọc 30%</span></td>
+                  <td>12/11/2025</td>
+                  <td>-</td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="btn-icon" title="Cập nhật trạng thái" data-open-modal="modalPayment">✓</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>TT_2297</td>
+                  <td>TIEC_2297</td>
+                  <td>KH002</td>
+                  <td>120.000.000</td>
+                  <td>36.000.000</td>
+                  <td><span class="badge badge-success">Thanh toán hoàn toàn</span></td>
+                  <td>05/11/2025</td>
+                  <td>20/11/2025</td>
+                  <td>
+                    <div class="table-actions">
+                      <button class="btn-icon" title="Xem chi tiết" data-open-modal="modalPayment">👁</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- MODULE: EVENTS -->
+        <div class="module-view" id="module-events">
+          <div class="module-header">
+            <div>
+              <div class="module-title">Quản lý bữa tiệc</div>
+              <div class="module-desc">Phân công nhân viên theo khu vực: bếp, phục vụ, setup sảnh...</div>
+            </div>
+            <div class="toolbar">
+              <button class="btn" data-open-modal="modalEventDetail">Phân công cho bữa tiệc</button>
+            </div>
+          </div>
+
+          <div class="split-columns">
+            <div class="card">
+              <div class="card-title">Danh sách bữa tiệc đã được duyệt</div>
+              <div class="data-card" style="margin-top:6px; max-height:260px; overflow:auto;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Mã tiệc</th>
+                      <th>Cô dâu / Chú rể</th>
+                      <th>Ngày tổ chức</th>
+                      <th>Sảnh</th>
+                      <th>Số bàn</th>
+                      <th>Tiến độ phân công</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>TIEC_2301</td>
+                      <td>An &amp; Lan</td>
+                      <td>25/11/2025</td>
+                      <td>Sảnh Diamond</td>
+                      <td>25</td>
+                      <td><span class="badge badge-warning">Đang phân công</span></td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Xem / Sửa phân công" data-open-modal="modalEventDetail">👁</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>TIEC_2297</td>
+                      <td>Huy &amp; Vy</td>
+                      <td>20/11/2025</td>
+                      <td>Sảnh Ruby</td>
+                      <td>18</td>
+                      <td><span class="badge badge-success">Hoàn tất</span></td>
+                      <td>
+                        <div class="table-actions">
+                          <button class="btn-icon" title="Xem / Sửa phân công" data-open-modal="modalEventDetail">👁</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Phân nhân viên theo khu vực</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Khu vực nấu ăn - Bếp trưởng</label>
+                  <select class="select">
+                    <option>Chọn bếp trưởng...</option>
+                    <option>NH001 - Võ Hoài Nam (Bếp trưởng)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Khu vực nấu ăn - Bếp phó</label>
+                  <select class="select">
+                    <option>Chọn bếp phó...</option>
+                    <option>NH010 - Trần Đức Lộc (Bếp phó)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Phục vụ chính</label>
+                  <select class="select">
+                    <option>Chọn nhân viên phục vụ...</option>
+                    <option>NH042 - Đỗ Gia Huy (Phục vụ)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Setup sảnh</label>
+                  <select class="select">
+                    <option>Chọn nhân viên setup hoặc part-time...</option>
+                    <option>PT010 - Ngô Bảo Anh (Part-time)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-footer">
+                <button class="btn btn-ghost">Hủy</button>
+                <button class="btn">Lưu phân công</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MODULE: ANALYTICS -->
+        <div class="module-view" id="module-analytics">
+          <div class="module-header">
+            <div>
+              <div class="module-title">Thống kê &amp; báo cáo</div>
+              <div class="module-desc">Tổng quan số buổi tiệc và doanh thu theo ngày / tháng / năm.</div>
+            </div>
+            <div class="toolbar">
+              <select class="filter-select" id="analyticsRange">
+                <option value="day">Theo ngày</option>
+                <option value="month" selected>Theo tháng</option>
+                <option value="year">Theo năm</option>
+              </select>
+              <input type="month" class="input" style="min-width:150px;" />
+            </div>
+          </div>
+
+          <div class="split-columns">
+            <div class="card">
+              <div class="card-title">Biểu đồ số buổi tiệc</div>
+              <div class="chart-bars">
+                <div class="chart-bar" style="height: 30%;"><span>10</span></div>
+                <div class="chart-bar" style="height: 60%;"><span>20</span></div>
+                <div class="chart-bar" style="height: 80%;"><span>28</span></div>
+                <div class="chart-bar" style="height: 50%;"><span>17</span></div>
+              </div>
+              <div class="chart-legend">
+                <span>Tuần 1</span>
+                <span>Tuần 2</span>
+                <span>Tuần 3</span>
+                <span>Tuần 4</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-title">Bảng thống kê tổng hợp</div>
+              <div>
+                <div class="stat-row">
+                  <span>Số buổi tiệc trong tháng</span>
+                  <strong>75</strong>
+                </div>
+                <div class="stat-row">
+                  <span>Tổng doanh thu</span>
+                  <strong>5.250.000.000 VNĐ</strong>
+                </div>
+                <div class="stat-row">
+                  <span>Giá trị đã cọc (30%)</span>
+                  <strong>1.575.000.000 VNĐ</strong>
+                </div>
+                <div class="stat-row">
+                  <span>Còn lại chưa thanh toán</span>
+                  <strong>3.675.000.000 VNĐ</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal mẫu: Chi tiết đơn đặt tiệc -->
+  <div class="modal-backdrop" id="orderDetailModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Mẫu hiển thị</div>
+          <div class="modal-title">Chi tiết đơn đặt tiệc</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="split-columns">
+          <div>
+            <div class="card-title">Thông tin chung</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Họ &amp; tên</label>
+                <input class="input" value="Nguyễn Minh An" />
+              </div>
+              <div class="form-group">
+                <label>Số điện thoại</label>
+                <input class="input" value="0901 234 567" />
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input class="input" value="an.nguyen@example.com" />
+              </div>
+              <div class="form-group">
+                <label>Ngày đặt đơn</label>
+                <input class="input" value="12/11/2025" />
+              </div>
+              <div class="form-group">
+                <label>Ngày tổ chức</label>
+                <input class="input" value="25/11/2025" />
+              </div>
+              <div class="form-group">
+                <label>Số khách / Số bàn</label>
+                <input class="input" value="250 khách / 25 bàn" />
+              </div>
+              <div class="form-group">
+                <label>Tên cô dâu</label>
+                <input class="input" value="Trần Ngọc Lan" />
+              </div>
+              <div class="form-group">
+                <label>Tên chú rể</label>
+                <input class="input" value="Nguyễn Minh An" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card-title">Thực đơn &amp; dịch vụ</div>
+            <div class="form-group">
+              <label>Thực đơn</label>
+              <textarea rows="4" class="input">Combo Bạch Kim (10 món): 
+- Súp tôm hùm 
+- Salad Caesar 
+- Tôm càng nướng phô mai 
+- Bò nướng sốt rượu vang 
+...</textarea>
+            </div>
+            <div class="form-group">
+              <label>Dịch vụ</label>
+              <textarea rows="3" class="input">Combo VIP Trang trí, Hệ thống âm thanh ánh sáng cao cấp, Quay phim - Chụp ảnh trọn gói.</textarea>
+            </div>
+            <div class="form-group">
+              <label>Trạng thái duyệt</label>
+              <select class="select">
+                <option>Chờ duyệt</option>
+                <option>Đã duyệt</option>
+                <option>Mới thay đổi - chờ duyệt</option>
+                <option>Mới thay đổi - đã duyệt</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Đóng</button>
+        <button class="btn">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Thêm / sửa combo thực đơn -->
+  <div class="modal-backdrop" id="modalCombo">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Thực đơn</div>
+          <div class="modal-title">Thêm / Sửa combo món ăn</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã combo</label>
+            <input class="input" placeholder="VD: CB_VANG" />
+          </div>
+          <div class="form-group">
+            <label>Tên combo</label>
+            <input class="input" placeholder="VD: Thực đơn Vàng" />
+          </div>
+          <div class="form-group">
+            <label>Đơn giá (VNĐ/bàn)</label>
+            <input class="input" type="number" placeholder="1.000.000" />
+          </div>
+          <div class="form-group">
+            <label>Ghi chú combo</label>
+            <input class="input" placeholder="Áp dụng tối thiểu 10 bàn..." />
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Các món trong combo (món 1 → 8)</label>
+            <textarea class="input" rows="4" placeholder="Liệt kê món 1, 2, 3,... hoặc chọn từ danh sách món lẻ."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu combo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Thêm / sửa món lẻ -->
+  <div class="modal-backdrop" id="modalDish">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Thực đơn</div>
+          <div class="modal-title">Thêm / Sửa món ăn lẻ</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã món ăn</label>
+            <input class="input" placeholder="VD: MN001" />
+          </div>
+          <div class="form-group">
+            <label>Tên món ăn</label>
+            <input class="input" placeholder="VD: Súp tôm hùm" />
+          </div>
+          <div class="form-group">
+            <label>Đơn vị tính</label>
+            <input class="input" placeholder="Tô, đĩa, phần..." />
+          </div>
+          <div class="form-group">
+            <label>Đơn giá (VNĐ)</label>
+            <input type="number" class="input" placeholder="145000" />
+          </div>
+          <div class="form-group">
+            <label>Danh mục món ăn</label>
+            <select class="select">
+              <option>Khai vị</option>
+              <option>Salad</option>
+              <option>Món chính</option>
+              <option>Lẩu</option>
+              <option>Tráng miệng</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ghi chú</label>
+            <input class="input" placeholder="Thêm ghi chú nếu có..." />
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Mô tả món ăn</label>
+            <textarea class="input" rows="3" placeholder="Mô tả chi tiết món ăn, thành phần..."></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu món ăn</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Thêm / sửa khách hàng -->
+  <div class="modal-backdrop" id="modalCustomer">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Khách hàng</div>
+          <div class="modal-title">Thêm / Sửa thông tin khách hàng</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã khách hàng</label>
+            <input class="input" placeholder="VD: KH001" />
+          </div>
+          <div class="form-group">
+            <label>Tên khách hàng</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>CCCD</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>SĐT</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input class="input" type="email" />
+          </div>
+          <div class="form-group">
+            <label>Trạng thái</label>
+            <select class="select">
+              <option>Đang hoạt động</option>
+              <option>Ngừng hợp tác</option>
+              <option>Tiềm năng</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ghi chú</label>
+            <input class="input" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu khách hàng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Sửa tài khoản khách hàng -->
+  <div class="modal-backdrop" id="modalCustomerAccount">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Khách hàng</div>
+          <div class="modal-title">Cập nhật tài khoản khách hàng</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã khách hàng</label>
+            <input class="input" value="KH001" />
+          </div>
+          <div class="form-group">
+            <label>Tài khoản đăng nhập</label>
+            <input class="input" value="thaomy.kh" />
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu</label>
+            <input class="input" type="password" value="123456" />
+          </div>
+          <div class="form-group">
+            <label>Trạng thái tài khoản</label>
+            <select class="select">
+              <option>Hoạt động</option>
+              <option>Khóa tạm thời</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu tài khoản</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Thêm / sửa nhân viên quản lý -->
+  <div class="modal-backdrop" id="modalManager">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Nhân viên quản lý</div>
+          <div class="modal-title">Thêm / Sửa nhân viên quản lý</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã NV</label>
+            <input class="input" placeholder="VD: QL001" />
+          </div>
+          <div class="form-group">
+            <label>Tên nhân viên</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>CCCD</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>SĐT</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input class="input" type="email" />
+          </div>
+          <div class="form-group">
+            <label>Trạng thái</label>
+            <select class="select">
+              <option>Đang làm</option>
+              <option>Nghỉ làm</option>
+              <option>Tạm nghỉ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ghi chú</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Tài khoản</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Mật khẩu</label>
+            <input class="input" type="password" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu nhân viên</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Thêm / sửa nhân viên nhà hàng -->
+  <div class="modal-backdrop" id="modalStaff">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Nhân viên nhà hàng</div>
+          <div class="modal-title">Thêm / Sửa nhân viên nhà hàng</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã nhân viên</label>
+            <input class="input" placeholder="VD: NH001" />
+          </div>
+          <div class="form-group">
+            <label>Tên nhân viên</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>CCCD</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>SĐT</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input class="input" type="email" />
+          </div>
+          <div class="form-group">
+            <label>Chức vụ</label>
+            <select class="select">
+              <option>Đầu bếp</option>
+              <option>Bếp phó</option>
+              <option>Phục vụ</option>
+              <option>Setup sảnh</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Trạng thái</label>
+            <select class="select">
+              <option>Đang làm</option>
+              <option>Nghỉ làm</option>
+              <option>Tạm nghỉ</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu nhân viên</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Thêm / sửa nhân viên part-time -->
+  <div class="modal-backdrop" id="modalStaffPt">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Nhân viên part-time</div>
+          <div class="modal-title">Thêm / Sửa nhân viên part-time</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã NV part-time</label>
+            <input class="input" placeholder="VD: PT010" />
+          </div>
+          <div class="form-group">
+            <label>Tên NV part-time</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>SĐT</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Địa chỉ</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Số buổi đã làm</label>
+            <input class="input" type="number" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu nhân viên</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Thêm / sửa combo dịch vụ -->
+  <div class="modal-backdrop" id="modalServiceCombo">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Dịch vụ</div>
+          <div class="modal-title">Thêm / Sửa combo dịch vụ</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã combo DV</label>
+            <input class="input" placeholder="VD: CB_TRANGTRI_VIP" />
+          </div>
+          <div class="form-group">
+            <label>Tên combo DV</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Đơn giá</label>
+            <input class="input" type="number" />
+          </div>
+          <div class="form-group">
+            <label>Ghi chú</label>
+            <input class="input" />
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Mô tả</label>
+            <textarea class="input" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu combo DV</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Thêm / sửa dịch vụ lẻ -->
+  <div class="modal-backdrop" id="modalServiceSingle">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Dịch vụ</div>
+          <div class="modal-title">Thêm / Sửa dịch vụ lẻ</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã dịch vụ</label>
+            <input class="input" placeholder="VD: DV_TRANGTRI_HOA" />
+          </div>
+          <div class="form-group">
+            <label>Tên dịch vụ</label>
+            <input class="input" />
+          </div>
+          <div class="form-group">
+            <label>Đơn giá</label>
+            <input class="input" type="number" />
+          </div>
+          <div class="form-group">
+            <label>Ghi chú</label>
+            <input class="input" />
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Mô tả</label>
+            <textarea class="input" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu dịch vụ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Quản lý thanh toán -->
+  <div class="modal-backdrop" id="modalPayment">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Thanh toán</div>
+          <div class="modal-title">Chi tiết / Cập nhật thanh toán</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã thanh toán</label>
+            <input class="input" value="TT_2301" />
+          </div>
+          <div class="form-group">
+            <label>Mã tiệc</label>
+            <input class="input" value="TIEC_2301" />
+          </div>
+          <div class="form-group">
+            <label>Mã khách hàng</label>
+            <input class="input" value="KH001" />
+          </div>
+          <div class="form-group">
+            <label>Tổng giá trị bữa tiệc</label>
+            <input class="input" value="150.000.000" />
+          </div>
+          <div class="form-group">
+            <label>Giá trị 30%</label>
+            <input class="input" value="45.000.000" />
+          </div>
+          <div class="form-group">
+            <label>Trạng thái</label>
+            <select class="select">
+              <option>Đã cọc 30%</option>
+              <option>Đã thanh toán hoàn toàn</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ngày đặt cọc</label>
+            <input type="date" class="input" />
+          </div>
+          <div class="form-group">
+            <label>Ngày thanh toán hoàn toàn</label>
+            <input type="date" class="input" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu thanh toán</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Phân công bữa tiệc -->
+  <div class="modal-backdrop" id="modalEventDetail">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Bữa tiệc</div>
+          <div class="modal-title">Phân công nhân viên cho bữa tiệc</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Mã tiệc</label>
+            <input class="input" value="TIEC_2301" />
+          </div>
+          <div class="form-group">
+            <label>Ngày tổ chức</label>
+            <input class="input" value="25/11/2025" />
+          </div>
+          <div class="form-group">
+            <label>Sảnh</label>
+            <input class="input" value="Sảnh Diamond" />
+          </div>
+          <div class="form-group">
+            <label>Số bàn</label>
+            <input class="input" value="25" />
+          </div>
+        </div>
+        <hr style="border-color: rgba(255,255,255,0.08); margin:10px 0 12px;">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Bếp trưởng</label>
+            <select class="select">
+              <option>NH001 - Võ Hoài Nam</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Bếp phó</label>
+            <select class="select">
+              <option>NH010 - Trần Đức Lộc</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Phục vụ (NV nhà hàng)</label>
+            <select class="select">
+              <option>NH042 - Đỗ Gia Huy</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Phục vụ (NV part-time)</label>
+            <select class="select">
+              <option>PT010 - Ngô Bảo Anh</option>
+              <option>PT024 - Phan Minh Tín</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Ghi chú bố trí nhân sự</label>
+            <textarea class="input" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Lưu phân công</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Xác nhận xóa chung -->
+  <div class="modal-backdrop" id="modalConfirmDelete">
+    <div class="modal" style="max-width:420px;">
+      <div class="modal-header">
+        <div>
+          <div class="pill">Xóa dữ liệu</div>
+          <div class="modal-title">Bạn chắc chắn muốn xóa?</div>
+        </div>
+        <button class="btn-close" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px; color:var(--text-muted);">
+          Thao tác này chỉ là giao diện minh họa, chưa kết nối cơ sở dữ liệu.
+          Khi tích hợp backend, bạn có thể gọi API xóa tại đây.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Hủy</button>
+        <button class="btn">Xóa</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Đổi module theo sidebar & tab header
+    const navLinks = document.querySelectorAll('.nav-link');
+    const tabPills = document.querySelectorAll('.tab-pill[data-module]');
+    const modules = document.querySelectorAll('.module-view');
+
+    function activateModule(moduleName) {
+      modules.forEach(m => {
+        m.classList.toggle('active', m.id === 'module-' + moduleName);
+      });
+
+      navLinks.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.module === moduleName);
+      });
+
+      tabPills.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.module === moduleName);
+      });
+    }
+
+    navLinks.forEach(btn => {
+      btn.addEventListener('click', () => activateModule(btn.dataset.module));
+    });
+
+    tabPills.forEach(btn => {
+      btn.addEventListener('click', () => activateModule(btn.dataset.module));
+    });
+
+    // Sub-tab cho khách hàng
+    const subtabButtons = document.querySelectorAll('.tab-pill[data-subtab]');
+    subtabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.subtab;
+        subtabButtons.forEach(b => b.classList.toggle('active', b === btn));
+        document.querySelectorAll('#module-customers .data-card').forEach(card => {
+          card.style.display = card.id === 'subtab-' + target ? 'block' : 'none';
+        });
+      });
+    });
+
+    // Modal chi tiết đơn đặt tiệc (demo)
+    const orderDetailModal = document.getElementById('orderDetailModal');
+    const btnViewOrderDetail = document.getElementById('btnViewOrderDetail');
+
+    function openModal(modal) {
+      modal?.classList.add('active');
+    }
+
+    function closeModal(modal) {
+      modal?.classList.remove('active');
+    }
+
+    // Nút mở modal chi tiết đơn (mẫu)
+    btnViewOrderDetail?.addEventListener('click', () => openModal(orderDetailModal));
+
+    // Cơ chế chung: mọi phần tử có data-open-modal="idModal" sẽ mở modal tương ứng
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('[data-open-modal]');
+      if (trigger) {
+        const id = trigger.getAttribute('data-open-modal');
+        const modal = document.getElementById(id);
+        openModal(modal);
+      }
+    });
+
+    // Đóng modal khi click nền hoặc nút có data-close-modal
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop || e.target.hasAttribute('data-close-modal')) {
+          closeModal(backdrop);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
+
+

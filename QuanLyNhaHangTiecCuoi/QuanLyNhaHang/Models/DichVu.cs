@@ -11,16 +11,16 @@ namespace QuanLyNhaHang.Models
         public string MaDichVu { get; set; } // Ví dụ: DV001
 
         [StringLength(100)]
-        public string TenDichVu { get; set; }
+        public string? TenDichVu { get; set; }
 
         public decimal? GiaDV { get; set; }
 
-        public string MoTaDV { get; set; }
+        public string? MoTaDV { get; set; }
 
         [StringLength(30)]
-        public string TrangThaiDV { get; set; }
+        public string? TrangThaiDV { get; set; }
 
-        public string GhiChu { get; set; }
+        public string? GhiChu { get; set; }
 
         public virtual ICollection<TT_SuDungDichVu> TT_SuDungDichVus { get; set; }
     }

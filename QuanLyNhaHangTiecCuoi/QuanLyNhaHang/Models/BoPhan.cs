@@ -11,14 +11,14 @@ namespace QuanLyNhaHang.Models
         public string MaBoPhan { get; set; } // Ví dụ: BP001
 
         [StringLength(50)]
-        public string TenBoPhan { get; set; }
+        public string? TenBoPhan { get; set; }
 
         public decimal? TienCong { get; set; } // Dấu ? cho phép null
 
         [StringLength(30)]
-        public string TrangThai { get; set; }
+        public string? TrangThai { get; set; }
 
-        public string GhiChu { get; set; }
+        public string? GhiChu { get; set; }
 
         public virtual ICollection<NhanVien> NhanViens { get; set; }
     }

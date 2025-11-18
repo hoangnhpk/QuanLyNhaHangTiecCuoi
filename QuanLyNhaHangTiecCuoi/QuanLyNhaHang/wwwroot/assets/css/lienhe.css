@@ -1,0 +1,276 @@
+/**
+* Contact Page Styles
+* Template Name: WeddingVenue
+*/
+
+/*--------------------------------------------------------------
+# Contact Page Specific Styles
+--------------------------------------------------------------*/
+.contact-page {
+  --background-color: #0c0b09;
+  --default-color: rgba(255, 255, 255, 0.7);
+  --heading-color: #ffffff;
+  --accent-color: #cda45e;
+  --surface-color: #29261f;
+  --contrast-color: #0c0b09;
+}
+
+/* Page Title */
+.contact-page .page-title {
+  background: linear-gradient(rgba(12, 11, 9, 0.7), rgba(12, 11, 9, 0.7)), url('../img/contact-bg.jpg') center center;
+  background-size: cover;
+  padding: 120px 0 60px 0;
+}
+
+.contact-page .page-title h1 {
+  font-size: 48px;
+  margin-bottom: 15px;
+  color: var(--heading-color);
+}
+
+/* Contact Info Section */
+.contact-info {
+  padding: 80px 0;
+}
+
+.contact-info .info-card {
+  text-align: center;
+  padding: 40px 20px;
+  background: var(--surface-color);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  height: 100%;
+  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 80%);
+}
+
+.contact-info .info-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-color);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.contact-info .info-card .icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.contact-info .info-card:hover .icon {
+  background: var(--contrast-color);
+  transform: scale(1.1);
+}
+
+.contact-info .info-card .icon i {
+  font-size: 24px;
+  color: var(--contrast-color);
+  transition: all 0.3s ease;
+}
+
+.contact-info .info-card:hover .icon i {
+  color: var(--accent-color);
+}
+
+.contact-info .info-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--heading-color);
+}
+
+.contact-info .info-card p {
+  color: var(--default-color);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Contact Main Section */
+.contact-main {
+  padding: 80px 0;
+}
+
+.contact-main .map-container {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  height: 100%;
+}
+
+.contact-main .contact-form-container {
+  background: var(--surface-color);
+  padding: 40px;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent-color), transparent 80%);
+  height: 100%;
+}
+
+.contact-main .contact-form-container h3 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: var(--heading-color);
+}
+
+.contact-main .contact-form-container > p {
+  color: var(--default-color);
+  margin-bottom: 30px;
+}
+
+.contact-main .php-email-form input[type=text],
+.contact-main .php-email-form input[type=email],
+.contact-main .php-email-form input[type=tel],
+.contact-main .php-email-form input[type=date],
+.contact-main .php-email-form input[type=number],
+.contact-main .php-email-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid color-mix(in srgb, var(--default-color), transparent 70%);
+  background: var(--background-color);
+  color: var(--default-color);
+  border-radius: 5px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.contact-main .php-email-form input:focus,
+.contact-main .php-email-form textarea:focus {
+  border-color: var(--accent-color);
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-color), transparent 80%);
+}
+
+.contact-main .php-email-form input::placeholder,
+.contact-main .php-email-form textarea::placeholder {
+  color: color-mix(in srgb, var(--default-color), transparent 50%);
+}
+
+.contact-main .php-email-form button[type=submit] {
+  background: var(--accent-color);
+  color: var(--contrast-color);
+  border: none;
+  padding: 12px 40px;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.contact-main .php-email-form button[type=submit]:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 20%);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(205, 164, 94, 0.3);
+}
+
+/* Quick Contact Section */
+.quick-contact {
+  background: linear-gradient(135deg, var(--accent-color), color-mix(in srgb, var(--accent-color), transparent 30%));
+  padding: 60px 0;
+  color: var(--contrast-color);
+}
+
+.quick-contact h3 {
+  color: var(--contrast-color);
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.quick-contact p {
+  color: color-mix(in srgb, var(--contrast-color), transparent 20%);
+  font-size: 18px;
+  margin: 0;
+}
+
+.quick-contact .btn-call-now {
+  display: inline-flex;
+  align-items: center;
+  background: var(--contrast-color);
+  color: var(--accent-color);
+  padding: 15px 30px;
+  border-radius: 50px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.quick-contact .btn-call-now:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  color: var(--accent-color);
+}
+
+.quick-contact .btn-call-now i {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .contact-page .page-title h1 {
+    font-size: 36px;
+  }
+  
+  .contact-info .info-card {
+    margin-bottom: 30px;
+  }
+  
+  .contact-main .contact-form-container {
+    padding: 30px 20px;
+  }
+  
+  .quick-contact .row {
+    text-align: center;
+  }
+  
+  .quick-contact h3 {
+    font-size: 24px;
+  }
+  
+  .quick-contact p {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .contact-page .page-title {
+    padding: 100px 0 40px 0;
+  }
+  
+  .contact-page .page-title h1 {
+    font-size: 28px;
+  }
+  
+  .contact-main .contact-form-container {
+    padding: 20px 15px;
+  }
+  
+  .quick-contact {
+    padding: 40px 0;
+  }
+}
+
+/* Form Status Messages */
+.contact-main .php-email-form .loading,
+.contact-main .php-email-form .error-message,
+.contact-main .php-email-form .sent-message {
+  border-radius: 5px;
+  margin: 15px 0;
+}
+
+.contact-main .php-email-form .sent-message {
+  background: #059652;
+  color: white;
+  padding: 15px;
+}
+
+.contact-main .php-email-form .error-message {
+  background: #df1529;
+  color: white;
+  padding: 15px;
+}
