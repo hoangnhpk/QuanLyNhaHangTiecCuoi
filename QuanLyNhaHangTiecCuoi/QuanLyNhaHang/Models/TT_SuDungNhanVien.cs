@@ -11,12 +11,12 @@ namespace QuanLyNhaHang.Models
         public string MaThongTinNV { get; set; }
 
         [StringLength(20)]
-        public string MaDatTiec { get; set; }
+        public string? MaDatTiec { get; set; }
 
         [StringLength(20)]
-        public string MaNhanVien { get; set; }
+        public string? MaNhanVien { get; set; }
 
-        public string GhiChu { get; set; }
+        public string? GhiChu { get; set; }
 
         [ForeignKey("MaDatTiec")]
         public virtual DatTiec DatTiec { get; set; }
