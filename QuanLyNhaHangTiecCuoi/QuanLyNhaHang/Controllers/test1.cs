@@ -7,7 +7,7 @@ namespace QuanLyNhaHang.Controllers
         public IActionResult Index()
         {
             return View();
-            //test1
+            // anh lai đz vai lon//
         }
     }
 }
