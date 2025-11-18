@@ -1,0 +1,257 @@
+﻿/* ==================================================================== */
+/* CÁC BIẾN CSS TỪ _LayoutAdmin.cshtml ĐỂ ĐỒNG BỘ MÀU SẮC & FONT CHỮ */
+/* ==================================================================== */
+:root {
+    --primary: #cda45e; /*  */
+    --primary-soft: rgba(205, 164, 94, 0.12); /* [cite: 2] */
+    --bg: #0c0b09; /* [cite: 2] */
+    --bg-elevated: #15120f; /* [cite: 2] */
+    --text-main: #f4f4f4; /* [cite: 2] */
+    --text-muted: #a6a6a6; /* [cite: 2] */
+    --danger: #ff5c5c; /* [cite: 3] */
+    --success: #4caf50; /* [cite: 3] */
+    --border-subtle: rgba(255, 255, 255, 0.06); /* [cite: 2] */
+    --radius-md: 10px; /* [cite: 3] */
+    --radius-pill: 999px; /* [cite: 3] */
+    --shadow-soft: 0 12px 26px rgba(0, 0, 0, 0.65); /* Dùng bóng đổ của card */
+}
+
+/* Các font chữ được sử dụng trong layout admin */
+.playfair-font {
+    font-family: "Playfair Display", serif; /*  */
+}
+
+/* ==================================================================== */
+/* QUY TẮC CSS CHO CÁC VIEW CRUD CỦA Khách Hàng */
+/* ==================================================================== */
+
+/* Container chính bao bọc toàn bộ nội dung CRUD để áp dụng style nền và font */
+.crud-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px 30px;
+    background-color: var(--bg-elevated); /* [cite: 2] */
+    color: var(--text-main); /* [cite: 2] */
+    border-radius: var(--radius-md); /* [cite: 3] */
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+    font-family: "Poppins", system-ui, sans-serif; /* [cite: 5] */
+    border: 1px solid var(--border-subtle); /* [cite: 2] */
+}
+
+    /* Tiêu đề chính của trang */
+    .crud-container h1 {
+        font-size: 28px;
+        text-transform: uppercase; /* Giống page-title [cite: 35] */
+        letter-spacing: 0.08em; /* Giống page-title [cite: 35] */
+        color: var(--primary); /* Dùng màu chủ đạo */
+        border-bottom: 2px solid var(--primary-soft);
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    /* Tiêu đề KhachHang */
+    .crud-container h4 {
+        font-size: 18px;
+        color: #fff;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    /* Đường kẻ ngang hr */
+    .crud-container hr {
+        border-color: var(--border-subtle); /* [cite: 2] */
+    }
+
+/* ==================================================================== */
+/* FORM GROUP VÀ INPUT (CREATE/EDIT/DETAILS) */
+/* ==================================================================== */
+
+/* Bố cục cho form group */
+.form-group {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* [cite: 92] */
+}
+
+/* Label */
+.control-label, .crud-container label {
+    font-size: 11px; /* [cite: 93] */
+    text-transform: uppercase; /* [cite: 93] */
+    letter-spacing: 0.09em; /* [cite: 93] */
+    color: var(--text-muted); /* [cite: 2] */
+}
+
+/* Input/Select/Textarea */
+.form-control,
+.crud-container .form-control {
+    border-radius: 8px; /* [cite: 94] */
+    border: 1px solid rgba(255, 255, 255, 0.18); /* [cite: 94] */
+    padding: 7px 9px; /* [cite: 94] */
+    background: rgba(12, 11, 9, 0.92); /* [cite: 94] */
+    color: var(--text-main); /* [cite: 2] */
+    font-size: 13px; /* Tăng 1px so với layout admin để dễ đọc hơn */
+    transition: border-color 0.2s;
+    width: 100%;
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary); /*  */
+        box-shadow: 0 0 0 3px rgba(205, 164, 94, 0.3);
+    }
+
+/* Thông báo lỗi validation */
+.text-danger {
+    color: var(--danger); /* [cite: 3] */
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+/* ==================================================================== */
+/* DISPLAY GROUP VÀ DETAILS */
+/* ==================================================================== */
+
+/* Details view (dl/dt/dd) */
+.crud-container .row {
+    margin-top: 15px;
+}
+
+.crud-container dt {
+    color: var(--text-muted); /* [cite: 2] */
+    font-weight: 400;
+    padding: 6px 0;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+}
+
+.crud-container dd {
+    color: var(--text-main); /* [cite: 2] */
+    font-weight: 500;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1); /* Giống stat-row [cite: 105] */
+}
+/* Loại bỏ border-bottom cho phần tử cuối */
+.crud-container .row:last-child dd {
+    border-bottom: none;
+}
+
+/* ==================================================================== */
+/* TABLE (INDEX) */
+/* ==================================================================== */
+
+.crud-container .table {
+    width: 100%; /* [cite: 71] */
+    border-collapse: collapse; /* [cite: 71] */
+    font-size: 12px; /* [cite: 71] */
+    margin-top: 20px;
+}
+
+.crud-container thead {
+    background: rgba(255, 255, 255, 0.03); /* [cite: 72] */
+}
+
+.crud-container th,
+.crud-container td {
+    padding: 10px 8px;
+    text-align: left; /* [cite: 73] */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04); /* [cite: 73] */
+}
+
+.crud-container th {
+    font-weight: 500; /* [cite: 74] */
+    color: var(--text-muted); /* [cite: 74] */
+    text-transform: uppercase; /* [cite: 74] */
+    font-size: 11px; /* [cite: 74] */
+    letter-spacing: 0.08em; /* [cite: 74] */
+}
+
+.crud-container tbody tr:hover {
+    background: rgba(255, 255, 255, 0.03); /* [cite: 75] */
+}
+
+/* ==================================================================== */
+/* BUTTONS (Tất cả các views) */
+/* ==================================================================== */
+
+/* Nút chính (Create/Save/Delete) - mô phỏng .btn [cite: 40] */
+.crud-container .btn-primary,
+.crud-container .btn-danger {
+    border: none; /* [cite: 40] */
+    outline: none; /* [cite: 40] */
+    padding: 8px 16px; /* [cite: 40] */
+    border-radius: var(--radius-pill); /* [cite: 40] */
+    color: #120f0a; /* [cite: 40] */
+    font-size: 13px; /* [cite: 40] */
+    font-weight: 600; /* [cite: 40] */
+    cursor: pointer; /* [cite: 40] */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    transition: all 0.16s ease-out; /* [cite: 42] */
+}
+
+/* Nút chính cho CREATE/EDIT (Primary Button) */
+.crud-container .btn-primary {
+    background: linear-gradient(135deg, #cda45e, #b4883d); /* [cite: 40] */
+}
+
+    .crud-container .btn-primary:hover {
+        transform: translateY(-1px); /* [cite: 43] */
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.75); /* [cite: 43] */
+        filter: brightness(1.04); /* [cite: 44] */
+    }
+
+/* Nút Delete (Danger Button) */
+.crud-container .btn-danger {
+    background: linear-gradient(135deg, var(--danger), #cc4a4a);
+    color: var(--text-main);
+    box-shadow: 0 8px 20px rgba(255, 92, 92, 0.3);
+}
+
+    .crud-container .btn-danger:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 28px rgba(255, 92, 92, 0.4);
+    }
+
+/* Link/Nút phụ (Back to List / Edit / Details / Delete) - mô phỏng .btn-ghost [cite: 45] */
+.crud-container a[asp-action],
+.crud-container .btn-ghost {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-main); /* [cite: 45] */
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.18); /* Tăng độ dày so với ghost [cite: 45] */
+    transition: all 0.16s ease-out;
+    margin-right: 4px;
+}
+
+    .crud-container a[asp-action]:hover,
+    .crud-container .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.04); /* [cite: 47] */
+        border-color: rgba(255, 255, 255, 0.5); /* [cite: 47] */
+        color: #fff7e7;
+        transform: translateY(-1px);
+    }
+
+/* Căn lề cho action links ở cuối form và table */
+.crud-container .row + div,
+.crud-container table + div {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-subtle);
+    display: flex;
+    justify-content: flex-end; /* Căn phải cho nút */
+    gap: 8px;
+}
+/* Căn lề cho action links trong bảng */
+.crud-container .table td a[asp-action] {
+    padding: 4px 8px;
+    font-size: 11px;
+    margin-right: 2px;
+}

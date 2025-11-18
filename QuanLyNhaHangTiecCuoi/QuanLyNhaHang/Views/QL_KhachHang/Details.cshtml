@@ -1,0 +1,209 @@
+﻿@model QuanLyNhaHang.Models.KhachHang
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Details";
+}
+
+<div class="crud-container">
+    <h1>Chi Tiết Khách Hàng</h1>
+
+    <div>
+        <h4>Khách Hàng</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">
+                Tên Khách Hàng
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.TenKhachHang)
+            </dd>
+            <dt class="col-sm-3">
+                CCCD
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.CccdKhachHang)
+            </dd>
+            <dt class="col-sm-3">
+                SĐT
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.SdtKhachHang)
+            </dd>
+            <dt class="col-sm-3">
+                Địa Chỉ
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.DiaChiKhachHang)
+            </dd>
+            <dt class="col-sm-3">
+                Email
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.EmailKhachHang)
+            </dd>
+            <dt class="col-sm-3">
+                Tài Khoản
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.TaiKhoanKhachHang)
+            </dd>
+            <dt class="col-sm-3">
+                Mật Khẩu
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.MatKhauKhachHang)
+            </dd>
+            <dt class="col-sm-3">
+                Trạng Thái
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.TrangThaiKhachHang)
+            </dd>
+            <dt class="col-sm-3">
+                Ghi Chú
+            </dt>
+            <dd class="col-sm-9">
+                @Html.DisplayFor(model => model.GhiChu)
+            </dd>
+        </dl>
+    </div>
+    <div class="crud-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.MaKhachHang" class="btn-action btn-edit">Edit</a>
+        <a asp-action="Index" class="btn-ghost">Back to List</a>
+    </div>
+</div>
+
+<style>
+    /* ======================================================= */
+    /* CÁC QUY TẮC CSS CHUNG CHO DETAILS VIEW */
+    /* ======================================================= */
+
+    /* Định nghĩa lại các biến CSS cần thiết */
+    :root {
+        --primary: #cda45e;
+        --primary-soft: rgba(205, 164, 94, 0.12);
+        --bg-elevated: #15120f;
+        --text-main: #f4f4f4;
+        --text-muted: #a6a6a6;
+        --danger: #ff5c5c;
+        --border-subtle: rgba(255, 255, 255, 0.06);
+        --radius-md: 10px;
+        --radius-pill: 999px;
+    }
+
+    /* Container chính để áp dụng nền và font */
+    .crud-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 20px 30px;
+        background-color: var(--bg-elevated);
+        color: var(--text-main);
+        border-radius: var(--radius-md);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+        font-family: "Poppins", system-ui, sans-serif;
+        border: 1px solid var(--border-subtle);
+    }
+
+        .crud-container h1 {
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-soft);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .crud-container h4 {
+            font-size: 18px;
+            color: #fff;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .crud-container hr {
+            border-color: var(--border-subtle);
+        }
+
+        /* Định dạng danh sách chi tiết (Details List - DL/DT/DD) */
+        .crud-container dl.row {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .crud-container dt {
+            color: var(--text-muted);
+            font-weight: 400;
+            padding: 6px 0;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+        }
+
+        .crud-container dd {
+            color: var(--text-main);
+            font-weight: 500;
+            padding: 6px 0;
+            font-size: 13px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+            /* Loại bỏ border-bottom cho phần tử cuối cùng */
+            .crud-container dd:last-child {
+                border-bottom: none;
+            }
+
+    /* =================================================== */
+    /* NÚT ACTIONS (CĂN GIỮA) */
+    /* =================================================== */
+    .crud-actions {
+        display: flex;
+        justify-content: center; /* CĂN GIỮA */
+        gap: 10px; /* Khoảng cách giữa các nút */
+        padding-top: 20px;
+        border-top: 1px solid var(--border-subtle);
+        margin-top: 20px;
+    }
+
+    /* Nút Edit */
+    .btn-action.btn-edit {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: var(--radius-pill);
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        color: #120f0a;
+        background: linear-gradient(135deg, #cda45e, #b4883d);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+        transition: all 0.16s ease-out;
+    }
+
+        .btn-action.btn-edit:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.04);
+        }
+
+    /* Nút Back to List (Ghost Button) */
+    .btn-ghost {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: var(--radius-pill);
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--text-main);
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        transition: all 0.16s ease-out;
+    }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff7e7;
+            transform: translateY(-1px);
+        }
+</style>

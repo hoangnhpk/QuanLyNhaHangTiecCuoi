@@ -1,0 +1,223 @@
+﻿@model IEnumerable<QuanLyNhaHang.Models.KhachHang>
+
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Index";
+}
+
+<div class="crud-container">
+    <h1>Quản Lý Khách Hàng</h1>
+
+    <p>
+        <a asp-action="Create" class="btn-create-new">Thêm Khách Hàng Mới</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+        <thead>
+            <tr>
+                <th>
+                    Tên Khách Hàng
+                </th>
+                <th>
+                    Số Điện Thoại
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Tài Khoản
+                </th>
+                <th>
+                    Trạng Thái
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TenKhachHang)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SdtKhachHang)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EmailKhachHang)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TaiKhoanKhachHang)
+                    </td>
+                    <td>
+                        @{
+                            string status = item.TrangThaiKhachHang;
+                            string vietnameseStatus = status switch
+                            {
+                                "Active" => "Hoạt Động",
+                                "Inactive" => "Ngừng Hoạt Động",
+                                _ => status
+                            };
+                            @vietnameseStatus
+                        }
+                    </td>
+
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.MaKhachHang" class="btn-action btn-edit">Sửa Thông Tin</a>
+                        <a asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
+                        <a asp-action="Delete" asp-route-id="@item.MaKhachHang" class="btn-action btn-delete">Xóa Khách Hàng</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<style>
+    /* Định nghĩa lại các biến CSS cần thiết để các nút và container hoạt động đúng màu */
+    :root {
+        --primary: #cda45e;
+        --primary-soft: rgba(205, 164, 94, 0.12);
+        --bg-elevated: #15120f;
+        --text-main: #f4f4f4;
+        --text-muted: #a6a6a6;
+        --danger: #ff5c5c;
+        --border-subtle: rgba(255, 255, 255, 0.06);
+        --radius-md: 10px;
+        --radius-pill: 999px;
+    }
+
+    /* Container chính để áp dụng nền và font */
+    .crud-container {
+        max-width: 100%; /* SỬA: MỞ RỘNG TỐI ĐA CHIỀU RỘNG */
+        margin: 0; /* SỬA: Bỏ margin auto để container ôm sát lề ngang */
+        padding: 20px 30px;
+        background-color: var(--bg-elevated);
+        color: var(--text-main);
+        border-radius: var(--radius-md);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+        font-family: "Poppins", system-ui, sans-serif;
+        border: 1px solid var(--border-subtle);
+    }
+
+        .crud-container h1 {
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-soft);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+    /* TABLE STYLES */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+        margin-top: 20px;
+    }
+
+        .table thead {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .table th, .table td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .table th {
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* ACTION BUTTONS TRONG BẢNG */
+        .table td .btn-action {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: var(--radius-pill);
+            font-size: 11px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.16s ease-out;
+            border: 1px solid transparent;
+            white-space: nowrap;
+        }
+
+        .table td .btn-edit {
+            color: var(--primary);
+            background: var(--primary-soft);
+            border-color: rgba(205, 164, 94, 0.5);
+        }
+
+            .table td .btn-edit:hover {
+                filter: brightness(1.2);
+            }
+
+        .table td .btn-details {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+            .table td .btn-details:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+        .table td .btn-delete {
+            color: var(--danger);
+            background: rgba(255, 92, 92, 0.1);
+            border-color: rgba(255, 92, 92, 0.5);
+        }
+
+            .table td .btn-delete:hover {
+                filter: brightness(1.2);
+            }
+
+        /* QUY TẮC CĂN CHỈNH DÍNH SÁT */
+        .table td .btn-details,
+        .table td .btn-delete {
+            margin-left: -1px;
+        }
+
+    /* Nút Create New */
+    .btn-create-new {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: var(--radius-pill);
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--primary);
+        background: rgba(205, 164, 94, 0.1);
+        border: 1px solid rgba(205, 164, 94, 0.5);
+        transition: all 0.16s ease-out;
+        margin-bottom: 15px;
+    }
+
+        .btn-create-new:hover {
+            background: rgba(205, 164, 94, 0.2);
+            transform: translateY(-1px);
+        }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
