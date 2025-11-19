@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyNhaHang.Models;
 
@@ -11,9 +12,11 @@ using QuanLyNhaHang.Models;
 namespace QuanLyNhaHang.Migrations
 {
     [DbContext(typeof(QuanLyNhaHangContext))]
-    partial class QuanLyNhaHangContextModelSnapshot : ModelSnapshot
+    [Migration("20251118181734_AddPasswordResetToken")]
+    partial class AddPasswordResetToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,11 +32,9 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenBoPhan")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -41,7 +42,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("decimal(18, 0)");
 
                     b.Property<string>("TrangThai")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -57,17 +57,14 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChuThem")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("MaDatTiec")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("MaMonAn")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -90,7 +87,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("ChiTiet")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("GiaBan")
@@ -100,7 +96,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("time");
 
                     b.Property<string>("MaKhachHang")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -114,12 +109,10 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TenChuRe")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TenCoDau")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -127,7 +120,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("decimal(18, 0)");
 
                     b.Property<string>("TrangThai")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -145,23 +137,19 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("GiaDV")
                         .HasColumnType("decimal(18, 0)");
 
                     b.Property<string>("MoTaDV")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TenDichVu")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TrangThaiDV")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -177,26 +165,21 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaDichVu")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("MaMonAn")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("TrangThaiHinhAnh")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Url")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("MaHinhAnh");
@@ -215,46 +198,37 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("CccdKhachHang")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("DiaChiKhachHang")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("EmailKhachHang")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MatKhauKhachHang")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("SdtKhachHang")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("TaiKhoanKhachHang")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("TenKhachHang")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TrangThaiKhachHang")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -273,31 +247,25 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("decimal(18, 0)");
 
                     b.Property<string>("DonViTinh")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LoaiMonAn")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("MoTaMonAn")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("TenMonAn")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TrangThaiMonAn")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -313,17 +281,14 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("CccdNV")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("DiaChiNV")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaBoPhan")
@@ -332,32 +297,26 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("MailNV")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("MatKhau")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("SdtNV")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("TaiKhoan")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("TenNhanVien")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TrangThaiNV")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -392,7 +351,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaDatTiec")
@@ -404,7 +362,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PhuongThucThanhToan")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -412,7 +369,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("decimal(18, 0)");
 
                     b.Property<string>("TrangThai")
-                        .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
@@ -431,16 +387,13 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaDatTiec")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("MaDichVu")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -466,16 +419,13 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChu")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaDatTiec")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("MaNhanVien")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
@@ -492,15 +442,11 @@ namespace QuanLyNhaHang.Migrations
                 {
                     b.HasOne("QuanLyNhaHang.Models.DatTiec", "DatTiec")
                         .WithMany("ChiTietThucDons")
-                        .HasForeignKey("MaDatTiec")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaDatTiec");
 
                     b.HasOne("QuanLyNhaHang.Models.MonAn", "MonAn")
                         .WithMany("ChiTietThucDons")
-                        .HasForeignKey("MaMonAn")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaMonAn");
 
                     b.Navigation("DatTiec");
 
@@ -511,9 +457,7 @@ namespace QuanLyNhaHang.Migrations
                 {
                     b.HasOne("QuanLyNhaHang.Models.KhachHang", "KhachHang")
                         .WithMany("DatTiecs")
-                        .HasForeignKey("MaKhachHang")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaKhachHang");
 
                     b.Navigation("KhachHang");
                 });
@@ -522,15 +466,11 @@ namespace QuanLyNhaHang.Migrations
                 {
                     b.HasOne("QuanLyNhaHang.Models.DichVu", "DichVu")
                         .WithMany()
-                        .HasForeignKey("MaDichVu")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaDichVu");
 
                     b.HasOne("QuanLyNhaHang.Models.MonAn", "MonAn")
                         .WithMany()
-                        .HasForeignKey("MaMonAn")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaMonAn");
 
                     b.Navigation("DichVu");
 
@@ -563,15 +503,11 @@ namespace QuanLyNhaHang.Migrations
                 {
                     b.HasOne("QuanLyNhaHang.Models.DatTiec", "DatTiec")
                         .WithMany("TT_SuDungDichVus")
-                        .HasForeignKey("MaDatTiec")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaDatTiec");
 
                     b.HasOne("QuanLyNhaHang.Models.DichVu", "DichVu")
                         .WithMany("TT_SuDungDichVus")
-                        .HasForeignKey("MaDichVu")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaDichVu");
 
                     b.Navigation("DatTiec");
 
@@ -582,15 +518,11 @@ namespace QuanLyNhaHang.Migrations
                 {
                     b.HasOne("QuanLyNhaHang.Models.DatTiec", "DatTiec")
                         .WithMany("TT_SuDungNhanViens")
-                        .HasForeignKey("MaDatTiec")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaDatTiec");
 
                     b.HasOne("QuanLyNhaHang.Models.NhanVien", "NhanVien")
                         .WithMany()
-                        .HasForeignKey("MaNhanVien")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MaNhanVien");
 
                     b.Navigation("DatTiec");
 

@@ -15,6 +15,7 @@ namespace QuanLyNhaHang.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.TenKH = HttpContext.Session.GetString("TenKhachHang");
             return View();
         }
 
