@@ -33,7 +33,6 @@
 <div class="crud-container">
     <h1>Quản Lý Khách Hàng</h1>
 
-    
 
     <div class="tab-header">
         <button class="tab-button active" onclick="openTab(event, 'CustomerInfo')">Thông tin khách hàng</button>
@@ -64,7 +63,7 @@
                             @Html.DisplayFor(modelItem => item.TenKhachHang)
                         </td>
                         <td>
-                            ***
+                            @Html.DisplayFor(modelItem => item.CccdKhachHang)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.SdtKhachHang)
@@ -73,7 +72,14 @@
                             @Html.DisplayFor(modelItem => item.DiaChiKhachHang)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.EmailKhachHang)
+                            @if (item.TaiKhoan != null)
+                            {
+                                @Html.DisplayFor(modelItem => item.TaiKhoan.Email)
+                            }
+                            else
+                            {
+                                <span>(Không có TK)</span>
+                            }
                         </td>
                         <td>
                             @{
@@ -103,6 +109,7 @@
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.MaKhachHang" class="btn-action btn-edit">Sửa</a>
                             <a asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
+                            
                         </td>
                     </tr>
                 }
@@ -117,6 +124,7 @@
                     <th>Tài Khoản</th>
                     <th>Mật Khẩu</th>
                     <th>Email</th>
+                    <th>Vai Trò</th>  
                     <th>Trạng Thái TK</th>
                     <th>Ghi Chú</th>
                     <th></th>
@@ -130,47 +138,81 @@
                             @Html.DisplayFor(modelItem => item.MaKhachHang)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.TaiKhoanKhachHang)
-                        </td>
-                        <td>
-                            ***
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.EmailKhachHang)
-                        </td>
-                        <td>
-                            @{
-                                string statusValue = item.TrangThaiKhachHang;
-                                string vietnameseStatus;
-                                string cssStatusClass;
-
-                                if (statusValue == "Active" || statusValue == "HOẠT ĐỘNG")
-                                {
-                                    vietnameseStatus = "Hoạt động";
-                                    cssStatusClass = "active";
-                                }
-                                else if (statusValue == "Inactive" || statusValue == "NGỪNG HOẠT ĐỘNG")
-                                {
-                                    vietnameseStatus = "Khóa";
-                                    cssStatusClass = "inactive";
-                                }
-                                else
-                                {
-                                    vietnameseStatus = statusValue;
-                                    cssStatusClass = "unknown";
-                                }
-
-                                <span class="status-badge status-@cssStatusClass">@vietnameseStatus</span>
+                            @if (item.TaiKhoan != null)
+                            {
+                                @Html.DisplayFor(modelItem => item.TaiKhoan.UserName)
+                            }
+                            else
+                            {
+                                <span>(Không có TK)</span>
                             }
                         </td>
                         <td>
-                            Đặt tên 2 lần/năm
+                            @if (item.TaiKhoan != null && !string.IsNullOrEmpty(item.TaiKhoan.Password))
+                            {
+                                <span>********</span>
+                            }
+                            else
+                            {
+                                <span>(Không có)</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.TaiKhoan != null)
+                            {
+                                @Html.DisplayFor(modelItem => item.TaiKhoan.Email)
+                            }
+                            else
+                            {
+                                <span>(Không có TK)</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.TaiKhoan != null)
+                            {
+                                @Html.DisplayFor(modelItem => item.TaiKhoan.VaiTro)
+                            }
+                            else
+                            {
+                                <span>(Chưa gán)</span>
+                            }
+                        </td>
+                        <td>
+                            @{
+                                // Trạng thái này phải lấy từ trường TrangThai của TaiKhoan,
+                                // nhưng hiện tại bạn đang dùng TrangThaiKhachHang. Tôi sẽ dùng TrangThai của TaiKhoan nếu có.
+                                string tkStatusValue = item.TaiKhoan?.TrangThai ?? item.TrangThaiKhachHang;
+                                string tkVietnameseStatus;
+                                string tkCssStatusClass;
+
+                                if (tkStatusValue == "Active" || tkStatusValue == "HOẠT ĐỘNG")
+                                {
+                                    tkVietnameseStatus = "Hoạt động";
+                                    tkCssStatusClass = "active";
+                                }
+                                else if (tkStatusValue == "Inactive" || tkStatusValue == "NGỪNG HOẠT ĐỘNG")
+                                {
+                                    tkVietnameseStatus = "Khóa";
+                                    tkCssStatusClass = "inactive";
+                                }
+                                else
+                                {
+                                    tkVietnameseStatus = tkStatusValue;
+                                    tkCssStatusClass = "unknown";
+                                }
+
+                                <span class="status-badge status-@tkCssStatusClass">@tkVietnameseStatus</span>
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GhiChu)
                         </td>
                         <td>
                             <a asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
                             <a asp-action="Lock" asp-route-id="@item.MaKhachHang"
                                class="btn-action btn-lock lock-btn"
-                               data-customer-name="@item.TenKhachHang">
+                               data-customer-name="@item.TenKhachHang"
+                               onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng &quot;@item.TenKhachHang&quot; không?');">
                                 Khóa
                             </a>
                         </td>
@@ -182,7 +224,7 @@
 </div>
 
 <style>
-    /* Định nghĩa lại các biến CSS cần thiết để các nút và container hoạt động đúng màu */
+    /* ... (CSS CÒN LẠI GIỮ NGUYÊN) ... */
     :root {
         --primary: #cda45e;
         --primary-soft: rgba(205, 164, 94, 0.12);
@@ -365,33 +407,33 @@
         margin-left: 0;
     }
 
-        .table td .btn-details {
-            color: var(--text-main);
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.15);
+    .table td .btn-details {
+        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.15);
+    }
+
+        .table td .btn-details:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
 
-            .table td .btn-details:hover {
-                background: rgba(255, 255, 255, 0.1);
-            }
+    /* STYLE CHO NÚT KHÓA */
+    .table td .btn-lock {
+        color: var(--lock-base);
+        background: var(--lock-soft);
+        border-color: rgba(255, 152, 0, 0.5);
+    }
 
-        /* STYLE CHO NÚT KHÓA */
-        .table td .btn-lock {
-            color: var(--lock-base);
-            background: var(--lock-soft);
-            border-color: rgba(255, 152, 0, 0.5);
+        .table td .btn-lock:hover {
+            filter: brightness(1.2);
         }
 
-            .table td .btn-lock:hover {
-                filter: brightness(1.2);
-            }
 
-
-        /* QUY TẮC CĂN CHỈNH DÍNH SÁT */
-        .table td .btn-details,
-        .table td .btn-lock {
-            margin-left: -1px;
-        }
+    /* QUY TẮC CĂN CHỈNH DÍNH SÁT */
+    .table td .btn-details,
+    .table td .btn-lock {
+        margin-left: -1px;
+    }
 
     /* Đảm bảo nút đầu tiên trong chuỗi không bị dính sát */
     #CustomerInfo .table td .btn-edit,
@@ -507,19 +549,23 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // ----------------------------------------
-            // LOGIC KHÓA TÀI KHOẢN (GIỮ NGUYÊN)
+            // LOGIC KHÓA TÀI KHOẢN (ĐÃ SỬA: SỬ DỤNG CONFIRM INLINE)
             // ----------------------------------------
+            // Thêm logic cho nút Khóa (Lock) nếu nó nằm trong tab AccountLogin
             document.querySelectorAll('.lock-btn').forEach(button => {
                 button.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const url = this.getAttribute('href');
+                    const url = this.getAttribute('asp-action') + '/' + this.getAttribute('asp-route-id');
                     const customerName = this.getAttribute('data-customer-name');
 
-                    const confirmation = confirm(`Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng "${customerName}" không?\n\nThao tác này sẽ chuyển trạng thái tài khoản sang "Khóa".`);
+                    // Giả định bạn sử dụng hàm confirm() trong JS, nhưng đã chuyển sang onclick inline
+                    // Nếu bạn muốn dùng logic JS, bạn cần bỏ onclick inline đi.
 
-                    if (confirmation) {
-                        window.location.href = url;
-                    }
+                    // Nếu muốn dùng JS:
+                    // e.preventDefault();
+                    // const confirmation = confirm('Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng "' + customerName + '" không?');
+                    // if (confirmation) {
+                    //    window.location.href = this.href;
+                    // }
                 });
             });
 

@@ -15,17 +15,16 @@
             <form asp-action="Edit" method="post">
                 @Html.AntiForgeryToken()
 
-                @* Hiển thị tất cả lỗi chung (bao gồm lỗi trùng Mã Khách Hàng) *@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                @* KHÓA CHÍNH: Mã Khách Hàng. Cần giữ giá trị này khi POST form. *@
                 <input type="hidden" asp-for="MaKhachHang" />
 
-                @* Hiển thị Mã Khách Hàng nhưng không cho chỉnh sửa *@
+                <input type="hidden" asp-for="MaTaiKhoan" />
+
+
                 <div class="form-group">
                     <label asp-for="MaKhachHang" class="control-label">Mã Khách Hàng</label>
                     <input asp-for="MaKhachHang" class="form-control" readonly />
-                    @* Hiển thị lỗi trùng mã nếu Controller phát hiện (Cần thêm <span asp-validation-for="MaKhachHang"...> để hiển thị lỗi cụ thể nếu Controller thay đổi Mã Khách Hàng) *@
                     <span asp-validation-for="MaKhachHang" class="text-danger"></span>
                 </div>
 
@@ -54,26 +53,52 @@
                     <span asp-validation-for="DiaChiKhachHang" class="text-danger"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="EmailKhachHang" class="control-label">Email</label>
-                    <input asp-for="EmailKhachHang" class="form-control" />
-                    <span asp-validation-for="EmailKhachHang" class="text-danger"></span>
-                </div>
+                <hr style="border-color: var(--primary-soft); margin: 20px 0;" />
+                <h5 style="color:var(--primary); font-size: 16px; margin-bottom: 15px;">Thông tin Tài khoản</h5>
+
+
+                @if (Model.TaiKhoan != null)
+                {
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.VaiTro" class="control-label">Vai Trò</label>
+                        <input asp-for="TaiKhoan.VaiTro" class="form-control" readonly />
+                        <span asp-validation-for="TaiKhoan.VaiTro" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.Email" class="control-label">Email</label>
+                        <input asp-for="TaiKhoan.Email" class="form-control" />
+                        <span asp-validation-for="TaiKhoan.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.UserName" class="control-label">Tài Khoản Đăng Nhập</label>
+                        <input asp-for="TaiKhoan.UserName" class="form-control" />
+                        <span asp-validation-for="TaiKhoan.UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.Password" class="control-label">Mật Khẩu (Để trống nếu không đổi)</label>
+                        <input asp-for="TaiKhoan.Password" type="password" class="form-control" value="" />
+                        <span asp-validation-for="TaiKhoan.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.TrangThai" class="control-label">Trạng Thái Tài Khoản</label>
+                        <select asp-for="TaiKhoan.TrangThai" class="form-control">
+                            <option value="Active">Hoạt Động</option>
+                            <option value="Inactive">Ngừng Hoạt Động</option>
+                        </select>
+                        <span asp-validation-for="TaiKhoan.TrangThai" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-info" style="font-size: 13px;">Khách hàng này chưa được gán tài khoản đăng nhập.</p>
+                }
 
                 <div class="form-group">
-                    <label asp-for="TaiKhoanKhachHang" class="control-label">Tài Khoản Đăng Nhập</label>
-                    <input asp-for="TaiKhoanKhachHang" class="form-control" />
-                    <span asp-validation-for="TaiKhoanKhachHang" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="MatKhauKhachHang" class="control-label">Mật Khẩu</label>
-                    <input asp-for="MatKhauKhachHang" type="password" class="form-control" data-val="false" />
-                    <span asp-validation-for="MatKhauKhachHang" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="TrangThaiKhachHang" class="control-label">Trạng Thái</label>
+                    <label asp-for="TrangThaiKhachHang" class="control-label">Trạng Thái Khách Hàng</label>
                     <select asp-for="TrangThaiKhachHang" class="form-control">
                         <option value="Active">Hoạt Động</option>
                         <option value="Inactive">Ngừng Hoạt Động</option>
