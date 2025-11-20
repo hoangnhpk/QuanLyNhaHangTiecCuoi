@@ -1,4 +1,5 @@
-﻿@{
+﻿@model QuanLyNhaHang.ViewModels.DatLaiMatKhauViewModel
+@{
     ViewData["Title"] = "Đặt Lại Mật Khẩu";
     Layout = null;
 }
@@ -34,17 +35,16 @@
 
     .container {
         width: 100%;
-        max-width: 600px;
-        padding: 30px;
+        max-width: 420px;
+        padding: 20px;
     }
 
     .form-box {
         background: var(--form-bg);
-        padding: 50px 40px;
+        padding: 40px 30px;
         border-radius: 5px;
         border: 1px solid var(--primary);
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-        font-size: 16px;
     }
 
     h2 {
@@ -58,7 +58,7 @@
     input {
         width: 100%;
         padding: 12px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         background: transparent;
         border: 1px solid #625b4b;
         color: #fff;
@@ -72,6 +72,13 @@
             box-shadow: 0 0 5px rgba(205, 164, 94, 0.3);
         }
 
+    .text-danger {
+        color: #ff6b6b;
+        font-size: 14px;
+        display: block;
+        margin-bottom: 10px;
+    }
+
     .btn {
         width: 100%;
         padding: 12px;
@@ -83,6 +90,7 @@
         cursor: pointer;
         text-transform: uppercase;
         transition: 0.3s;
+        margin-top: 10px;
     }
 
         .btn:hover {
@@ -116,8 +124,11 @@
             <form asp-action="DatLaiMatKhau" method="post">
                 <input type="hidden" name="token" value="@ViewBag.Token" />
 
-                <input type="password" name="MatKhauMoi" placeholder="Mật khẩu mới" required />
-                <input type="password" name="XacNhanMatKhauMoi" placeholder="Xác nhận mật khẩu mới" required />
+                <input asp-for="MatKhauMoi" type="password" placeholder="Mật khẩu mới" />
+                <span asp-validation-for="MatKhauMoi" class="text-danger"></span>
+
+                <input asp-for="XacNhanMatKhauMoi" type="password" placeholder="Xác nhận mật khẩu mới" />
+                <span asp-validation-for="XacNhanMatKhauMoi" class="text-danger"></span>
 
                 <button type="submit" class="btn">Cập Nhật Mật Khẩu</button>
             </form>
@@ -133,3 +144,7 @@
         </div>
     </div>
 </body>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
