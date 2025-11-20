@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyNhaHang.Models;
 
@@ -11,9 +12,11 @@ using QuanLyNhaHang.Models;
 namespace QuanLyNhaHang.Migrations
 {
     [DbContext(typeof(QuanLyNhaHangContext))]
-    partial class QuanLyNhaHangContextModelSnapshot : ModelSnapshot
+    [Migration("20251118150528_UpdateChoPhepNull")]
+    partial class UpdateChoPhepNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -322,23 +325,6 @@ namespace QuanLyNhaHang.Migrations
                     b.HasIndex("MaBoPhan");
 
                     b.ToTable("NHAN_VIEN");
-                });
-
-            modelBuilder.Entity("QuanLyNhaHang.Models.PasswordResetToken", b =>
-                {
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ExpiryTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Token");
-
-                    b.ToTable("PasswordResetTokens");
                 });
 
             modelBuilder.Entity("QuanLyNhaHang.Models.PhieuThanhToan", b =>

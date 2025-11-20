@@ -12,30 +12,30 @@ namespace QuanLyNhaHang.Models
         public string MaKhachHang { get; set; } // Ví dụ: KH001
 
         [StringLength(100)]
-        public string TenKhachHang { get; set; }
+        public string? TenKhachHang { get; set; }
 
         [StringLength(15)]
-        public string CccdKhachHang { get; set; }
+        public string? CccdKhachHang { get; set; }
 
         [StringLength(15)]
-        public string SdtKhachHang { get; set; }
+        public string? SdtKhachHang { get; set; }
 
         [StringLength(255)]
-        public string DiaChiKhachHang { get; set; }
+        public string? DiaChiKhachHang { get; set; }
 
         [StringLength(100)]
-        public string EmailKhachHang { get; set; }
+        public string? EmailKhachHang { get; set; }
 
         [StringLength(30)]
-        public string TaiKhoanKhachHang { get; set; }
+        public string? TaiKhoanKhachHang { get; set; }
 
         [StringLength(30)]
-        public string MatKhauKhachHang { get; set; }
+        public string? MatKhauKhachHang { get; set; }
 
         [StringLength(30)] // Đã sửa thành NVARCHAR(30)
-        public string TrangThaiKhachHang { get; set; }
+        public string? TrangThaiKhachHang { get; set; }
 
-        public string GhiChu { get; set; }
+        public string? GhiChu { get; set; }
 
         // Danh sách tiệc khách đã đặt
         public virtual ICollection<DatTiec> DatTiecs { get; set; }

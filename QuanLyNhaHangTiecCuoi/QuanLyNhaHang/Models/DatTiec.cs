@@ -11,13 +11,13 @@ namespace QuanLyNhaHang.Models
         public string MaDatTiec { get; set; } // Ví dụ: DT001
 
         [StringLength(20)]
-        public string MaKhachHang { get; set; }
+        public string? MaKhachHang { get; set; }
 
         [StringLength(100)]
-        public string TenCoDau { get; set; }
+        public string? TenCoDau { get; set; }
 
         [StringLength(100)]
-        public string TenChuRe { get; set; }
+        public string? TenChuRe { get; set; }
 
         public DateTime? NgayDatTiec { get; set; }
 
@@ -33,9 +33,9 @@ namespace QuanLyNhaHang.Models
         public decimal? TienCoc { get; set; }
 
         [StringLength(30)]
-        public string TrangThai { get; set; }
+        public string? TrangThai { get; set; }
 
-        public string ChiTiet { get; set; }
+        public string? ChiTiet { get; set; }
 
         [ForeignKey("MaKhachHang")]
         public virtual KhachHang KhachHang { get; set; }

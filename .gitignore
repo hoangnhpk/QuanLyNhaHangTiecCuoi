@@ -12,3 +12,9 @@ packages/
 *.vspscc
 *.vssscc
 _ReSharper*/
+
+
+# Bỏ qua cấu hình và code riêng tư
+appsettings.json
+**/QuanLyNhaHangContext.cs
+**/Program.cs
