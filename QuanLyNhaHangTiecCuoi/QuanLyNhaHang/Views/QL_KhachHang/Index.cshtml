@@ -6,77 +6,181 @@
     ViewData["Title"] = "Index";
 }
 
+
+<div class="message-container">
+    @{
+        // Hiển thị thông báo thành công (Success)
+        if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert success-alert">
+                <strong>Thành công!</strong> @TempData["SuccessMessage"]
+                <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+        }
+
+        // Hiển thị thông báo lỗi (Danger/Error)
+        if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert danger-alert">
+                <strong>Lỗi!</strong> @TempData["ErrorMessage"]
+                <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+            </div>
+        }
+    }
+</div>
+
+
 <div class="crud-container">
     <h1>Quản Lý Khách Hàng</h1>
 
     <p>
-        <a asp-action="Create" class="btn-create-new">Thêm Khách Hàng Mới</a>
+        <a asp-action="Create" class="btn-create-new">Thêm Khách Hàng Mới</a>
     </p>
-    <table class="table">
-        <thead>
-            <tr>
-        <thead>
-            <tr>
-                <th>
-                    Tên Khách Hàng
-                </th>
-                <th>
-                    Số Điện Thoại
-                </th>
-                <th>
-                    Email
-                </th>
-                <th>
-                    Tài Khoản
-                </th>
-                <th>
-                    Trạng Thái
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+
+    <div class="tab-header">
+        <button class="tab-button active" onclick="openTab(event, 'CustomerInfo')">Thông tin khách hàng</button>
+        <button class="tab-button" onclick="openTab(event, 'AccountLogin')">Tài khoản đăng nhập</button>
+    </div>
+    <div id="CustomerInfo" class="tab-content active">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TenKhachHang)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SdtKhachHang)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EmailKhachHang)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TaiKhoanKhachHang)
-                    </td>
-                    <td>
-                        @{
-                            string status = item.TrangThaiKhachHang;
-                            string vietnameseStatus = status switch
-                            {
-                                "Active" => "Hoạt Động",
-                                "Inactive" => "Ngừng Hoạt Động",
-                                _ => status
-                            };
-                            @vietnameseStatus
-                        }
-                    </td>
-
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.MaKhachHang" class="btn-action btn-edit">Sửa Thông Tin</a>
-                        <a asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
-                        <a asp-action="Delete" asp-route-id="@item.MaKhachHang" class="btn-action btn-delete">Xóa Khách Hàng</a>
-                    </td>
+                    <th>Mã KH</th>
+                    <th>Tên Khách Hàng</th>
+                    <th>CCCD</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Địa Chỉ</th>
+                    <th>Email</th>
+                    <th>Trạng Thái</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaKhachHang)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TenKhachHang)
+                        </td>
+                        <td>
+                            ***
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SdtKhachHang)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DiaChiKhachHang)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EmailKhachHang)
+                        </td>
+                        <td>
+                            @{
+                                string statusValue = item.TrangThaiKhachHang;
+                                string vietnameseStatus;
+                                string cssStatusClass;
 
-    </table>
+                                if (statusValue == "Active" || statusValue == "HOẠT ĐỘNG")
+                                {
+                                    vietnameseStatus = "Hoạt động";
+                                    cssStatusClass = "active";
+                                }
+                                else if (statusValue == "Inactive" || statusValue == "NGỪNG HOẠT ĐỘNG")
+                                {
+                                    vietnameseStatus = "Khóa";
+                                    cssStatusClass = "inactive";
+                                }
+                                else
+                                {
+                                    vietnameseStatus = statusValue;
+                                    cssStatusClass = "unknown";
+                                }
+
+                                <span class="status-badge status-@cssStatusClass">@vietnameseStatus</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.MaKhachHang" class="btn-action btn-edit">Sửa</a>
+                            <a asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="AccountLogin" class="tab-content">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Mã KH</th>
+                    <th>Tài Khoản</th>
+                    <th>Mật Khẩu</th>
+                    <th>Email</th>
+                    <th>Trạng Thái TK</th>
+                    <th>Ghi Chú</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MaKhachHang)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TaiKhoanKhachHang)
+                        </td>
+                        <td>
+                            ***
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EmailKhachHang)
+                        </td>
+                        <td>
+                            @{
+                                string statusValue = item.TrangThaiKhachHang;
+                                string vietnameseStatus;
+                                string cssStatusClass;
+
+                                if (statusValue == "Active" || statusValue == "HOẠT ĐỘNG")
+                                {
+                                    vietnameseStatus = "Hoạt động";
+                                    cssStatusClass = "active";
+                                }
+                                else if (statusValue == "Inactive" || statusValue == "NGỪNG HOẠT ĐỘNG")
+                                {
+                                    vietnameseStatus = "Khóa";
+                                    cssStatusClass = "inactive";
+                                }
+                                else
+                                {
+                                    vietnameseStatus = statusValue;
+                                    cssStatusClass = "unknown";
+                                }
+
+                                <span class="status-badge status-@cssStatusClass">@vietnameseStatus</span>
+                            }
+                        </td>
+                        <td>
+                            Đặt tên 2 lần/năm
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
+                            <a asp-action="Lock" asp-route-id="@item.MaKhachHang"
+                               class="btn-action btn-lock lock-btn"
+                               data-customer-name="@item.TenKhachHang">
+                                Khóa
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <style>
@@ -89,14 +193,76 @@
         --text-muted: #a6a6a6;
         --danger: #ff5c5c;
         --border-subtle: rgba(255, 255, 255, 0.06);
+        --success-base: #4caf50;
+        --success-soft: rgba(76, 175, 80, 0.2);
+        --lock-base: #ff9800;
+        --lock-soft: rgba(255, 152, 0, 0.15);
         --radius-md: 10px;
         --radius-pill: 999px;
+        /* Màu mới cho badge trạng thái */
+        --active-color: var(--success-base);
+        --inactive-color: var(--danger);
     }
 
-    /* Container chính để áp dụng nền và font */
+    /* -------------------------------------- */
+    /* 🔔 STYLE CHO THÔNG BÁO (ALERT) 🔔 */
+    /* -------------------------------------- */
+
+    .message-container {
+        padding: 0 30px;
+        margin-bottom: 20px;
+        max-width: 100%;
+    }
+
+    .alert {
+        position: relative;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .success-alert {
+        color: var(--success-base);
+        background-color: var(--success-soft);
+        border-color: rgba(76, 175, 80, 0.5);
+    }
+
+    .danger-alert {
+        color: var(--danger);
+        background-color: rgba(255, 92, 92, 0.15);
+        border-color: rgba(255, 92, 92, 0.5);
+    }
+
+    .alert strong {
+        font-weight: 600;
+        margin-right: 5px;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 20px;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0 5px;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+        .close-btn:hover {
+            opacity: 1;
+        }
+
+    /* Container chính */
     .crud-container {
-        max-width: 100%; /* SỬA: MỞ RỘNG TỐI ĐA CHIỀU RỘNG */
-        margin: 0; /* SỬA: Bỏ margin auto để container ôm sát lề ngang */
+        max-width: 100%;
+        margin: 0;
         padding: 20px 30px;
         background-color: var(--bg-elevated);
         color: var(--text-main);
@@ -179,21 +345,30 @@
                 background: rgba(255, 255, 255, 0.1);
             }
 
-        .table td .btn-delete {
-            color: var(--danger);
-            background: rgba(255, 92, 92, 0.1);
-            border-color: rgba(255, 92, 92, 0.5);
+        /* STYLE CHO NÚT KHÓA */
+        .table td .btn-lock {
+            color: var(--lock-base);
+            background: var(--lock-soft);
+            border-color: rgba(255, 152, 0, 0.5);
         }
 
-            .table td .btn-delete:hover {
+            .table td .btn-lock:hover {
                 filter: brightness(1.2);
             }
 
+
         /* QUY TẮC CĂN CHỈNH DÍNH SÁT */
         .table td .btn-details,
-        .table td .btn-delete {
+        .table td .btn-lock {
             margin-left: -1px;
         }
+
+    /* Đảm bảo nút đầu tiên trong chuỗi không bị dính sát */
+    #CustomerInfo .table td .btn-edit,
+    #AccountLogin .table td .btn-details {
+        margin-left: 0;
+    }
+
 
     /* Nút Create New */
     .btn-create-new {
@@ -214,10 +389,133 @@
             background: rgba(205, 164, 94, 0.2);
             transform: translateY(-1px);
         }
+
+    /* -------------------------------------- */
+    /* 🎨 STYLE CHO TAB VÀ TRẠNG THÁI 🎨 */
+    /* -------------------------------------- */
+
+    /* Container cho các nút tab */
+    .tab-header {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding: 0;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .tab-button {
+        background: none;
+        border: none;
+        padding: 10px 15px;
+        color: var(--text-muted);
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        border-bottom: 2px solid transparent;
+        font-weight: 500;
+    }
+
+        .tab-button:hover:not(.active) {
+            color: var(--text-main);
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            font-weight: 600;
+        }
+
+    /* Nội dung của từng tab */
+    .tab-content {
+        display: none;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+
+    /* STYLE CHO BADGE TRẠNG THÁI */
+    /* STYLE CHO BADGE TRẠNG THÁI */
+    .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: var(--radius-pill);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        border: 1px solid transparent;
+        /* THÊM 2 THUỘC TÍNH NÀY ĐỂ ĐỘ DÀI BẰNG NHAU */
+        width: 100px;
+        text-align: center;
+    }
+
+    .status-active {
+        color: var(--active-color);
+        background-color: var(--success-soft);
+        border-color: rgba(76, 175, 80, 0.5);
+    }
+
+    .status-inactive {
+        color: var(--inactive-color);
+        background-color: rgba(255, 92, 92, 0.15);
+        border-color: rgba(255, 92, 92, 0.5);
+    }
+
+    /* Thêm style cho trường hợp không xác định (nếu cần) */
+    .status-unknown {
+        color: var(--text-muted);
+        background-color: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
 </style>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ----------------------------------------
+            // LOGIC KHÓA TÀI KHOẢN (GIỮ NGUYÊN)
+            // ----------------------------------------
+            document.querySelectorAll('.lock-btn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const url = this.getAttribute('href');
+                    const customerName = this.getAttribute('data-customer-name');
+
+                    const confirmation = confirm(`Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng "${customerName}" không?\n\nThao tác này sẽ chuyển trạng thái tài khoản sang "Khóa".`);
+
+                    if (confirmation) {
+                        window.location.href = url;
+                    }
+                });
+            });
+
+
+            // ----------------------------------------
+            // LOGIC CHUYỂN TAB (GIỮ NGUYÊN)
+            // ----------------------------------------
+            window.openTab = function (evt, tabName) {
+                let i, tabcontent, tabbuttons;
+
+                // Ẩn tất cả nội dung tab
+                tabcontent = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].classList.remove("active");
+                }
+
+                // Loại bỏ class 'active' khỏi tất cả nút tab
+                tabbuttons = document.getElementsByClassName("tab-button");
+                for (i = 0; i < tabbuttons.length; i++) {
+                    tabbuttons[i].classList.remove("active");
+                }
+
+                // Hiển thị tab hiện tại và kích hoạt nút bấm
+                document.getElementById(tabName).classList.add("active");
+                evt.currentTarget.classList.add("active");
+            }
+        });
+    </script>
 }

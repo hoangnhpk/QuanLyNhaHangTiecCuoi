@@ -15,19 +15,20 @@ namespace QuanLyNhaHang.Models
         }
 
         [Key]
-        [Required(ErrorMessage = "Mã khách hàng là bắt buộc.")]
         [StringLength(20)]
         [Display(Name = "Mã khách hàng")]
-        public string MaKhachHang { get; set; } 
+        public string MaKhachHang { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập tên khách hàng.")]
         [StringLength(100)]
         [Display(Name = "Tên khách hàng")]
+        [RegularExpression(@"^[^\d]*$", ErrorMessage = "Tên khách hàng không được chứa ký tự số.")]
         public string? TenKhachHang { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập số CCCD/CMND.")]
         [StringLength(15)]
         [Display(Name = "CCCD/CMND")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "CCCD/CMND chỉ được chứa ký tự số.")]
         public string? CccdKhachHang { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại.")]

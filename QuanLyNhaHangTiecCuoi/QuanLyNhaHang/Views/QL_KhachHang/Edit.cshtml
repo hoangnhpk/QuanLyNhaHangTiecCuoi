@@ -14,42 +14,61 @@
         <div class="col-md-4">
             <form asp-action="Edit" method="post">
                 @Html.AntiForgeryToken()
+
+                @* Hiển thị tất cả lỗi chung (bao gồm lỗi trùng Mã Khách Hàng) *@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                @* KHÓA CHÍNH: Mã Khách Hàng. Cần giữ giá trị này khi POST form. *@
                 <input type="hidden" asp-for="MaKhachHang" />
 
+                @* Hiển thị Mã Khách Hàng nhưng không cho chỉnh sửa *@
                 <div class="form-group">
-                    <label asp-for="TenKhachHang" class="control-label">Tên Khách Hàng</label> <input asp-for="TenKhachHang" class="form-control" />
+                    <label asp-for="MaKhachHang" class="control-label">Mã Khách Hàng</label>
+                    <input asp-for="MaKhachHang" class="form-control" readonly />
+                    @* Hiển thị lỗi trùng mã nếu Controller phát hiện (Cần thêm <span asp-validation-for="MaKhachHang"...> để hiển thị lỗi cụ thể nếu Controller thay đổi Mã Khách Hàng) *@
+                    <span asp-validation-for="MaKhachHang" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="TenKhachHang" class="control-label">Tên Khách Hàng</label>
+                    <input asp-for="TenKhachHang" class="form-control" />
                     <span asp-validation-for="TenKhachHang" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="CccdKhachHang" class="control-label">Số CCCD/CMND</label> <input asp-for="CccdKhachHang" class="form-control" />
+                    <label asp-for="CccdKhachHang" class="control-label">Số CCCD/CMND</label>
+                    <input asp-for="CccdKhachHang" class="form-control" />
                     <span asp-validation-for="CccdKhachHang" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="SdtKhachHang" class="control-label">Số Điện Thoại</label> <input asp-for="SdtKhachHang" class="form-control" />
+                    <label asp-for="SdtKhachHang" class="control-label">Số Điện Thoại</label>
+                    <input asp-for="SdtKhachHang" class="form-control" />
                     <span asp-validation-for="SdtKhachHang" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="DiaChiKhachHang" class="control-label">Địa Chỉ</label> <input asp-for="DiaChiKhachHang" class="form-control" />
+                    <label asp-for="DiaChiKhachHang" class="control-label">Địa Chỉ</label>
+                    <input asp-for="DiaChiKhachHang" class="form-control" />
                     <span asp-validation-for="DiaChiKhachHang" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="EmailKhachHang" class="control-label">Email</label> <input asp-for="EmailKhachHang" class="form-control" />
+                    <label asp-for="EmailKhachHang" class="control-label">Email</label>
+                    <input asp-for="EmailKhachHang" class="form-control" />
                     <span asp-validation-for="EmailKhachHang" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="TaiKhoanKhachHang" class="control-label">Tài Khoản Đăng Nhập</label> <input asp-for="TaiKhoanKhachHang" class="form-control" />
+                    <label asp-for="TaiKhoanKhachHang" class="control-label">Tài Khoản Đăng Nhập</label>
+                    <input asp-for="TaiKhoanKhachHang" class="form-control" />
                     <span asp-validation-for="TaiKhoanKhachHang" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="MatKhauKhachHang" class="control-label">Mật Khẩu</label> <input asp-for="MatKhauKhachHang" type="password" class="form-control" />
+                    <label asp-for="MatKhauKhachHang" class="control-label">Mật Khẩu</label>
+                    <input asp-for="MatKhauKhachHang" type="password" class="form-control" />
                     <span asp-validation-for="MatKhauKhachHang" class="text-danger"></span>
                 </div>
 
@@ -63,7 +82,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="GhiChu" class="control-label">Ghi Chú</label> <input asp-for="GhiChu" class="form-control" />
+                    <label asp-for="GhiChu" class="control-label">Ghi Chú</label>
+                    <input asp-for="GhiChu" class="form-control" />
                     <span asp-validation-for="GhiChu" class="text-danger"></span>
                 </div>
 
@@ -171,6 +191,14 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(205, 164, 94, 0.3);
         }
+
+        /* CSS cho trường input chỉ đọc (readonly) */
+        .form-control[readonly] {
+            background-color: rgba(12, 11, 9, 0.5); /* Màu nền tối hơn */
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
 
     /* Tăng chiều rộng form để chiếm hết container */
     .crud-container .row {
