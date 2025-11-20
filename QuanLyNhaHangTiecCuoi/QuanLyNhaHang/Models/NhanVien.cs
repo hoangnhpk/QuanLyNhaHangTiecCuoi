@@ -33,6 +33,8 @@ namespace QuanLyNhaHang.Models
 
         [StringLength(30)]
         public string? MatKhau { get; set; }
+        [StringLength(30)]
+        public string? ChucVuNV { get; set; }
 
         [StringLength(30)]
         public string? TrangThaiNV { get; set; }
