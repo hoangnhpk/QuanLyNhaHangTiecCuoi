@@ -29,7 +29,7 @@ namespace QuanLyNhaHang.Controllers
                             MaKhachHang = PhatSinhMaKH(),
                             TenKhachHang = model.HoTen,
                             SdtKhachHang = model.SDT,
-                            EmailKhachHang = model.Email,
+                            //EmailKhachHang = model.Email,
                             TrangThaiKhachHang = "Tiềm năng"
                         };
                         _context.KhachHangs.Add(khachHang);

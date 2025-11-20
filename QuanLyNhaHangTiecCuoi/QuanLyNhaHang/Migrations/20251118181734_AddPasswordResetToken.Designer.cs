@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyNhaHang.Models;
 
@@ -11,9 +12,11 @@ using QuanLyNhaHang.Models;
 namespace QuanLyNhaHang.Migrations
 {
     [DbContext(typeof(QuanLyNhaHangContext))]
-    partial class QuanLyNhaHangContextModelSnapshot : ModelSnapshot
+    [Migration("20251118181734_AddPasswordResetToken")]
+    partial class AddPasswordResetToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,36 +50,6 @@ namespace QuanLyNhaHang.Migrations
                     b.ToTable("BO_PHAN");
                 });
 
-            modelBuilder.Entity("QuanLyNhaHang.Models.ChiTietCombo", b =>
-                {
-                    b.Property<string>("MaChiTietCombo")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("GhiChu")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("MaComboMon")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("MaMonAn")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int?>("SoLuong")
-                        .HasColumnType("int");
-
-                    b.HasKey("MaChiTietCombo");
-
-                    b.HasIndex("MaComboMon");
-
-                    b.HasIndex("MaMonAn");
-
-                    b.ToTable("CHI_TIET_COMBO");
-                });
-
             modelBuilder.Entity("QuanLyNhaHang.Models.ChiTietThucDon", b =>
                 {
                     b.Property<string>("MaChiTietThucDon")
@@ -105,40 +78,6 @@ namespace QuanLyNhaHang.Migrations
                     b.HasIndex("MaMonAn");
 
                     b.ToTable("CHI_TIET_THUC_DON");
-                });
-
-            modelBuilder.Entity("QuanLyNhaHang.Models.ComboMon", b =>
-                {
-                    b.Property<string>("MaComboMon")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<decimal?>("GiaCombo")
-                        .HasColumnType("decimal(18, 0)");
-
-                    b.Property<string>("HinhAnhCombo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MoTa")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("NgayTaoCombo")
-                        .HasColumnType("date");
-
-                    b.Property<int?>("SoLuong")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TenCombo")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("TrangThai")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("MaComboMon");
-
-                    b.ToTable("COMBO_MON");
                 });
 
             modelBuilder.Entity("QuanLyNhaHang.Models.DatTiec", b =>
@@ -203,9 +142,6 @@ namespace QuanLyNhaHang.Migrations
                     b.Property<decimal?>("GiaDV")
                         .HasColumnType("decimal(18, 0)");
 
-                    b.Property<string>("HinhAnhDichVu")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("MoTaDV")
                         .HasColumnType("nvarchar(max)");
 
@@ -269,16 +205,24 @@ namespace QuanLyNhaHang.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("EmailKhachHang")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("GhiChu")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MaTaiKhoan")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<string>("MatKhauKhachHang")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("SdtKhachHang")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("TaiKhoanKhachHang")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("TenKhachHang")
                         .HasMaxLength(100)
@@ -289,8 +233,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("MaKhachHang");
-
-                    b.HasIndex("MaTaiKhoan");
 
                     b.ToTable("KHACH_HANG");
                 });
@@ -309,9 +251,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChu")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HinhAnhMonAn")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LoaiMonAn")
@@ -353,16 +292,25 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaBoPhan")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("MaTaiKhoan")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<string>("MailNV")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("MatKhau")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("SdtNV")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("TaiKhoan")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("TenNhanVien")
                         .HasMaxLength(100)
@@ -375,8 +323,6 @@ namespace QuanLyNhaHang.Migrations
                     b.HasKey("MaNhanVien");
 
                     b.HasIndex("MaBoPhan");
-
-                    b.HasIndex("MaTaiKhoan");
 
                     b.ToTable("NHAN_VIEN");
                 });
@@ -492,52 +438,6 @@ namespace QuanLyNhaHang.Migrations
                     b.ToTable("TT_SU_DUNG_NHAN_VIEN");
                 });
 
-            modelBuilder.Entity("QuanLyNhaHang.Models.TaiKhoan", b =>
-                {
-                    b.Property<string>("MaTaiKhoan")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Password")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("TrangThai")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("VaiTro")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("MaTaiKhoan");
-
-                    b.ToTable("TAI_KHOAN");
-                });
-
-            modelBuilder.Entity("QuanLyNhaHang.Models.ChiTietCombo", b =>
-                {
-                    b.HasOne("QuanLyNhaHang.Models.ComboMon", "ComboMon")
-                        .WithMany("ChiTietCombos")
-                        .HasForeignKey("MaComboMon");
-
-                    b.HasOne("QuanLyNhaHang.Models.MonAn", "MonAn")
-                        .WithMany()
-                        .HasForeignKey("MaMonAn");
-
-                    b.Navigation("ComboMon");
-
-                    b.Navigation("MonAn");
-                });
-
             modelBuilder.Entity("QuanLyNhaHang.Models.ChiTietThucDon", b =>
                 {
                     b.HasOne("QuanLyNhaHang.Models.DatTiec", "DatTiec")
@@ -577,28 +477,15 @@ namespace QuanLyNhaHang.Migrations
                     b.Navigation("MonAn");
                 });
 
-            modelBuilder.Entity("QuanLyNhaHang.Models.KhachHang", b =>
-                {
-                    b.HasOne("QuanLyNhaHang.Models.TaiKhoan", "TaiKhoan")
-                        .WithMany()
-                        .HasForeignKey("MaTaiKhoan");
-
-                    b.Navigation("TaiKhoan");
-                });
-
             modelBuilder.Entity("QuanLyNhaHang.Models.NhanVien", b =>
                 {
                     b.HasOne("QuanLyNhaHang.Models.BoPhan", "BoPhan")
                         .WithMany("NhanViens")
-                        .HasForeignKey("MaBoPhan");
-
-                    b.HasOne("QuanLyNhaHang.Models.TaiKhoan", "TaiKhoan")
-                        .WithMany()
-                        .HasForeignKey("MaTaiKhoan");
+                        .HasForeignKey("MaBoPhan")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BoPhan");
-
-                    b.Navigation("TaiKhoan");
                 });
 
             modelBuilder.Entity("QuanLyNhaHang.Models.PhieuThanhToan", b =>
@@ -645,11 +532,6 @@ namespace QuanLyNhaHang.Migrations
             modelBuilder.Entity("QuanLyNhaHang.Models.BoPhan", b =>
                 {
                     b.Navigation("NhanViens");
-                });
-
-            modelBuilder.Entity("QuanLyNhaHang.Models.ComboMon", b =>
-                {
-                    b.Navigation("ChiTietCombos");
                 });
 
             modelBuilder.Entity("QuanLyNhaHang.Models.DatTiec", b =>

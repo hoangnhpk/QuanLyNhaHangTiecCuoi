@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyNhaHang.Models;
 
@@ -11,9 +12,11 @@ using QuanLyNhaHang.Models;
 namespace QuanLyNhaHang.Migrations
 {
     [DbContext(typeof(QuanLyNhaHangContext))]
-    partial class QuanLyNhaHangContextModelSnapshot : ModelSnapshot
+    [Migration("20251120130436_ThemBangCombo")]
+    partial class ThemBangCombo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -269,16 +272,24 @@ namespace QuanLyNhaHang.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("EmailKhachHang")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("GhiChu")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MaTaiKhoan")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<string>("MatKhauKhachHang")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("SdtKhachHang")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("TaiKhoanKhachHang")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("TenKhachHang")
                         .HasMaxLength(100)
@@ -289,8 +300,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("MaKhachHang");
-
-                    b.HasIndex("MaTaiKhoan");
 
                     b.ToTable("KHACH_HANG");
                 });
@@ -345,6 +354,10 @@ namespace QuanLyNhaHang.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
+                    b.Property<string>("ChucVuNV")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<string>("DiaChiNV")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -353,16 +366,25 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MaBoPhan")
+                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<string>("MaTaiKhoan")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<string>("MailNV")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("MatKhau")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("SdtNV")
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("TaiKhoan")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("TenNhanVien")
                         .HasMaxLength(100)
@@ -375,8 +397,6 @@ namespace QuanLyNhaHang.Migrations
                     b.HasKey("MaNhanVien");
 
                     b.HasIndex("MaBoPhan");
-
-                    b.HasIndex("MaTaiKhoan");
 
                     b.ToTable("NHAN_VIEN");
                 });
@@ -492,37 +512,6 @@ namespace QuanLyNhaHang.Migrations
                     b.ToTable("TT_SU_DUNG_NHAN_VIEN");
                 });
 
-            modelBuilder.Entity("QuanLyNhaHang.Models.TaiKhoan", b =>
-                {
-                    b.Property<string>("MaTaiKhoan")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Password")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("TrangThai")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("VaiTro")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("MaTaiKhoan");
-
-                    b.ToTable("TAI_KHOAN");
-                });
-
             modelBuilder.Entity("QuanLyNhaHang.Models.ChiTietCombo", b =>
                 {
                     b.HasOne("QuanLyNhaHang.Models.ComboMon", "ComboMon")
@@ -577,28 +566,15 @@ namespace QuanLyNhaHang.Migrations
                     b.Navigation("MonAn");
                 });
 
-            modelBuilder.Entity("QuanLyNhaHang.Models.KhachHang", b =>
-                {
-                    b.HasOne("QuanLyNhaHang.Models.TaiKhoan", "TaiKhoan")
-                        .WithMany()
-                        .HasForeignKey("MaTaiKhoan");
-
-                    b.Navigation("TaiKhoan");
-                });
-
             modelBuilder.Entity("QuanLyNhaHang.Models.NhanVien", b =>
                 {
                     b.HasOne("QuanLyNhaHang.Models.BoPhan", "BoPhan")
                         .WithMany("NhanViens")
-                        .HasForeignKey("MaBoPhan");
-
-                    b.HasOne("QuanLyNhaHang.Models.TaiKhoan", "TaiKhoan")
-                        .WithMany()
-                        .HasForeignKey("MaTaiKhoan");
+                        .HasForeignKey("MaBoPhan")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BoPhan");
-
-                    b.Navigation("TaiKhoan");
                 });
 
             modelBuilder.Entity("QuanLyNhaHang.Models.PhieuThanhToan", b =>
