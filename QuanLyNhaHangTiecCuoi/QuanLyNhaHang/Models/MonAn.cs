@@ -47,6 +47,12 @@ namespace QuanLyNhaHang.Models
         [Column("GhiChu")]
         [Display(Name = "Ghi chú")]
         public string? GhiChu { get; set; }
+
         public virtual ICollection<ChiTietThucDon>? ChiTietThucDons { get; set; }
+
+        public string? HinhAnhMonAn { get; set; }
+
+        public virtual ICollection<ChiTietThucDon> ChiTietThucDons { get; set; }
+
     }
 }

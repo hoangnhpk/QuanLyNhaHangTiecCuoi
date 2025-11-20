@@ -21,6 +21,7 @@ namespace QuanLyNhaHang.Models
         public string? TrangThaiDV { get; set; }
 
         public string? GhiChu { get; set; }
+        public string? HinhAnhDichVu { get; set; }
 
         public virtual ICollection<TT_SuDungDichVu> TT_SuDungDichVus { get; set; }
     }
