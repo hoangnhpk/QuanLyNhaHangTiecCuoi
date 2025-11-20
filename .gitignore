@@ -6,9 +6,3 @@
 # Build results
 [Bb]in/
 [Oo]bj/
-
-# Other
-packages/
-*.vspscc
-*.vssscc
-_ReSharper*/
