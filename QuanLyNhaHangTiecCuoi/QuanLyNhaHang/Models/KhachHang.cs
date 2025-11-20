@@ -17,7 +17,11 @@ namespace QuanLyNhaHang.Models
         [Key]
         [StringLength(20)]
         [Display(Name = "Mã khách hàng")]
-        public string MaKhachHang { get; set; }
+
+        public string MaKhachHang { get; set; } // Ví dụ: KH001
+        [StringLength(20)]
+        public string? MaTaiKhoan { get; set; }
+
 
         [Required(ErrorMessage = "Vui lòng nhập tên khách hàng.")]
         [StringLength(100)]
@@ -41,25 +45,8 @@ namespace QuanLyNhaHang.Models
         [Display(Name = "Địa chỉ")]
         public string? DiaChiKhachHang { get; set; }
 
-        [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ.")]
-        [StringLength(100)]
-        [Display(Name = "Email")]
-        public string? EmailKhachHang { get; set; }
 
-        [Required(ErrorMessage = "Tài khoản đăng nhập là bắt buộc.")]
-        [StringLength(30)]
-        [Display(Name = "Tài khoản")]
-        public string? TaiKhoanKhachHang { get; set; }
-
-        // Lưu ý: PHẢI HASH mật khẩu trước khi lưu vào DB!
-      
-        [StringLength(30)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Mật khẩu")]
-        public string? MatKhauKhachHang { get; set; }
-
-        [StringLength(30)]
-        [Display(Name = "Trạng thái")]
+        [StringLength(30)] // Đã sửa thành NVARCHAR(30)
         public string? TrangThaiKhachHang { get; set; }
 
         [Display(Name = "Ghi chú")]
@@ -67,5 +54,7 @@ namespace QuanLyNhaHang.Models
 
         // Danh sách tiệc khách đã đặt
         public virtual ICollection<DatTiec> DatTiecs { get; set; }
+        [ForeignKey("MaTaiKhoan")]
+        public virtual TaiKhoan TaiKhoan { get; set; }
     }
 }

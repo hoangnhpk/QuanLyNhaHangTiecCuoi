@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuanLyNhaHang.Models;
-var builder = WebApplication.CreateBuilder(args);
 
+var builder = WebApplication.CreateBuilder(args);
 // --- BẮT ĐẦU ĐOẠN CẦN THÊM ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<QuanLyNhaHangContext>(options =>
     options.UseSqlServer(connectionString));
-// --- KẾT THÚC ĐOẠN CẦN THÊM ---
 
+// --- Thêm dịch vụ Session ---
+builder.Services.AddSession();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -31,7 +32,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-
+// Kích hoạt sử dụng Session trong ứng dụng
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

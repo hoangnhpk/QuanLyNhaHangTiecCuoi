@@ -17,7 +17,9 @@ namespace QuanLyNhaHang.Models
             {
                 // Sửa lại cho khớp với máy tính của bạn (SQLEXPRESS)
                 // Lưu ý: Trong C# string dùng @ đằng trước thì chỉ cần 1 dấu \
-                optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-UKUNQ3QE\\SQLEXPRESS;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Trust Server Certificate=True");
+
+                optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-UKUNQ3QE\SQLEXPRESS;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Trust Server Certificate=True");
+
             }
         }
 
@@ -30,6 +32,10 @@ namespace QuanLyNhaHang.Models
         public DbSet<DatTiec> DatTiecs { get; set; }
         public DbSet<PhieuThanhToan> PhieuThanhToans { get; set; }
         public DbSet<HinhAnh> HinhAnhs { get; set; }
+        public DbSet<TaiKhoan> TaiKhoans { get; set; }
+        public DbSet<ComboMon> ComboMons { get; set; }
+        public DbSet<ChiTietCombo> ChiTietCombos { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
         // Các bảng trung gian
         public DbSet<ChiTietThucDon> ChiTietThucDons { get; set; }
@@ -61,6 +67,7 @@ namespace QuanLyNhaHang.Models
 
             modelBuilder.Entity<PhieuThanhToan>()
                 .Property(p => p.TongTien).HasColumnType("decimal(18, 0)");
+            modelBuilder.Entity<ComboMon>().Property(p => p.GiaCombo).HasColumnType("decimal(18, 0)");
 
             // Ví dụ: Đảm bảo quan hệ 1-1 giữa DatTiec và PhieuThanhToan
             modelBuilder.Entity<DatTiec>()
