@@ -13,71 +13,323 @@ namespace QuanLyNhaHang.Controllers
             _context = context;
         }
 
+        // --- 1. TRANG CHỦ (INDEX) ---
         public async Task<IActionResult> Index()
         {
-            var list = await _context.MonAns.OrderBy(m => m.MaMonAn).ToListAsync();
-            return View(list);
-        }
+            // Lấy danh sách Món lẻ (cho cột phải)
+            var listMonAn = await _context.MonAns.OrderBy(m => m.MaMonAn).ToListAsync();
 
-        // --- XỬ LÝ THÊM (CREATE) ---
-        public IActionResult Them()
+            // Lấy danh sách Combo (cho cột trái) - kèm chi tiết món
+            var listCombo = await _context.ComboMons
+                                          .Include(c => c.ChiTietCombos)
+                                          .ThenInclude(ct => ct.MonAn)
+                                          .OrderByDescending(c => c.NgayTaoCombo)
+                                          .ToListAsync();
+
+            ViewBag.ListCombo = listCombo;
+
+            return View(listMonAn);
+        }
+        public async Task<IActionResult> ThemCombo()
         {
+            // Lấy danh sách món ăn để hiển thị ra checkbox
+            ViewBag.ListMonAn = await _context.MonAns
+                                      .OrderBy(m => m.TenMonAn)
+                                      .ToListAsync();
             return View();
         }
-
+        // --- THÊM COMBO (POST) ---
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Them(MonAn model)
+        public async Task<IActionResult> ThemCombo(ComboMon model, List<string> monAnChon, IFormFile imageFile)
         {
+            ModelState.Remove("ChiTietCombos");
+            ModelState.Remove("HinhAnhCombo");
+            ModelState.Remove("imageFile");
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                // Thêm lỗi vào danh sách để hiện ra khung đỏ
+                ModelState.AddModelError("imageFile", "Vui lòng chọn hình ảnh cho Combo!");
+            }
+
+            if (monAnChon == null || monAnChon.Count == 0)
+                ModelState.AddModelError("", "Vui lòng chọn ít nhất một món ăn!");
+
+            if (await _context.ComboMons.AnyAsync(x => x.MaComboMon == model.MaComboMon))
+                ModelState.AddModelError("MaComboMon", "Mã Combo này đã tồn tại!");
+
             if (ModelState.IsValid)
             {
-                // Kiểm tra trùng mã món ăn
-                if (await _context.MonAns.AnyAsync(x => x.MaMonAn == model.MaMonAn))
+                // 1. XỬ LÝ UPLOAD ẢNH (Sửa đường dẫn tại đây)
+                if (imageFile != null && imageFile.Length > 0)
                 {
-                    ModelState.AddModelError("MaMonAn", "Mã món ăn đã tồn tại!");
-                    return View(model);
+                    // Tạo tên file độc nhất
+                    var fileName = model.MaComboMon + "_" + Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+
+                    // Đường dẫn thư mục: wwwroot/assets/img/combos
+                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "img", "menu");
+
+                    // Nếu thư mục chưa có thì tự tạo
+                    if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+
+                    var filePath = Path.Combine(uploadDir, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+
+                    // Lưu đường dẫn hiển thị vào DB: /assets/img/combos/ten_file.jpg
+                    model.HinhAnhCombo = "/assets/img/menu/" + fileName;
                 }
 
-                _context.MonAns.Add(model);
+                // 2. Lưu Combo
+                model.NgayTaoCombo = DateTime.Now;
+                _context.ComboMons.Add(model);
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Thêm món ăn thành công!";
+
+                // 3. Lưu chi tiết
+                if (monAnChon != null)
+                {
+                    foreach (var maMon in monAnChon)
+                    {
+                        int sl = 1;
+                        string keySl = $"soLuong_{maMon}";
+                        if (Request.Form.ContainsKey(keySl)) int.TryParse(Request.Form[keySl], out sl);
+
+                        var ct = new ChiTietCombo
+                        {
+                            MaChiTietCombo = Guid.NewGuid().ToString().Substring(0, 15),
+                            MaComboMon = model.MaComboMon,
+                            MaMonAn = maMon,
+                            SoLuong = sl > 0 ? sl : 1
+                        };
+                        _context.ChiTietCombos.Add(ct);
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+                TempData["SuccessMessage"] = "Thêm combo thành công!";
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.ListMonAn = await _context.MonAns.OrderBy(m => m.TenMonAn).ToListAsync();
             return View(model);
         }
+        public async Task<IActionResult> SuaCombo(string id)
+{
+    if (id == null) return NotFound();
 
-        // --- XỬ LÝ SỬA (EDIT) ---
-        public async Task<IActionResult> Sua(string id)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                return NotFound();
-            }
+    // 1. Tìm Combo và Include luôn danh sách chi tiết món
+    var combo = await _context.ComboMons
+                              .Include(c => c.ChiTietCombos) 
+                              .FirstOrDefaultAsync(m => m.MaComboMon == id);
 
-            var item = await _context.MonAns.FindAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return View(item);
-        }
+    if (combo == null) return NotFound();
 
+    // 2. Lấy danh sách TẤT CẢ món ăn để người dùng có thể chọn thêm/bớt
+    // Sắp xếp theo tên cho dễ nhìn
+    ViewBag.ListMonAn = await _context.MonAns
+                              .OrderBy(m => m.TenMonAn)
+                              .ToListAsync();
+
+    return View(combo);
+}
+
+        // --- SỬA COMBO (POST) ---
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Sua(MonAn model)
+        public async Task<IActionResult> SuaCombo(string id, ComboMon model, List<string> monAnChon, IFormFile imageFile)
         {
+            ModelState.Remove("ChiTietCombos");
+            ModelState.Remove("HinhAnhCombo");
+            ModelState.Remove("imageFile");
+           
+
+            if (id != model.MaComboMon) return NotFound();
+
+            if (monAnChon == null || monAnChon.Count == 0)
+                ModelState.AddModelError("", "Combo phải có ít nhất một món ăn!");
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var item = await _context.MonAns.FindAsync(model.MaMonAn);
-                    if (item == null)
+                    var comboDB = await _context.ComboMons.FindAsync(id);
+                    if (comboDB == null) return NotFound();
+
+                    // Update thông tin
+                    comboDB.TenCombo = model.TenCombo;
+                    comboDB.GiaCombo = model.GiaCombo;
+                    comboDB.SoLuong = model.SoLuong;
+                    comboDB.TrangThai = model.TrangThai;
+                    comboDB.MoTa = model.MoTa;
+
+                    // 1. XỬ LÝ ẢNH (Sửa đường dẫn tại đây)
+                    if (imageFile != null && imageFile.Length > 0)
                     {
-                        return NotFound();
+                        var fileName = model.MaComboMon + "_" + Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+
+                        // Đường dẫn thư mục: wwwroot/assets/img/combos
+                        var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "img", "menu");
+                        if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+
+                        var filePath = Path.Combine(uploadDir, fileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imageFile.CopyToAsync(stream);
+                        }
+
+                        // Cập nhật đường dẫn mới vào DB
+                        comboDB.HinhAnhCombo = "/assets/img/menu/" + fileName;
                     }
 
-                    // Cập nhật TẤT CẢ các trường
+                    _context.Update(comboDB);
+
+                    // 2. Xử lý chi tiết
+                    var oldDetails = _context.ChiTietCombos.Where(d => d.MaComboMon == id);
+                    _context.ChiTietCombos.RemoveRange(oldDetails);
+
+                    if (monAnChon != null)
+                    {
+                        foreach (var maMon in monAnChon)
+                        {
+                            int sl = 1;
+                            string keySl = $"soLuong_{maMon}";
+                            if (Request.Form.ContainsKey(keySl)) int.TryParse(Request.Form[keySl], out sl);
+
+                            var ct = new ChiTietCombo
+                            {
+                                MaChiTietCombo = Guid.NewGuid().ToString().Substring(0, 15),
+                                MaComboMon = id,
+                                MaMonAn = maMon,
+                                SoLuong = sl > 0 ? sl : 1
+                            };
+                            _context.ChiTietCombos.Add(ct);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Cập nhật combo thành công!";
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await _context.ComboMons.AnyAsync(e => e.MaComboMon == id)) return NotFound();
+                    else throw;
+                }
+            }
+
+            ViewBag.ListMonAn = await _context.MonAns.OrderBy(m => m.TenMonAn).ToListAsync();
+            return View(model);
+        }
+
+        // --- XÓA COMBO ---
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> XoaCombo(string id)
+        {
+            var combo = await _context.ComboMons.FindAsync(id);
+            if (combo != null)
+            {
+                var chiTiets = _context.ChiTietCombos.Where(x => x.MaComboMon == id);
+                _context.ChiTietCombos.RemoveRange(chiTiets);
+
+                _context.ComboMons.Remove(combo);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Đã xóa combo!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy combo!";
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        // ============================================================
+        // XỬ LÝ MÓN LẺ (CÓ HÌNH ẢNH)
+        // ============================================================
+
+        public IActionResult Them() { return View(); }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Them(MonAn model, IFormFile imageFile)
+        {
+            // Bỏ qua các lỗi validation mặc định không cần thiết
+            ModelState.Remove("HinhAnhMonAn"); 
+            ModelState.Remove("imageFile");
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                // Thêm lỗi vào danh sách để hiện ra khung đỏ
+                ModelState.AddModelError("imageFile", "Vui lòng chọn hình ảnh cho Combo!");
+            }
+
+            // 1. Kiểm tra bắt buộc chọn ảnh
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                ModelState.AddModelError("imageFile", "Vui lòng chọn hình ảnh món ăn!");
+            }
+
+            // 2. Kiểm tra trùng mã
+            if (await _context.MonAns.AnyAsync(x => x.MaMonAn == model.MaMonAn))
+            {
+                ModelState.AddModelError("MaMonAn", "Mã món ăn đã tồn tại!");
+            }
+
+            if (ModelState.IsValid)
+            {
+                // 3. Xử lý lưu ảnh
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var fileName = model.MaMonAn + "_" + Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "img", "menu");
+
+                    if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+
+                    var filePath = Path.Combine(uploadDir, fileName);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+
+                    // Lưu đường dẫn vào DB
+                    model.HinhAnhMonAn = "/assets/img/menu/" + fileName;
+                }
+
+                _context.MonAns.Add(model);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Thêm món ăn thành công!";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+
+        // --- SỬA MÓN ĂN ---
+        public async Task<IActionResult> Sua(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return NotFound();
+            var item = await _context.MonAns.FindAsync(id);
+            return item == null ? NotFound() : View(item);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Sua(MonAn model, IFormFile imageFile)
+        {
+            // Bỏ qua check ảnh vì sửa không bắt buộc chọn mới
+            ModelState.Remove("HinhAnhMonAn");
+            ModelState.Remove("imageFile");
+           
+
+            if (ModelState.IsValid)
+            {
+                var item = await _context.MonAns.FindAsync(model.MaMonAn);
+                if (item != null)
+                {
+                    // Cập nhật thông tin
                     item.TenMonAn = model.TenMonAn;
                     item.DonViTinh = model.DonViTinh;
                     item.DonGia = model.DonGia;
@@ -86,51 +338,47 @@ namespace QuanLyNhaHang.Controllers
                     item.MoTaMonAn = model.MoTaMonAn;
                     item.GhiChu = model.GhiChu;
 
-                    _context.MonAns.Update(item);
+                    // 4. Xử lý ảnh mới (nếu có chọn)
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        var fileName = model.MaMonAn + "_" + Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                        var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "img", "menu");
+                        if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
+
+                        var filePath = Path.Combine(uploadDir, fileName);
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imageFile.CopyToAsync(stream);
+                        }
+
+                        // Cập nhật đường dẫn mới
+                        item.HinhAnhMonAn = "/assets/img/menu/" + fileName;
+                    }
+                    // Nếu không chọn ảnh, giữ nguyên item.HinhAnhMonAn cũ
+
+                    _context.Update(item);
                     await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Cập nhật món ăn thành công!";
+
+                    TempData["SuccessMessage"] = "Cập nhật món thành công!";
                     return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    ModelState.AddModelError("", "Có lỗi xảy ra khi cập nhật. Vui lòng thử lại.");
-                    return View(model);
-                }
             }
-
             return View(model);
         }
 
-        // --- HÀM XÓA (DELETE) ---
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Xoa(string id)
         {
-            if (string.IsNullOrEmpty(id))
+            var item = await _context.MonAns.FindAsync(id);
+            if (item != null)
             {
-                TempData["ErrorMessage"] = "Không tìm thấy món ăn cần xóa.";
-                return RedirectToAction(nameof(Index));
+                _context.MonAns.Remove(item);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Xóa thành công!";
             }
-
-            try
-            {
-                var item = await _context.MonAns.FindAsync(id);
-                if (item != null)
-                {
-                    _context.MonAns.Remove(item);
-                    await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Xóa món ăn thành công!";
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Không tìm thấy món ăn.";
-                }
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = "Không thể xóa món ăn. Có thể món ăn đang được sử dụng.";
-            }
-
             return RedirectToAction(nameof(Index));
         }
     }
