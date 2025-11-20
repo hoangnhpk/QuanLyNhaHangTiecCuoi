@@ -7,6 +7,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<QuanLyNhaHangContext>(options =>
     options.UseSqlServer(connectionString));
+
 // --- Thêm dịch vụ Session ---
 builder.Services.AddSession();
 // Add services to the container.

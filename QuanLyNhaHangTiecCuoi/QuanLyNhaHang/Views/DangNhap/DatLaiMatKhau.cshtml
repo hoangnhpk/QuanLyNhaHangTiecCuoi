@@ -34,17 +34,16 @@
 
     .container {
         width: 100%;
-        max-width: 600px;
-        padding: 30px;
+        max-width: 420px;
+        padding: 20px;
     }
 
     .form-box {
         background: var(--form-bg);
-        padding: 50px 40px;
+        padding: 40px 30px;
         border-radius: 5px;
         border: 1px solid var(--primary);
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-        font-size: 16px;
     }
 
     h2 {
@@ -114,21 +113,18 @@
         <div class="form-box">
             <h2>Đặt Lại Mật Khẩu</h2>
             <form asp-action="DatLaiMatKhau" method="post">
-                <input type="hidden" name="token" value="@ViewBag.Token" />
-
                 <input type="password" name="MatKhauMoi" placeholder="Mật khẩu mới" required />
                 <input type="password" name="XacNhanMatKhauMoi" placeholder="Xác nhận mật khẩu mới" required />
-
-                <button type="submit" class="btn">Cập Nhật Mật Khẩu</button>
+                <button type="submit" class="btn">Cập Nhật</button>
             </form>
 
             @if (ViewBag.ThongBao != null)
             {
-                <div style="color:lightgreen; text-align:center; margin-top:15px;">@ViewBag.ThongBao</div>
+                <div style="color:red; text-align:center; margin-top:15px;">@ViewBag.ThongBao</div>
             }
 
             <div class="links">
-                <p>Quay lại <a asp-action="Index" asp-controller="DangNhap">Đăng nhập</a></p>
+                <p>Quay lại <a asp-action="Index">Đăng nhập</a></p>
             </div>
         </div>
     </div>
