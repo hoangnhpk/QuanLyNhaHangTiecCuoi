@@ -10,6 +10,8 @@ namespace QuanLyNhaHang.Models
         [StringLength(20)]
         [Display(Name = "Mã khách hàng")]
         public string MaKhachHang { get; set; } // Ví dụ: KH001
+        [StringLength(20)]
+        public string? MaTaiKhoan { get; set; }
 
         [StringLength(100)]
         public string? TenKhachHang { get; set; }
@@ -23,15 +25,6 @@ namespace QuanLyNhaHang.Models
         [StringLength(255)]
         public string? DiaChiKhachHang { get; set; }
 
-        [StringLength(100)]
-        public string? EmailKhachHang { get; set; }
-
-        [StringLength(30)]
-        public string? TaiKhoanKhachHang { get; set; }
-
-        [StringLength(30)]
-        public string? MatKhauKhachHang { get; set; }
-
         [StringLength(30)] // Đã sửa thành NVARCHAR(30)
         public string? TrangThaiKhachHang { get; set; }
 
@@ -39,5 +32,7 @@ namespace QuanLyNhaHang.Models
 
         // Danh sách tiệc khách đã đặt
         public virtual ICollection<DatTiec> DatTiecs { get; set; }
+        [ForeignKey("MaTaiKhoan")]
+        public virtual TaiKhoan TaiKhoan { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyNhaHang.Models;
 
@@ -11,9 +12,11 @@ using QuanLyNhaHang.Models;
 namespace QuanLyNhaHang.Migrations
 {
     [DbContext(typeof(QuanLyNhaHangContext))]
-    partial class QuanLyNhaHangContextModelSnapshot : ModelSnapshot
+    [Migration("20251120145431_LienKetTaiKhoan")]
+    partial class LienKetTaiKhoan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -345,10 +348,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<string>("ChucVuNV")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
                     b.Property<string>("DiaChiNV")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -496,7 +495,6 @@ namespace QuanLyNhaHang.Migrations
                     b.ToTable("TT_SU_DUNG_NHAN_VIEN");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("QuanLyNhaHang.Models.TaiKhoan", b =>
                 {
                     b.Property<string>("MaTaiKhoan")
@@ -528,8 +526,6 @@ namespace QuanLyNhaHang.Migrations
                     b.ToTable("TAI_KHOAN");
                 });
 
-=======
->>>>>>> 03c721d578e498f3bfe8ffced87e4f47b8796137
             modelBuilder.Entity("QuanLyNhaHang.Models.ChiTietCombo", b =>
                 {
                     b.HasOne("QuanLyNhaHang.Models.ComboMon", "ComboMon")

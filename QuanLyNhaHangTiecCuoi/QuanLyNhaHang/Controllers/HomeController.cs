@@ -73,9 +73,9 @@ namespace QuanLyNhaHang.Controllers
                 MaKhachHang = "KH001",
                 TenKhachHang = "Nguyễn Văn Demo",
                 SdtKhachHang = "0909123456",
-                EmailKhachHang = "demo@gmail.com",
-                TaiKhoanKhachHang = "khach01",
-                MatKhauKhachHang = "123456",
+                //EmailKhachHang = "demo@gmail.com",
+                //TaiKhoanKhachHang = "khach01",
+                //MatKhauKhachHang = "123456",
                 TrangThaiKhachHang = "Hoạt động"
             };
             _context.KhachHangs.Add(khach);
