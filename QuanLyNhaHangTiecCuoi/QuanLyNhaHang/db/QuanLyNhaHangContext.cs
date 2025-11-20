@@ -30,6 +30,7 @@ namespace QuanLyNhaHang.Models
         public DbSet<DatTiec> DatTiecs { get; set; }
         public DbSet<PhieuThanhToan> PhieuThanhToans { get; set; }
         public DbSet<HinhAnh> HinhAnhs { get; set; }
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
 
         // Các bảng trung gian
         public DbSet<ChiTietThucDon> ChiTietThucDons { get; set; }
