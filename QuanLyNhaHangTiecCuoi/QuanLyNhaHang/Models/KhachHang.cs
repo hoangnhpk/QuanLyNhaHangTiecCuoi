@@ -52,7 +52,7 @@ namespace QuanLyNhaHang.Models
         public string? TaiKhoanKhachHang { get; set; }
 
         // Lưu ý: PHẢI HASH mật khẩu trước khi lưu vào DB!
-        [Required(ErrorMessage = "Mật khẩu là bắt buộc.")]
+      
         [StringLength(30)]
         [DataType(DataType.Password)]
         [Display(Name = "Mật khẩu")]

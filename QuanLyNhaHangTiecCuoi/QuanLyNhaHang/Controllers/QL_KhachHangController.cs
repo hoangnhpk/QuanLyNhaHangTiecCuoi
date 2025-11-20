@@ -132,6 +132,7 @@ namespace QuanLyNhaHang.Controllers
         }
 
         // POST: QL_KhachHang/Edit/5
+        // POST: QL_KhachHang/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, KhachHang khachHang)
@@ -141,28 +142,48 @@ namespace QuanLyNhaHang.Controllers
                 return NotFound();
             }
 
+            // Tải đối tượng khách hàng HIỆN TẠI (Original) từ CSDL
+            // Không dùng AsNoTracking() ở đây vì ta sẽ dùng nó để kiểm tra.
+            var originalKhachHang = await _context.KhachHangs.FindAsync(id);
+
+            if (originalKhachHang == null)
+            {
+                return NotFound();
+            }
+
+            // --- BẮT ĐẦU LOGIC GIỮ MẬT KHẨU CŨ (FIX) ---
+            // Lấy mật khẩu mới được gửi từ form (giá trị này là "" nếu form trống)
+            string newPasswordFromForm = khachHang.MatKhauKhachHang;
+
+            if (string.IsNullOrEmpty(newPasswordFromForm))
+            {
+                // Nếu form gửi mật khẩu rỗng, GÁN MẬT KHẨU CŨ VÀO ĐỐI TƯỢNG ĐANG CẬP NHẬT
+                khachHang.MatKhauKhachHang = originalKhachHang.MatKhauKhachHang;
+            }
+            else
+            {
+                // Nếu có mật khẩu mới, dùng mật khẩu mới này (thường cần hash ở đây)
+                khachHang.MatKhauKhachHang = newPasswordFromForm;
+            }
+            // --- KẾT THÚC LOGIC GIỮ MẬT KHẨU CŨ (FIX) ---
+
+
             // Loại bỏ validation cho DatTiecs vì đây là navigation property
             ModelState.Remove("DatTiecs");
 
-            // Xử lý NULL values trước khi cập nhật
+            // Xử lý NULL values cho các trường khác (Giữ nguyên)
             khachHang.TenKhachHang ??= string.Empty;
             khachHang.CccdKhachHang ??= string.Empty;
             khachHang.SdtKhachHang ??= string.Empty;
             khachHang.DiaChiKhachHang ??= string.Empty;
             khachHang.EmailKhachHang ??= string.Empty;
             khachHang.TaiKhoanKhachHang ??= string.Empty;
-            khachHang.MatKhauKhachHang ??= string.Empty;
             khachHang.TrangThaiKhachHang ??= "Active";
             khachHang.GhiChu ??= string.Empty;
 
             // Vùng 2: KIỂM TRA TRÙNG MÃ KHI CẬP NHẬT
-            // Do khóa chính (MaKhachHang) không nên thay đổi,
-            // nhưng nếu người dùng tìm cách thay đổi mã, ta cần kiểm tra
             if (id != khachHang.MaKhachHang && await KhachHangExistsAsync(khachHang.MaKhachHang))
             {
-                // Logic này thường chỉ áp dụng khi khóa chính có thể thay đổi
-                // Nếu khóa chính không thay đổi, chỉ cần bỏ qua kiểm tra này
-                // Tuy nhiên, nếu Form cho phép thay đổi Mã Khách Hàng (Key)
                 ModelState.AddModelError("MaKhachHang", $"Mã khách hàng '{khachHang.MaKhachHang}' đã tồn tại trong CSDL. Vui lòng nhập mã khác.");
             }
 
@@ -170,7 +191,24 @@ namespace QuanLyNhaHang.Controllers
             {
                 try
                 {
-                    _context.Update(khachHang);
+                    // Thay vì dùng _context.Update(khachHang), chúng ta dùng Copy Properties:
+                    // Phương pháp này đảm bảo EF Core chỉ cập nhật những trường cần thiết.
+
+                    // 1. Tải đối tượng gốc vào tracking (đã làm ở trên: originalKhachHang)
+                    // 2. Gán các giá trị mới từ form vào đối tượng gốc đã được theo dõi
+                    originalKhachHang.TenKhachHang = khachHang.TenKhachHang;
+                    originalKhachHang.CccdKhachHang = khachHang.CccdKhachHang;
+                    originalKhachHang.SdtKhachHang = khachHang.SdtKhachHang;
+                    originalKhachHang.DiaChiKhachHang = khachHang.DiaChiKhachHang;
+                    originalKhachHang.EmailKhachHang = khachHang.EmailKhachHang;
+                    originalKhachHang.TaiKhoanKhachHang = khachHang.TaiKhoanKhachHang;
+                    originalKhachHang.TrangThaiKhachHang = khachHang.TrangThaiKhachHang;
+                    originalKhachHang.GhiChu = khachHang.GhiChu;
+
+                    // QUAN TRỌNG: Gán mật khẩu đã được xử lý (hoặc mới, hoặc cũ)
+                    originalKhachHang.MatKhauKhachHang = khachHang.MatKhauKhachHang;
+
+                    // SaveChanges sẽ chỉ cập nhật các trường đã thay đổi trong đối tượng originalKhachHang
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -190,6 +228,7 @@ namespace QuanLyNhaHang.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            // Nếu ModelState không hợp lệ, trả về view (và lúc này khachHang.MatKhauKhachHang đã chứa mật khẩu cũ hoặc mới nhập)
             return View(khachHang);
         }
 
@@ -237,7 +276,7 @@ namespace QuanLyNhaHang.Controllers
         }
 
         // =========================================================================
-        // 🔒 ACTION KHÓA TÀI KHOẢN (Chuyển trạng thái sang "Inactive" - Ngừng Hoạt Động)
+        // 🔒 ACTION KHÓA TÀI KHOẢN (GIỮ NGUYÊN LOGIC GỐC)
         // =========================================================================
         [HttpGet] // Sử dụng GET vì nó được gọi từ thẻ <a> (sau khi xác nhận JS)
         public async Task<IActionResult> Lock(string id)
@@ -286,16 +325,15 @@ namespace QuanLyNhaHang.Controllers
         }
 
         // =========================================================================
-
+        // PHƯƠNG THỨC HỖ TRỢ (ĐÃ KHẮC PHỤC LỖI THIẾU)
+        // =========================================================================
         private bool KhachHangExists(string id)
         {
             return _context.KhachHangs.Any(e => e.MaKhachHang == id);
         }
 
-        // Phương thức kiểm tra bất đồng bộ
         private async Task<bool> KhachHangExistsAsync(string id)
         {
-            // Kiểm tra xem có khách hàng nào có mã này trong CSDL chưa
             return await _context.KhachHangs.AnyAsync(e => e.MaKhachHang == id);
         }
     }

@@ -33,9 +33,7 @@
 <div class="crud-container">
     <h1>Quản Lý Khách Hàng</h1>
 
-    <p>
-        <a asp-action="Create" class="btn-create-new">Thêm Khách Hàng Mới</a>
-    </p>
+    
 
     <div class="tab-header">
         <button class="tab-button active" onclick="openTab(event, 'CustomerInfo')">Thông tin khách hàng</button>
@@ -323,17 +321,49 @@
             transition: all 0.16s ease-out;
             border: 1px solid transparent;
             white-space: nowrap;
+            /* 📌 QUAN TRỌNG: ĐẶT CHIỀU RỘNG VÀ CĂN CHỮ */
+            width: 65px; /* Đặt chiều rộng cố định */
+            text-align: center; /* Căn chữ ra giữa nút */
         }
 
+        /* THAY ĐỔI: Chỉnh sửa nút Sửa để có nền tối và màu chữ Vàng/Đồng */
         .table td .btn-edit {
-            color: var(--primary);
-            background: var(--primary-soft);
-            border-color: rgba(205, 164, 94, 0.5);
+            color: var(--primary); /* Giữ màu chữ vàng/đồng */
+            background: rgba(255, 255, 255, 0.05); /* Nền xám tối/đen */
+            border-color: rgba(255, 255, 255, 0.15); /* Viền xám mờ */
         }
 
             .table td .btn-edit:hover {
-                filter: brightness(1.2);
+                background: rgba(255, 255, 255, 0.1);
+                filter: none;
             }
+
+
+        /* Giữ nguyên style gốc cho nút Chi Tiết */
+        .table td .btn-details {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+            .table td .btn-details:hover {
+                background: rgba(255, 255, 255, 0.1);
+                filter: none;
+            }
+        /* KẾT THÚC THAY ĐỔI */
+
+
+        /* 📌 QUAN TRỌNG: CĂN CHỈNH KHOẢNG CÁCH */
+        .table td .btn-details,
+        .table td .btn-lock {
+            margin-left: 5px; /* Tách nút "Chi Tiết" và "Khóa" ra khỏi nút trước */
+        }
+
+    /* Đảm bảo nút đầu tiên không có margin thừa */
+    #CustomerInfo .table td .btn-edit,
+    #AccountLogin .table td .btn-details {
+        margin-left: 0;
+    }
 
         .table td .btn-details {
             color: var(--text-main);
