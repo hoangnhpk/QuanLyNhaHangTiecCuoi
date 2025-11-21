@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyNhaHang.Models;
 
@@ -11,9 +12,11 @@ using QuanLyNhaHang.Models;
 namespace QuanLyNhaHang.Migrations
 {
     [DbContext(typeof(QuanLyNhaHangContext))]
-    partial class QuanLyNhaHangContextModelSnapshot : ModelSnapshot
+    [Migration("20251120145431_LienKetTaiKhoan")]
+    partial class LienKetTaiKhoan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,7 +265,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("CccdKhachHang")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
@@ -278,12 +280,10 @@ namespace QuanLyNhaHang.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("SdtKhachHang")
-                        .IsRequired()
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("TenKhachHang")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -302,43 +302,36 @@ namespace QuanLyNhaHang.Migrations
                 {
                     b.Property<string>("MaMonAn")
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("MaMonAn");
+                        .HasColumnType("nvarchar(20)");
 
-                    b.Property<decimal>("DonGia")
+                    b.Property<decimal?>("DonGia")
                         .HasColumnType("decimal(18, 0)");
 
                     b.Property<string>("DonViTinh")
-                        .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("GhiChu")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("GhiChu");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HinhAnhMonAn")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LoaiMonAn")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("MoTaMonAn")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("TenMonAn")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TrangThaiMonAn")
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
-                        .HasColumnName("TrangThaiMonAn");
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("MaMonAn");
 
@@ -355,10 +348,6 @@ namespace QuanLyNhaHang.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<string>("ChucVuNV")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
                     b.Property<string>("DiaChiNV")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -373,14 +362,6 @@ namespace QuanLyNhaHang.Migrations
                     b.Property<string>("MaTaiKhoan")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<string>("MailNV")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("MatKhau")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("SdtNV")
                         .HasMaxLength(15)

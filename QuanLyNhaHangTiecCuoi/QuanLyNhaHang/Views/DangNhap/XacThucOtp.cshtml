@@ -1,20 +1,13 @@
-﻿@model QuanLyNhaHang.ViewModels.QuenMatKhauViewModel
-@{
-    ViewData["Title"] = "Quên Mật Khẩu";
+﻿@{
+    ViewData["Title"] = "Xác Thực OTP";
     Layout = null;
 }
+
 <style>
-    /* --- STYLE CHUNG --- */
     :root {
         --primary: #cda45e;
         --bg-overlay: rgba(0, 0, 0, 0.7);
         --form-bg: rgba(12, 11, 9, 0.85);
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
     }
 
     body {
@@ -115,24 +108,21 @@
             }
 </style>
 
-
 <body>
     <div class="container">
         <div class="form-box">
-            <h2>Quên Mật Khẩu</h2>
+            <h2>Xác Thực OTP</h2>
             <p style="text-align:center; color:#ccc; margin-bottom:20px; font-size:14px;">
-                Nhập địa chỉ email của bạn và chúng tôi sẽ gửi hướng dẫn để đặt lại mật khẩu.
+                Nhập mã OTP đã được gửi đến email của bạn.
             </p>
-            <form asp-action="QuenMatKhau" method="post">
-                <input asp-for="Email" type="email" placeholder="Nhập Email của bạn" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-
-                <button type="submit" class="btn">Gửi Yêu Cầu</button>
+            <form asp-action="XacThucOtp" method="post">
+                <input type="text" name="MaOtp" placeholder="Nhập mã OTP" required />
+                <button type="submit" class="btn">Xác Nhận</button>
             </form>
 
             @if (ViewBag.ThongBao != null)
             {
-                <div style="color:lightgreen; text-align:center; margin-top:15px;">@ViewBag.ThongBao</div>
+                <div style="color:red; text-align:center; margin-top:15px;">@ViewBag.ThongBao</div>
             }
 
             <div class="links">
@@ -141,7 +131,3 @@
         </div>
     </div>
 </body>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

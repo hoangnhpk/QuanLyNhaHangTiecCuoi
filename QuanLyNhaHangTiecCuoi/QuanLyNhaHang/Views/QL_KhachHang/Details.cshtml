@@ -1,0 +1,365 @@
+﻿@model QuanLyNhaHang.Models.KhachHang
+
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Details";
+}
+
+<div class="crud-container">
+    <h1>Chi Tiết Khách Hàng</h1>
+
+    <div>
+        <h4 class="details-title">Khách Hàng: @Model?.MaKhachHang</h4>
+        <hr class="header-hr" />
+
+        <div class="row details-layout">
+
+            <div class="col-lg-6 col-md-12 details-section">
+                <h5 class="section-heading"><i class="fa fa-user-circle"></i> Thông tin Người Dùng</h5>
+                <dl class="row details-list">
+                    <dt class="col-sm-4">Tên Khách Hàng</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TenKhachHang)</dd>
+
+                    <dt class="col-sm-4">CCCD</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.CccdKhachHang)</dd>
+
+                    <dt class="col-sm-4">SĐT</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.SdtKhachHang)</dd>
+
+                    <dt class="col-sm-4">Địa Chỉ</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.DiaChiKhachHang)</dd>
+
+                    <dt class="col-sm-4">Trạng Thái KH</dt>
+                    <dd class="col-sm-8">
+                        @{
+                            // DỊCH TRẠNG THÁI KHÁCH HÀNG
+                            var khStatus = Model.TrangThaiKhachHang == "Active" ? "Hoạt động" : "Khóa";
+                            var khStatusClass = Model.TrangThaiKhachHang == "Active" ? "Active" : "Inactive";
+                        }
+                        <span class="status-display status-@khStatusClass">@khStatus</span>
+                    </dd>
+
+                    <dt class="col-sm-4">Ghi Chú</dt>
+                    <dd class="col-sm-8 note-field">@Html.DisplayFor(model => model.GhiChu)</dd>
+                </dl>
+            </div>
+
+            <div class="col-lg-6 col-md-12 details-section">
+                <h5 class="section-heading"><i class="fa fa-lock"></i> Thông tin Tài khoản Đăng nhập</h5>
+
+                @if (Model.TaiKhoan != null)
+                {
+                    <dl class="row details-list">
+                        <dt class="col-sm-4">Mã Tài Khoản</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.MaTaiKhoan)</dd>
+
+                        <dt class="col-sm-4">Email</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.Email)</dd>
+
+                        <dt class="col-sm-4">Tài Khoản (Username)</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.UserName)</dd>
+
+                        <dt class="col-sm-4">Vai Trò</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.VaiTro)</dd>
+
+                        <dt class="col-sm-4">Trạng Thái TK</dt>
+                        <dd class="col-sm-8">
+                            @{
+                                // DỊCH TRẠNG THÁI TÀI KHOẢN
+                                var tkStatus = Model.TaiKhoan.TrangThai == "Active" ? "Hoạt động" : "Khóa";
+                                var tkStatusClass = Model.TaiKhoan.TrangThai == "Active" ? "Active" : "Inactive";
+                            }
+                            <span class="status-display status-@tkStatusClass">@tkStatus</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Mật Khẩu (Hash)</dt>
+                        <dd class="col-sm-8 password-hash-field">
+                            <span title="@Model.TaiKhoan.Password" class="hash-text">
+                                ************** (Đã được Mã hóa)
+                            </span>
+                            <i class="fa fa-lock text-muted" title="Mật khẩu đã được mã hóa và không hiển thị"></i>
+                        </dd>
+                    </dl>
+                }
+                else
+                {
+                    <div class="no-account-info">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        <p>Khách hàng này chưa được gán Tài khoản đăng nhập.</p>
+                        <a asp-action="Edit" asp-route-id="@Model?.MaKhachHang" class="btn-create-tk">Tạo/Gán Tài Khoản Ngay</a>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+
+    <div class="crud-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.MaKhachHang" class="btn-action btn-edit"><i class="fa fa-pencil"></i> Chỉnh Sửa Thông Tin</a>
+        <a asp-action="Index" class="btn-ghost"><i class="fa fa-arrow-left"></i> Quay lại Danh sách</a>
+    </div>
+</div>
+
+<style>
+    /* ======================================================= */
+    /* CÁC QUY TẮC CSS CHUNG CHO DETAILS VIEW */
+    /* ======================================================= */
+
+    /* Định nghĩa lại các biến CSS cần thiết */
+    :root {
+        --primary: #cda45e;
+        --primary-soft: rgba(205, 164, 94, 0.12);
+        --bg-elevated: #15120f;
+        --text-main: #f4f4f4;
+        --text-muted: #a6a6a6;
+        --danger: #ff5c5c;
+        --success: #3c9c69;
+        --warning: #e6a84c;
+        --info: #5bc0de; /* Thêm màu info cho nút */
+        --border-subtle: rgba(255, 255, 255, 0.06);
+        --radius-md: 10px;
+        --radius-pill: 999px;
+    }
+
+    /* Container chính để áp dụng nền và font */
+    .crud-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 20px 30px;
+        background-color: var(--bg-elevated);
+        color: var(--text-main);
+        border-radius: var(--radius-md);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+        font-family: "Poppins", system-ui, sans-serif;
+        border: 1px solid var(--border-subtle);
+    }
+
+        .crud-container h1 {
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-soft);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+    .details-title {
+        font-size: 18px;
+        color: #fff;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .header-hr {
+        border-color: var(--border-subtle);
+    }
+
+    /* =================================================== */
+    /* CSS CHO BỐ CỤC 2 CỘT */
+    /* =================================================== */
+
+    .details-layout {
+        /* Sử dụng hệ thống grid (bootrap) */
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -15px; /* Điều chỉnh margin của row */
+        margin-right: -15px;
+    }
+
+    .details-section {
+        padding: 15px;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        margin-bottom: 20px;
+        height: 100%;
+    }
+
+    /* Tiêu đề từng phần (Thông tin Người Dùng / Tài khoản) */
+    .section-heading {
+        color: var(--primary);
+        font-size: 15px;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--primary-soft);
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+        .section-heading i {
+            margin-right: 8px;
+            color: var(--text-main);
+        }
+
+    /* Định dạng danh sách chi tiết (Details List - DL/DT/DD) */
+    .details-list {
+        width: 100%;
+    }
+
+        .details-list dt {
+            color: var(--text-muted);
+            font-weight: 400;
+            padding: 6px 0;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+        }
+
+        .details-list dd {
+            color: var(--text-main);
+            font-weight: 500;
+            padding: 6px 0;
+            font-size: 13px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+            /* Loại bỏ border-bottom cho phần tử cuối cùng trong mỗi section */
+            .details-list dd:last-child {
+                border-bottom: none;
+            }
+
+    /* =================================================== */
+    /* STYLE CHO CỘT GHI CHÚ (LÀM NỔI BẬT HƠN) */
+    /* =================================================== */
+    .note-field {
+        font-style: italic;
+        color: var(--warning);
+        font-size: 12px !important;
+        white-space: pre-wrap;
+    }
+
+    /* =================================================== */
+    /* STYLE CHO TRẠNG THÁI (STATUS BADGES) */
+    /* =================================================== */
+    .status-display {
+        font-weight: 700 !important;
+        padding: 4px 8px !important;
+        border-radius: var(--radius-pill);
+        display: inline-block;
+        font-size: 11px !important;
+        line-height: 1;
+        text-transform: uppercase;
+    }
+
+    .status-Active {
+        background-color: var(--success);
+        color: #fff;
+    }
+
+    .status-Inactive, .status-Suspended {
+        background-color: var(--danger);
+        color: #fff;
+    }
+
+    /* STYLE CHO THÔNG BÁO KHÔNG CÓ TÀI KHOẢN */
+    .no-account-info {
+        text-align: center;
+        padding: 30px 10px;
+        border: 1px dashed var(--danger);
+        border-radius: var(--radius-md);
+        background-color: rgba(255, 92, 92, 0.05);
+        color: var(--danger);
+    }
+
+        .no-account-info i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .no-account-info p {
+            margin: 0 0 15px 0;
+            font-style: italic;
+            font-size: 13px;
+        }
+
+    /* Nút Tạo/Gán TK trong khung báo lỗi */
+    .btn-create-tk {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: var(--radius-pill);
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--bg-elevated);
+        background-color: var(--danger);
+        transition: all 0.2s;
+    }
+
+        .btn-create-tk:hover {
+            opacity: 0.9;
+            color: #fff;
+        }
+
+    /* =================================================== */
+    /* NÚT ACTIONS (GIỮ NGUYÊN) */
+    /* =================================================== */
+    .crud-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-subtle);
+        margin-top: 20px;
+    }
+
+    .btn-action.btn-edit, .btn-ghost {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: var(--radius-pill);
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.16s ease-out;
+    }
+
+    .btn-action.btn-edit {
+        color: #120f0a;
+        background: linear-gradient(135deg, #cda45e, #b4883d);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    }
+
+        .btn-action.btn-edit:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.04);
+        }
+
+    .btn-ghost {
+        color: var(--text-main);
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff7e7;
+            transform: translateY(-1px);
+        }
+
+    /* STYLE MẬT KHẨU ĐÃ SỬA */
+    .password-hash-field {
+        font-style: italic;
+        color: var(--text-muted) !important;
+        font-size: 12px !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .password-hash-field .hash-text:hover {
+            color: var(--info);
+        }
+</style>
+
+@* Loại bỏ hoàn toàn script JS hiển thị mật khẩu không an toàn *@
+@section Scripts {
+    <script>
+        // Không còn script nào ở đây vì tính năng xem mật khẩu đã được loại bỏ vì lý do bảo mật.
+    </script>
+}

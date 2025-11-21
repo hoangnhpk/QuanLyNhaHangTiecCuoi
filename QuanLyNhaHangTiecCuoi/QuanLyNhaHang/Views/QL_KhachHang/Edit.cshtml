@@ -1,0 +1,182 @@
+﻿@model QuanLyNhaHang.Models.KhachHang
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Edit";
+}
+
+<div class="crud-container">
+    <h1>Chỉnh Sửa Thông Tin</h1> <h4>Khách Hàng</h4>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-controller="QL_KhachHang" asp-action="Edit" asp-route-id="@Model.MaKhachHang" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <!-- ✅ CHỈ GIỮ 1 INPUT CHO MaKhachHang -->
+                <input type="hidden" asp-for="MaKhachHang" />
+                <input type="hidden" asp-for="MaTaiKhoan" />
+
+                <div class="form-group">
+                    <label asp-for="MaKhachHang" class="control-label">Mã Khách Hàng</label>
+                    <input asp-for="MaKhachHang" class="form-control" readonly />
+                    <span asp-validation-for="MaKhachHang" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TenKhachHang" class="control-label">Tên Khách Hàng</label>
+                    <input asp-for="TenKhachHang" class="form-control" name="TenKhachHang" />
+                    <span asp-validation-for="TenKhachHang" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CccdKhachHang" class="control-label">Số CCCD/CMND</label>
+                    <input asp-for="CccdKhachHang" class="form-control" name="CccdKhachHang" />
+                    <span asp-validation-for="CccdKhachHang" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SdtKhachHang" class="control-label">Số Điện Thoại</label>
+                    <input asp-for="SdtKhachHang" class="form-control" name="SdtKhachHang" />
+                    <span asp-validation-for="SdtKhachHang" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DiaChiKhachHang" class="control-label">Địa Chỉ</label>
+                    <input asp-for="DiaChiKhachHang" class="form-control" name="DiaChiKhachHang" />
+                    <span asp-validation-for="DiaChiKhachHang" class="text-danger"></span>
+                </div>
+
+                <hr style="border-color: var(--primary-soft); margin: 20px 0;" />
+                <h5 style="color:var(--primary); font-size: 16px; margin-bottom: 15px;">Thông tin Tài khoản</h5>
+
+                @if (Model.TaiKhoan != null)
+                {
+                    <input type="hidden" name="TaiKhoan.MaTaiKhoan" value="@Model.TaiKhoan.MaTaiKhoan" />
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.VaiTro" class="control-label">Vai Trò</label>
+                        <input asp-for="TaiKhoan.VaiTro" class="form-control" readonly name="TaiKhoan.VaiTro" />
+                        <span asp-validation-for="TaiKhoan.VaiTro" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.Email" class="control-label">Email</label>
+                        <input asp-for="TaiKhoan.Email" class="form-control" name="TaiKhoan.Email" />
+                        <span asp-validation-for="TaiKhoan.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.UserName" class="control-label">Tài Khoản Đăng Nhập</label>
+                        <input asp-for="TaiKhoan.UserName" class="form-control" name="TaiKhoan.UserName" />
+                        <span asp-validation-for="TaiKhoan.UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.Password" class="control-label">Mật Khẩu (Để trống nếu không đổi)</label>
+                        <input asp-for="TaiKhoan.Password" type="password" class="form-control" name="TaiKhoan.Password" value="" />
+                        <span asp-validation-for="TaiKhoan.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.TrangThai" class="control-label">Trạng Thái Tài Khoản</label>
+                        <select asp-for="TaiKhoan.TrangThai" class="form-control" name="TaiKhoan.TrangThai">
+                            <option value="Active">Hoạt Động</option>
+                            <option value="Inactive">Ngừng Hoạt Động</option>
+                        </select>
+                        <span asp-validation-for="TaiKhoan.TrangThai" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-info" style="font-size: 13px;">Khách hàng này chưa được gán tài khoản đăng nhập.</p>
+                }
+
+                <div class="form-group">
+                    <label asp-for="TrangThaiKhachHang" class="control-label">Trạng Thái Khách Hàng</label>
+                    <select asp-for="TrangThaiKhachHang" class="form-control" name="TrangThaiKhachHang">
+                        <option value="Active">Hoạt Động</option>
+                        <option value="Inactive">Ngừng Hoạt Động</option>
+                    </select>
+                    <span asp-validation-for="TrangThaiKhachHang" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="GhiChu" class="control-label">Ghi Chú</label>
+                    <input asp-for="GhiChu" class="form-control" name="GhiChu" />
+                    <span asp-validation-for="GhiChu" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-save btn-primary">Lưu Thay Đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-controller="QL_KhachHang" asp-action="Index" class="btn-ghost">Quay lại danh sách</a>
+    </div>
+</div>
+
+<style>
+    /* CSS styles giữ nguyên như của bạn */
+    :root {
+        --primary: #cda45e;
+        --primary-soft: rgba(205, 164, 94, 0.12);
+        --bg-elevated: #15120f;
+        --text-main: #f4f4f4;
+        --text-muted: #a6a6a6;
+        --danger: #ff5c5c;
+        --border-subtle: rgba(255, 255, 255, 0.06);
+        --radius-md: 10px;
+        --radius-pill: 999px;
+    }
+
+    .crud-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 20px 30px;
+        background-color: var(--bg-elevated);
+        color: var(--text-main);
+        border-radius: var(--radius-md);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+        font-family: "Poppins", system-ui, sans-serif;
+        border: 1px solid var(--border-subtle);
+    }
+
+    /* ... các CSS styles khác giữ nguyên ... */
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        console.log('Script loaded!');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            console.log('Form element:', form);
+            console.log('Form action:', form ? form.action : 'No form found');
+
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    console.log('===== FORM SUBMIT EVENT =====');
+                    console.log('Action URL:', this.action);
+                    console.log('Method:', this.method);
+
+                    // Log tất cả các giá trị trong form
+                    const formData = new FormData(this);
+                    for (let [key, value] of formData.entries()) {
+                        console.log(key + ': ' + value);
+                    }
+                });
+            }
+        });
+    </script>
+}

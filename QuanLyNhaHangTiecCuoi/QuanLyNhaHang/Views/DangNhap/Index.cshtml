@@ -1,4 +1,6 @@
-﻿@{
+﻿@model QuanLyNhaHang.ViewModels.KhachHangDangNhapViewModel
+
+@{
     ViewData["Title"] = "Đăng Nhập";
     Layout = null;
 }
@@ -215,27 +217,32 @@
 
 </style>
 <body>
-    <a href="index.html" class="back-home">
+    <a href="/" class="back-home">
         <span>&#8592;</span> Trang chủ
     </a>
     <div class="container">
         <div class="form-box">
             <h2>Đăng Nhập</h2>
             <form asp-action="Index" method="post">
-                <input name="TaiKhoan" placeholder="Email hoặc Tên đăng nhập" required />
+                <input asp-for="TaiKhoan" placeholder="Email hoặc Tên đăng nhập" />
+                <span asp-validation-for="TaiKhoan" class="text-danger"></span>
+
                 <div class="password-wrapper">
-                    <input type="password" id="MatKhau" name="MatKhau" placeholder="Mật khẩu" required />
-                    <i id="eyeIcon" class="bi bi-eye-fill" style="margin-bottom: 19;" onclick="togglePassword()"></i>
+                    <input asp-for="MatKhau" type="password" placeholder="Mật khẩu" />
+                    <span asp-validation-for="MatKhau" class="text-danger"></span>
+                    <i id="eyeIcon" class="bi bi-eye-fill" onclick="togglePassword()"></i>
                 </div>
 
                 <button type="submit" class="btn">Đăng Nhập</button>
             </form>
+
             @if (ViewBag.ThongBao != null)
             {
                 <div style="color:red; text-align:center;">@ViewBag.ThongBao</div>
             }
+
             <div class="links">
-                <p>Chưa có tài khoản? <a asp-controller="DangKy">Đăng ký ngay</a></p>
+                <p>Chưa có tài khoản? <a asp-controller="DangKy" asp-action="Index">Đăng ký ngay</a></p>
                 <p style="margin-top:10px"><a asp-action="QuenMatKhau">Quên mật khẩu?</a></p>
             </div>
         </div>
