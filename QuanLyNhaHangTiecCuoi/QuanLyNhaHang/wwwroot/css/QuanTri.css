@@ -210,6 +210,14 @@ body {
     font-size: 11px;
     color: var(--text-muted);
 }
+.text-danger {
+    color: #ff4d4d !important; /* Màu đỏ tươi */
+    font-size: 13px; /* Cỡ chữ nhỏ hơn một chút cho tinh tế */
+    font-style: italic; /* In nghiêng (tùy chọn) */
+    margin-top: 5px; /* Cách ô nhập liệu ra 1 chút */
+    display: block; /* Xuống dòng */
+    font-weight: 500;
+}
 
 /* Button Styling */
 .btn {
