@@ -26,7 +26,7 @@ namespace QuanLyNhaHang.Controllers
             if (ModelState.IsValid)
             {
                 // Kiểm tra trùng tài khoản
-<<<<<<< HEAD
+
                 //var existing = _context.KhachHangs.FirstOrDefault(k => k.TaiKhoanKhachHang == model.TaiKhoanKhachHang);
                 //if (existing != null)
                 //{
@@ -57,7 +57,7 @@ namespace QuanLyNhaHang.Controllers
                 //HttpContext.Session.SetString("MaKhachHang", khachHang.MaKhachHang);
                 //HttpContext.Session.SetString("TenKhachHang", khachHang.TenKhachHang ?? "");
 
-=======
+
                 var existing = _context.TaiKhoans.FirstOrDefault(k => k.UserName == model.TaiKhoanKhachHang);
                 if (existing != null)
                 {
@@ -100,8 +100,6 @@ namespace QuanLyNhaHang.Controllers
                 // Lưu Session
                 HttpContext.Session.SetString("MaKhachHang", khachHang.MaKhachHang);
                 HttpContext.Session.SetString("TenKhachHang", khachHang.TenKhachHang ?? "");
->>>>>>> 5e50c9fd72bb9b65d498521c73fa2e7bc0642943
-
                 return RedirectToAction("Index", "Home");
             }
 
