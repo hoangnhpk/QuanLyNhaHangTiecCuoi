@@ -10,6 +10,14 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@500;700&display=swap"
     rel="stylesheet">
+    <link rel="stylesheet" href="~/css/QL_KhachHang.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- ASP.NET Core Validation Scripts -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
   <style>
     :root {
       --primary: #cda45e;
@@ -1580,6 +1588,10 @@
       });
     });
   </script>
+
+    @RenderSection("Scripts", required: false)
+    
+
   <div id="customConfirmModal" class="modal-overlay" style="display: none;">
     <div class="modal-box">
         <div class="modal-header">

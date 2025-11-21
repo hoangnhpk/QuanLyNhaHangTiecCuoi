@@ -1,0 +1,312 @@
+﻿@model QuanLyNhaHang.Models.KhachHang
+
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Edit";
+}
+
+<div class="crud-container">
+    <h1>Chỉnh Sửa Thông Tin</h1> <h4>Khách Hàng</h4>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input type="hidden" asp-for="MaKhachHang" />
+
+                <input type="hidden" asp-for="MaTaiKhoan" />
+
+
+                <div class="form-group">
+                    <label asp-for="MaKhachHang" class="control-label">Mã Khách Hàng</label>
+                    <input asp-for="MaKhachHang" class="form-control" readonly />
+                    <span asp-validation-for="MaKhachHang" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label asp-for="TenKhachHang" class="control-label">Tên Khách Hàng</label>
+                    <input asp-for="TenKhachHang" class="form-control" />
+                    <span asp-validation-for="TenKhachHang" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CccdKhachHang" class="control-label">Số CCCD/CMND</label>
+                    <input asp-for="CccdKhachHang" class="form-control" />
+                    <span asp-validation-for="CccdKhachHang" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SdtKhachHang" class="control-label">Số Điện Thoại</label>
+                    <input asp-for="SdtKhachHang" class="form-control" />
+                    <span asp-validation-for="SdtKhachHang" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DiaChiKhachHang" class="control-label">Địa Chỉ</label>
+                    <input asp-for="DiaChiKhachHang" class="form-control" />
+                    <span asp-validation-for="DiaChiKhachHang" class="text-danger"></span>
+                </div>
+
+                <hr style="border-color: var(--primary-soft); margin: 20px 0;" />
+                <h5 style="color:var(--primary); font-size: 16px; margin-bottom: 15px;">Thông tin Tài khoản</h5>
+
+
+                @if (Model.TaiKhoan != null)
+                {
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.VaiTro" class="control-label">Vai Trò</label>
+                        <input asp-for="TaiKhoan.VaiTro" class="form-control" readonly />
+                        <span asp-validation-for="TaiKhoan.VaiTro" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.Email" class="control-label">Email</label>
+                        <input asp-for="TaiKhoan.Email" class="form-control" />
+                        <span asp-validation-for="TaiKhoan.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.UserName" class="control-label">Tài Khoản Đăng Nhập</label>
+                        <input asp-for="TaiKhoan.UserName" class="form-control" />
+                        <span asp-validation-for="TaiKhoan.UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.Password" class="control-label">Mật Khẩu (Để trống nếu không đổi)</label>
+                        <input asp-for="TaiKhoan.Password" type="password" class="form-control" value="" />
+                        <span asp-validation-for="TaiKhoan.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TaiKhoan.TrangThai" class="control-label">Trạng Thái Tài Khoản</label>
+                        <select asp-for="TaiKhoan.TrangThai" class="form-control">
+                            <option value="Active">Hoạt Động</option>
+                            <option value="Inactive">Ngừng Hoạt Động</option>
+                        </select>
+                        <span asp-validation-for="TaiKhoan.TrangThai" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-info" style="font-size: 13px;">Khách hàng này chưa được gán tài khoản đăng nhập.</p>
+                }
+
+                <div class="form-group">
+                    <label asp-for="TrangThaiKhachHang" class="control-label">Trạng Thái Khách Hàng</label>
+                    <select asp-for="TrangThaiKhachHang" class="form-control">
+                        <option value="Active">Hoạt Động</option>
+                        <option value="Inactive">Ngừng Hoạt Động</option>
+                    </select>
+                    <span asp-validation-for="TrangThaiKhachHang" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="GhiChu" class="control-label">Ghi Chú</label>
+                    <input asp-for="GhiChu" class="form-control" />
+                    <span asp-validation-for="GhiChu" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-save btn-primary">Lưu Thay Đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Index" class="btn-ghost">Quay lại danh sách</a>
+    </div>
+</div>
+
+<style>
+    /* ======================================================= */
+    /* CÁC QUY TẮC CSS CHUNG CHO EDIT VIEW */
+    /* ======================================================= */
+
+    /* Định nghĩa lại các biến CSS cần thiết để các nút và container hoạt động đúng màu */
+    :root {
+        --primary: #cda45e;
+        --primary-soft: rgba(205, 164, 94, 0.12);
+        --bg-elevated: #15120f;
+        --text-main: #f4f4f4;
+        --text-muted: #a6a6a6;
+        --danger: #ff5c5c;
+        --border-subtle: rgba(255, 255, 255, 0.06);
+        --radius-md: 10px;
+        --radius-pill: 999px;
+    }
+
+    /* Container chính để áp dụng nền và font */
+    .crud-container {
+        max-width: 100%; /* Mở rộng tối đa chiều rộng */
+        margin: 0;
+        padding: 20px 30px;
+        background-color: var(--bg-elevated);
+        color: var(--text-main);
+        border-radius: var(--radius-md);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+        font-family: "Poppins", system-ui, sans-serif;
+        border: 1px solid var(--border-subtle);
+    }
+
+        .crud-container h1 {
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-soft);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .crud-container h4 {
+            font-size: 18px;
+            color: #fff;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .crud-container hr {
+            border-color: var(--border-subtle);
+        }
+
+    /* Form Group và Inputs/Select */
+    .form-group {
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .control-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--text-muted);
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 7px 9px;
+        background: rgba(12, 11, 9, 0.92);
+        color: var(--text-main);
+        font-size: 13px;
+        transition: border-color 0.2s;
+        width: 100%;
+        /* Quan trọng: Sửa background cho select arrow */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23a6a6a6%22%20d%3D%22M287%20197.8L154.2%2065c-3.6-3.6-8.4-5.4-13.3-5.4s-9.7%201.8-13.3%205.4L5.4%20197.8c-7.2%207.2-2.5%2012.3%2013.3%2012.3h255c15.8%200%2020.5-5.1%2013.3-12.3z%22%2F%3E%3C%2Fsvg%3E');
+        background-repeat: no-repeat;
+        background-position: right 8px top 50%;
+        background-size: 0.6em auto;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(205, 164, 94, 0.3);
+        }
+
+        /* CSS cho trường input chỉ đọc (readonly) */
+        .form-control[readonly] {
+            background-color: rgba(12, 11, 9, 0.5); /* Màu nền tối hơn */
+            opacity: 0.8;
+            cursor: not-allowed;
+        }
+
+
+    /* Tăng chiều rộng form để chiếm hết container */
+    .crud-container .row {
+        width: 100%;
+    }
+
+    .crud-container .col-md-4 {
+        width: 100%;
+    }
+
+    .text-danger {
+        color: var(--danger);
+        font-size: 11px;
+        margin-top: 2px;
+    }
+
+    /* Cấu hình cho SELECT (Combo Box) */
+    .form-control option {
+        background-color: var(--bg-elevated);
+        color: var(--text-main);
+        padding: 5px;
+    }
+
+    /* Buttons */
+
+    /* Nút Save (Primary Button) */
+    .btn-save.btn-primary {
+        border: none;
+        outline: none;
+        padding: 8px 16px;
+        border-radius: var(--radius-pill);
+        background: linear-gradient(135deg, #cda45e, #b4883d);
+        color: #120f0a;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+        transition: all 0.16s ease-out;
+        margin-top: 10px;
+        width: auto;
+    }
+
+        .btn-save.btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.75);
+            filter: brightness(1.04);
+        }
+
+    /* =================================================== */
+    /* CĂN GIỮA NÚT BACK TO LIST */
+    /* =================================================== */
+    .crud-container > div:last-child {
+        display: flex; /* Kích hoạt Flexbox */
+        justify-content: center; /* Căn nội dung (nút) vào giữa */
+        padding-top: 20px;
+        border-top: 1px solid var(--border-subtle);
+        margin-top: 20px; /* Thêm margin trên cho phần div này */
+    }
+
+    /* Link Back to List (Ghost Button) */
+    .crud-container div a[asp-action="Index"] {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: var(--radius-pill);
+        font-size: 12px;
+        font-weight: 500;
+        text-decoration: none;
+        color: var(--text-main);
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        transition: all 0.16s ease-out;
+    }
+
+        .crud-container div a[asp-action="Index"]:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff7e7;
+            transform: translateY(-1px);
+        }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

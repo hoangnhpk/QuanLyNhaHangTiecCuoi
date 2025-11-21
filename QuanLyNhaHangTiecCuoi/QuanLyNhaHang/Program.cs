@@ -11,13 +11,12 @@ builder.Services.AddDbContext<QuanLyNhaHangContext>(options =>
 
 // --- KẾT THÚC ĐOẠN CẦN THÊM ---
 
+
 // --- Thêm dịch vụ Session ---
 builder.Services.AddSession();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
