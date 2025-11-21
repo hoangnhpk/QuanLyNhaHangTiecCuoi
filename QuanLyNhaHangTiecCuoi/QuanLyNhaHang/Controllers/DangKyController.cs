@@ -26,38 +26,6 @@ namespace QuanLyNhaHang.Controllers
             if (ModelState.IsValid)
             {
                 // Kiểm tra trùng tài khoản
-<<<<<<< HEAD
-                //var existing = _context.KhachHangs.FirstOrDefault(k => k.TaiKhoanKhachHang == model.TaiKhoanKhachHang);
-                //if (existing != null)
-                //{
-                //    ViewBag.ThongBao = "Tài khoản đã tồn tại!";
-                //    return View(model);
-                //}
-
-                // Tạo mã khách hàng tự động
-                //string maKH = "KH" + DateTime.Now.Ticks.ToString().Substring(10);
-
-                //var khachHang = new KhachHang
-                //{
-                //    MaKhachHang = maKH,
-                //    TaiKhoanKhachHang = model.TaiKhoanKhachHang,
-                //    MatKhauKhachHang = model.MatKhauKhachHang,
-                //    TenKhachHang = model.TenKhachHang,
-                //    CccdKhachHang = model.CccdKhachHang,
-                //    DiaChiKhachHang = model.DiaChiKhachHang,
-                //    EmailKhachHang = model.EmailKhachHang,
-                //    SdtKhachHang = model.SdtKhachHang,
-                //    TrangThaiKhachHang = "Hoạt động"
-                //};
-
-                //_context.KhachHangs.Add(khachHang);
-                //_context.SaveChanges();
-
-                // Lưu Session
-                //HttpContext.Session.SetString("MaKhachHang", khachHang.MaKhachHang);
-                //HttpContext.Session.SetString("TenKhachHang", khachHang.TenKhachHang ?? "");
-
-=======
                 var existing = _context.TaiKhoans.FirstOrDefault(k => k.UserName == model.TaiKhoanKhachHang);
                 if (existing != null)
                 {
@@ -100,7 +68,6 @@ namespace QuanLyNhaHang.Controllers
                 // Lưu Session
                 HttpContext.Session.SetString("MaKhachHang", khachHang.MaKhachHang);
                 HttpContext.Session.SetString("TenKhachHang", khachHang.TenKhachHang ?? "");
->>>>>>> 5e50c9fd72bb9b65d498521c73fa2e7bc0642943
 
                 return RedirectToAction("Index", "Home");
             }
