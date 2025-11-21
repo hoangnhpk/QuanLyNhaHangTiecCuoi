@@ -38,193 +38,216 @@
         <button class="tab-button active" onclick="openTab(event, 'CustomerInfo')">Thông tin khách hàng</button>
         <button class="tab-button" onclick="openTab(event, 'AccountLogin')">Tài khoản đăng nhập</button>
     </div>
+
     <div id="CustomerInfo" class="tab-content active">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Mã KH</th>
-                    <th>Tên Khách Hàng</th>
-                    <th>CCCD</th>
-                    <th>Số Điện Thoại</th>
-                    <th>Địa Chỉ</th>
-                    <th>Email</th>
-                    <th>Trạng Thái</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+        @if (Model != null && Model.Any())
+        {
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MaKhachHang)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.TenKhachHang)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CccdKhachHang)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.SdtKhachHang)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DiaChiKhachHang)
-                        </td>
-                        <td>
-                            @if (item.TaiKhoan != null)
-                            {
-                                @Html.DisplayFor(modelItem => item.TaiKhoan.Email)
-                            }
-                            else
-                            {
-                                <span>(Không có TK)</span>
-                            }
-                        </td>
-                        <td>
-                            @{
-                                string statusValue = item.TrangThaiKhachHang;
-                                string vietnameseStatus;
-                                string cssStatusClass;
-
-                                if (statusValue == "Active" || statusValue == "HOẠT ĐỘNG")
+                        <th>Mã KH</th>
+                        <th>Tên Khách Hàng</th>
+                        <th>CCCD</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Địa Chỉ</th>
+                        <th>Email</th>
+                        <th>Trạng Thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaKhachHang)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.TenKhachHang)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CccdKhachHang)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SdtKhachHang)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DiaChiKhachHang)
+                            </td>
+                            <td>
+                                @if (item.TaiKhoan != null)
                                 {
-                                    vietnameseStatus = "Hoạt động";
-                                    cssStatusClass = "active";
-                                }
-                                else if (statusValue == "Inactive" || statusValue == "NGỪNG HOẠT ĐỘNG")
-                                {
-                                    vietnameseStatus = "Khóa";
-                                    cssStatusClass = "inactive";
+                                    @Html.DisplayFor(modelItem => item.TaiKhoan.Email)
                                 }
                                 else
                                 {
-                                    vietnameseStatus = statusValue;
-                                    cssStatusClass = "unknown";
+                                    <span>(Không có TK)</span>
                                 }
+                            </td>
+                            <td>
+                                @{
+                                    string statusValue = item.TrangThaiKhachHang;
+                                    string vietnameseStatus;
+                                    string cssStatusClass;
 
-                                <span class="status-badge status-@cssStatusClass">@vietnameseStatus</span>
-                            }
-                        </td>
-                        <td>
-                            <a asp-controller="QL_KhachHang" asp-action="Edit" asp-route-id="@item.MaKhachHang" class="btn-action btn-edit">Sửa</a>
-                            <a asp-controller="QL_KhachHang" asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
+                                    if (statusValue == "Active" || statusValue == "HOẠT ĐỘNG")
+                                    {
+                                        vietnameseStatus = "Hoạt động";
+                                        cssStatusClass = "active";
+                                    }
+                                    else if (statusValue == "Inactive" || statusValue == "NGỪNG HOẠT ĐỘNG")
+                                    {
+                                        vietnameseStatus = "Khóa";
+                                        cssStatusClass = "inactive";
+                                    }
+                                    else
+                                    {
+                                        vietnameseStatus = statusValue;
+                                        cssStatusClass = "unknown";
+                                    }
 
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                                    <span class="status-badge status-@cssStatusClass">@vietnameseStatus</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-controller="QL_KhachHang" asp-action="Edit" asp-route-id="@item.MaKhachHang" class="btn-action btn-edit">Sửa</a>
+                                <a asp-controller="QL_KhachHang" asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert info-alert empty-data-msg">
+                <i class="fa fa-info-circle"></i> <strong>Thông báo!</strong> Hiện tại không có dữ liệu khách hàng nào trong hệ thống.
+            </div>
+        }
     </div>
-    <div id="AccountLogin" class="tab-content">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Mã KH</th>
-                    <th>Tài Khoản</th>
-                    <th>Mật Khẩu</th>
-                    <th>Email</th>
-                    <th>Vai Trò</th>
-                    <th>Trạng Thái TK</th>
-                    <th>Ghi Chú</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.MaKhachHang)
-                        </td>
-                        <td>
-                            @if (item.TaiKhoan != null)
-                            {
-                                @Html.DisplayFor(modelItem => item.TaiKhoan.UserName)
-                            }
-                            else
-                            {
-                                <span>(Không có TK)</span>
-                            }
-                        </td>
-                        <td>
-                            @if (item.TaiKhoan != null && !string.IsNullOrEmpty(item.TaiKhoan.Password))
-                            {
-                                <span>********</span>
-                            }
-                            else
-                            {
-                                <span>(Không có)</span>
-                            }
-                        </td>
-                        <td>
-                            @if (item.TaiKhoan != null)
-                            {
-                                @Html.DisplayFor(modelItem => item.TaiKhoan.Email)
-                            }
-                            else
-                            {
-                                <span>(Không có TK)</span>
-                            }
-                        </td>
-                        <td>
-                            @if (item.TaiKhoan != null)
-                            {
-                                @Html.DisplayFor(modelItem => item.TaiKhoan.VaiTro)
-                            }
-                            else
-                            {
-                                <span>(Chưa gán)</span>
-                            }
-                        </td>
-                        <td>
-                            @{
-                                // Trạng thái này phải lấy từ trường TrangThai của TaiKhoan,
-                                // nhưng hiện tại bạn đang dùng TrangThaiKhachHang. Tôi sẽ dùng TrangThai của TaiKhoan nếu có.
-                                string tkStatusValue = item.TaiKhoan?.TrangThai ?? item.TrangThaiKhachHang;
-                                string tkVietnameseStatus;
-                                string tkCssStatusClass;
 
-                                if (tkStatusValue == "Active" || tkStatusValue == "HOẠT ĐỘNG")
+    <div id="AccountLogin" class="tab-content">
+        @if (Model != null && Model.Any(kh => kh.TaiKhoan != null))
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Mã KH</th>
+                        <th>Tài Khoản</th>
+                        <th>Mật Khẩu</th>
+                        <th>Email</th>
+                        <th>Vai Trò</th>
+                        <th>Trạng Thái TK</th>
+                        <th>Ghi Chú</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Where(kh => kh.TaiKhoan != null))
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MaKhachHang)
+                            </td>
+                            <td>
+                                @if (item.TaiKhoan != null)
                                 {
-                                    tkVietnameseStatus = "Hoạt động";
-                                    tkCssStatusClass = "active";
-                                }
-                                else if (tkStatusValue == "Inactive" || tkStatusValue == "NGỪNG HOẠT ĐỘNG")
-                                {
-                                    tkVietnameseStatus = "Khóa";
-                                    tkCssStatusClass = "inactive";
+                                    @Html.DisplayFor(modelItem => item.TaiKhoan.UserName)
                                 }
                                 else
                                 {
-                                    tkVietnameseStatus = tkStatusValue;
-                                    tkCssStatusClass = "unknown";
+                                    <span>(Không có TK)</span>
                                 }
+                            </td>
+                            <td>
+                                @if (item.TaiKhoan != null && !string.IsNullOrEmpty(item.TaiKhoan.Password))
+                                {
+                                    <span>********</span>
+                                }
+                                else
+                                {
+                                    <span>(Không có)</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.TaiKhoan != null)
+                                {
+                                    @Html.DisplayFor(modelItem => item.TaiKhoan.Email)
+                                }
+                                else
+                                {
+                                    <span>(Không có TK)</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.TaiKhoan != null)
+                                {
+                                    @Html.DisplayFor(modelItem => item.TaiKhoan.VaiTro)
+                                }
+                                else
+                                {
+                                    <span>(Chưa gán)</span>
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    // Trạng thái này phải lấy từ trường TrangThai của TaiKhoan,
+                                    // nhưng hiện tại bạn đang dùng TrangThaiKhachHang. Tôi sẽ dùng TrangThai của TaiKhoan nếu có.
+                                    string tkStatusValue = item.TaiKhoan?.TrangThai ?? item.TrangThaiKhachHang;
+                                    string tkVietnameseStatus;
+                                    string tkCssStatusClass;
 
-                                <span class="status-badge status-@tkCssStatusClass">@tkVietnameseStatus</span>
-                            }
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.GhiChu)
-                        </td>
-                        <td>
-                            <a asp-controller="QL_KhachHang" asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
-                            <a asp-controller="QL_KhachHang" asp-action="Lock" asp-route-id="@item.MaKhachHang"
-                               class="btn-action btn-lock lock-btn"
-                               data-customer-name="@item.TenKhachHang"
-                               onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng &quot;@item.TenKhachHang&quot; không?');">
-                                Khóa
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                                    if (tkStatusValue == "Active" || tkStatusValue == "HOẠT ĐỘNG")
+                                    {
+                                        tkVietnameseStatus = "Hoạt động";
+                                        tkCssStatusClass = "active";
+                                    }
+                                    else if (tkStatusValue == "Inactive" || tkStatusValue == "NGỪNG HOẠT ĐỘNG")
+                                    {
+                                        tkVietnameseStatus = "Khóa";
+                                        tkCssStatusClass = "inactive";
+                                    }
+                                    else
+                                    {
+                                        tkVietnameseStatus = tkStatusValue;
+                                        tkCssStatusClass = "unknown";
+                                    }
+
+                                    <span class="status-badge status-@tkCssStatusClass">@tkVietnameseStatus</span>
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GhiChu)
+                            </td>
+                            <td>
+                                <a asp-controller="QL_KhachHang" asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
+                                <form asp-controller="QL_KhachHang" asp-action="Lock" asp-route-id="@item.MaKhachHang" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.MaKhachHang" />
+                                    <button type="submit"
+                                            class="btn-action btn-lock lock-btn"
+                                            data-customer-name="@item.TenKhachHang"
+                                            onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng &quot;@item.TenKhachHang&quot; không?');">
+                                        Khóa
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert info-alert empty-data-msg">
+                <i class="fa fa-info-circle"></i> <strong>Thông báo!</strong> Hiện tại không có tài khoản đăng nhập nào được gán cho khách hàng.
+            </div>
+        }
     </div>
 </div>
 
 <style>
-    /* ... (CSS CÒN LẠI GIỮ NGUYÊN) ... */
+    /* BỔ SUNG BIẾN CSS CHO MÀU INFO */
     :root {
         --primary: #cda45e;
         --primary-soft: rgba(205, 164, 94, 0.12);
@@ -242,6 +265,9 @@
         /* Màu mới cho badge trạng thái */
         --active-color: var(--success-base);
         --inactive-color: var(--danger);
+        /* BỔ SUNG MÀU INFO */
+        --info-base: #5bc0de;
+        --info-soft: rgba(91, 192, 222, 0.2);
     }
 
     /* -------------------------------------- */
@@ -266,6 +292,26 @@
         align-items: center;
     }
 
+    /* BỔ SUNG STYLE INFO ALERT */
+    .info-alert {
+        color: var(--info-base);
+        background-color: var(--info-soft);
+        border-color: rgba(91, 192, 222, 0.5);
+    }
+
+    /* BỔ SUNG STYLE CHO DỮ LIỆU RỖNG */
+    .empty-data-msg {
+        text-align: center;
+        padding: 20px;
+        margin-top: 20px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+        .empty-data-msg i {
+            margin-right: 10px;
+        }
+
     .success-alert {
         color: var(--success-base);
         background-color: var(--success-soft);
@@ -282,6 +328,8 @@
         font-weight: 600;
         margin-right: 5px;
     }
+
+    /* ... (CSS còn lại giữ nguyên) ... */
 
     .close-btn {
         background: none;
@@ -549,7 +597,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // ----------------------------------------
-            // LOGIC KHÓA TÀI KHOẢN (ĐÃ SỬA: SỬ DỤNG CONFIRM INLINE)
+            // LOGIC KHÓA TÀI KHOẢN (ĐÃ SỬ DỤNG FORM POST)
             // ----------------------------------------
             // Thêm logic cho nút Khóa (Lock) nếu nó nằm trong tab AccountLogin
             document.querySelectorAll('.lock-btn').forEach(button => {
@@ -557,15 +605,7 @@
                     const url = this.getAttribute('asp-action') + '/' + this.getAttribute('asp-route-id');
                     const customerName = this.getAttribute('data-customer-name');
 
-                    // Giả định bạn sử dụng hàm confirm() trong JS, nhưng đã chuyển sang onclick inline
-                    // Nếu bạn muốn dùng logic JS, bạn cần bỏ onclick inline đi.
-
-                    // Nếu muốn dùng JS:
-                    // e.preventDefault();
-                    // const confirmation = confirm('Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng "' + customerName + '" không?');
-                    // if (confirmation) {
-                    //    window.location.href = this.href;
-                    // }
+                    // Giữ nguyên logic onclick inline để xác nhận
                 });
             });
 
