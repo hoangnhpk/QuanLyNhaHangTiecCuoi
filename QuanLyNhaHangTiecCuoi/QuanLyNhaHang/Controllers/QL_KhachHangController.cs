@@ -184,7 +184,59 @@ namespace QuanLyNhaHang.Controllers
             return View(khachHang);
         }
 
-        // ... (Các action khác giữ nguyên) ...
+        // POST: QL_KhachHang/Lock/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Lock(string id)
+        {
+            if (id == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy mã khách hàng để khóa.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var khachHang = await _context.KhachHangs
+                .Include(k => k.TaiKhoan)
+                .FirstOrDefaultAsync(k => k.MaKhachHang == id);
+
+            if (khachHang == null)
+            {
+                TempData["ErrorMessage"] = "Khách hàng không tồn tại.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Kiểm tra xem khách hàng đã bị khóa chưa để tránh thao tác dư thừa
+            if (khachHang.TrangThaiKhachHang == "Inactive")
+            {
+                TempData["ErrorMessage"] = $"Khách hàng '{khachHang.TenKhachHang}' đã bị khóa trước đó.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            try
+            {
+                // Khóa thông tin Khách hàng
+                khachHang.TrangThaiKhachHang = "Inactive";
+
+                // Khóa Tài khoản đăng nhập (nếu có)
+                if (khachHang.TaiKhoan != null)
+                {
+                    khachHang.TaiKhoan.TrangThai = "Inactive";
+                }
+
+                // Cập nhật trạng thái
+                _context.Update(khachHang);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Đã **khóa** khách hàng '{khachHang.TenKhachHang}' (Mã: {khachHang.MaKhachHang}) thành công.";
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                TempData["ErrorMessage"] = "Lỗi đồng thời khi khóa tài khoản.";
+            }
+
+           
+            return RedirectToAction(nameof(Index));
+        }
 
         private bool KhachHangExists(string id)
         {

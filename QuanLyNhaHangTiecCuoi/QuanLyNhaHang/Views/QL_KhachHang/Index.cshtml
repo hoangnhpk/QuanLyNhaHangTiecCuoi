@@ -208,15 +208,25 @@
                             @Html.DisplayFor(modelItem => item.GhiChu)
                         </td>
                         <td>
+                            
+                            @* ... trong vòng lặp foreach của AccountLogin tab ... *@
+                    
+                      
+                        <td>
                             <a asp-controller="QL_KhachHang" asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
-                            <a asp-controller="QL_KhachHang" asp-action="Lock" asp-route-id="@item.MaKhachHang"
-                               class="btn-action btn-lock lock-btn"
-                               data-customer-name="@item.TenKhachHang"
-                               onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng &quot;@item.TenKhachHang&quot; không?');">
-                                Khóa
-                            </a>
+                                    @* BỌC NÚT KHÓA TRONG MỘT FORM RIÊNG *@
+                            <form asp-controller="QL_KhachHang" asp-action="Lock" asp-route-id="@item.MaKhachHang" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@item.MaKhachHang" />
+                                <button type="submit"
+                                        class="btn-action btn-lock lock-btn"
+                                        data-customer-name="@item.TenKhachHang"
+                                        onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng &quot;@item.TenKhachHang&quot; không?');">
+                                    Khóa
+                                </button>
+                            </form>
                         </td>
                     </tr>
+                 
                 }
             </tbody>
         </table>

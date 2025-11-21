@@ -51,6 +51,9 @@
                 @if (Model.TaiKhoan != null)
                 {
                     <dl class="row details-list">
+                        <dt class="col-sm-4">Mã Tài Khoản</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.MaTaiKhoan)</dd>
+
                         <dt class="col-sm-4">Email</dt>
                         <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.Email)</dd>
 
@@ -70,15 +73,12 @@
                             <span class="status-display status-@tkStatusClass">@tkStatus</span>
                         </dd>
 
-                        <dt class="col-sm-4">Mật Khẩu</dt>
-                        <dd class="col-sm-8">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span id="passwordDisplay">********</span>
-                                <button type="button" class="btn-toggle-password" id="togglePasswordBtn">
-                                    <i class="fa fa-eye"></i> Xem
-                                </button>
-                                <span id="actualPassword" style="display: none;">@Model.TaiKhoan.Password</span>
-                            </div>
+                        <dt class="col-sm-4">Mật Khẩu (Hash)</dt>
+                        <dd class="col-sm-8 password-hash-field">
+                            <span title="@Model.TaiKhoan.Password" class="hash-text">
+                                ************** (Đã được Mã hóa)
+                            </span>
+                            <i class="fa fa-lock text-muted" title="Mật khẩu đã được mã hóa và không hiển thị"></i>
                         </dd>
                     </dl>
                 }
@@ -87,6 +87,7 @@
                     <div class="no-account-info">
                         <i class="fa fa-exclamation-triangle"></i>
                         <p>Khách hàng này chưa được gán Tài khoản đăng nhập.</p>
+                        <a asp-action="Edit" asp-route-id="@Model?.MaKhachHang" class="btn-create-tk">Tạo/Gán Tài Khoản Ngay</a>
                     </div>
                 }
             </div>
@@ -95,8 +96,8 @@
     </div>
 
     <div class="crud-actions">
-        <a asp-action="Edit" asp-route-id="@Model?.MaKhachHang" class="btn-action btn-edit"><i class="fa fa-pencil"></i> Chỉnh Sửa Thông Tin Người Dùng</a>
-        <a asp-action="Index" class="btn-ghost"><i class="fa fa-arrow-left"></i> Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model?.MaKhachHang" class="btn-action btn-edit"><i class="fa fa-pencil"></i> Chỉnh Sửa Thông Tin</a>
+        <a asp-action="Index" class="btn-ghost"><i class="fa fa-arrow-left"></i> Quay lại Danh sách</a>
     </div>
 </div>
 
@@ -115,6 +116,7 @@
         --danger: #ff5c5c;
         --success: #3c9c69;
         --warning: #e6a84c;
+        --info: #5bc0de; /* Thêm màu info cho nút */
         --border-subtle: rgba(255, 255, 255, 0.06);
         --radius-md: 10px;
         --radius-pill: 999px;
@@ -160,8 +162,11 @@
     /* =================================================== */
 
     .details-layout {
-        margin-top: 25px;
-        margin-bottom: 25px;
+        /* Sử dụng hệ thống grid (bootrap) */
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -15px; /* Điều chỉnh margin của row */
+        margin-right: -15px;
     }
 
     .details-section {
@@ -266,13 +271,31 @@
         }
 
         .no-account-info p {
-            margin: 0;
+            margin: 0 0 15px 0;
             font-style: italic;
             font-size: 13px;
         }
 
+    /* Nút Tạo/Gán TK trong khung báo lỗi */
+    .btn-create-tk {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: var(--radius-pill);
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--bg-elevated);
+        background-color: var(--danger);
+        transition: all 0.2s;
+    }
+
+        .btn-create-tk:hover {
+            opacity: 0.9;
+            color: #fff;
+        }
+
     /* =================================================== */
-    /* NÚT ACTIONS */
+    /* NÚT ACTIONS (GIỮ NGUYÊN) */
     /* =================================================== */
     .crud-actions {
         display: flex;
@@ -319,55 +342,24 @@
             transform: translateY(-1px);
         }
 
-    /* STYLE CHO NÚT XEM MẬT KHẨU */
-    .btn-toggle-password {
-        background: none;
-        border: 1px solid var(--border-subtle);
-        color: var(--text-muted);
-        padding: 4px 8px;
-        border-radius: var(--radius-md);
-        font-size: 11px;
-        cursor: pointer;
-        transition: color 0.2s, background-color 0.2s;
+    /* STYLE MẬT KHẨU ĐÃ SỬA */
+    .password-hash-field {
+        font-style: italic;
+        color: var(--text-muted) !important;
+        font-size: 12px !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 
-        .btn-toggle-password:hover {
-            color: var(--primary);
-            background-color: rgba(205, 164, 94, 0.08);
-            border-color: var(--primary-soft);
+        .password-hash-field .hash-text:hover {
+            color: var(--info);
         }
-
-        .btn-toggle-password .fa {
-            margin-right: 4px;
-        }
-
 </style>
 
+@* Loại bỏ hoàn toàn script JS hiển thị mật khẩu không an toàn *@
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const toggleBtn = document.getElementById('togglePasswordBtn');
-            const passwordDisplay = document.getElementById('passwordDisplay');
-            const actualPasswordSpan = document.getElementById('actualPassword');
-
-            if (toggleBtn && passwordDisplay && actualPasswordSpan) {
-                const actualPassword = actualPasswordSpan.textContent;
-                let isPasswordVisible = false;
-
-                toggleBtn.addEventListener('click', function () {
-                    isPasswordVisible = !isPasswordVisible;
-
-                    if (isPasswordVisible) {
-                        // Hiển thị mật khẩu thực tế
-                        passwordDisplay.textContent = actualPassword;
-                        toggleBtn.innerHTML = '<i class="fa fa-eye-slash"></i> Ẩn';
-                    } else {
-                        // Ẩn mật khẩu (hiển thị ****)
-                        passwordDisplay.textContent = '********';
-                        toggleBtn.innerHTML = '<i class="fa fa-eye"></i> Xem';
-                    }
-                });
-            }
-        });
+        // Không còn script nào ở đây vì tính năng xem mật khẩu đã được loại bỏ vì lý do bảo mật.
     </script>
 }
