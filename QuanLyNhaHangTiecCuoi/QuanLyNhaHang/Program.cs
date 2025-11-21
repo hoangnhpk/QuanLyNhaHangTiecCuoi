@@ -9,6 +9,8 @@ builder.Services.AddDbContext<QuanLyNhaHangContext>(options =>
     options.UseSqlServer(connectionString));
 
 
+// --- KẾT THÚC ĐOẠN CẦN THÊM ---
+
 
 // --- Thêm dịch vụ Session ---
 builder.Services.AddSession();
