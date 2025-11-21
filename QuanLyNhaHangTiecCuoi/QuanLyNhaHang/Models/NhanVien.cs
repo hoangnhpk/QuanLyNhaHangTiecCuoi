@@ -26,9 +26,7 @@ namespace QuanLyNhaHang.Models
 
         [StringLength(255)]
         public string? DiaChiNV { get; set; }
-<<<<<<< HEAD
 
-=======
         [StringLength(100)]
         public string? MailNV { get; set; }
 
@@ -36,7 +34,7 @@ namespace QuanLyNhaHang.Models
         public string? MatKhau { get; set; }
         [StringLength(30)]
         public string? ChucVuNV { get; set; }
->>>>>>> 5e50c9fd72bb9b65d498521c73fa2e7bc0642943
+
         [StringLength(30)]
         public string? TrangThaiNV { get; set; }
 

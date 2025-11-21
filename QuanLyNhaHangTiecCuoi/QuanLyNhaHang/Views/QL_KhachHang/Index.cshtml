@@ -107,9 +107,9 @@
                             }
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.MaKhachHang" class="btn-action btn-edit">Sửa</a>
-                            <a asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
-                            
+                            <a asp-controller="QL_KhachHang" asp-action="Edit" asp-route-id="@item.MaKhachHang" class="btn-action btn-edit">Sửa</a>
+                            <a asp-controller="QL_KhachHang" asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
+
                         </td>
                     </tr>
                 }
@@ -124,7 +124,7 @@
                     <th>Tài Khoản</th>
                     <th>Mật Khẩu</th>
                     <th>Email</th>
-                    <th>Vai Trò</th>  
+                    <th>Vai Trò</th>
                     <th>Trạng Thái TK</th>
                     <th>Ghi Chú</th>
                     <th></th>
@@ -208,8 +208,8 @@
                             @Html.DisplayFor(modelItem => item.GhiChu)
                         </td>
                         <td>
-                            <a asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
-                            <a asp-action="Lock" asp-route-id="@item.MaKhachHang"
+                            <a asp-controller="QL_KhachHang" asp-action="Details" asp-route-id="@item.MaKhachHang" class="btn-action btn-details">Chi Tiết</a>
+                            <a asp-controller="QL_KhachHang" asp-action="Lock" asp-route-id="@item.MaKhachHang"
                                class="btn-action btn-lock lock-btn"
                                data-customer-name="@item.TenKhachHang"
                                onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản của khách hàng &quot;@item.TenKhachHang&quot; không?');">

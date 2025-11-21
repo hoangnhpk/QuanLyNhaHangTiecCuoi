@@ -33,10 +33,7 @@ namespace QuanLyNhaHang.Models
         public DbSet<PhieuThanhToan> PhieuThanhToans { get; set; }
         public DbSet<HinhAnh> HinhAnhs { get; set; }
         public DbSet<TaiKhoan> TaiKhoans { get; set; }
-<<<<<<< HEAD
 
-=======
->>>>>>> 5e50c9fd72bb9b65d498521c73fa2e7bc0642943
         public DbSet<ComboMon> ComboMons { get; set; }
         public DbSet<ChiTietCombo> ChiTietCombos { get; set; }
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
