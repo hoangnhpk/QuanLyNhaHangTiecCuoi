@@ -15,8 +15,6 @@ namespace QuanLyNhaHang.Models
 
         public int? SoLuong { get; set; }
 
-       
-
         [StringLength(20)]
         public string? MaComboMon { get; set; } 
 
