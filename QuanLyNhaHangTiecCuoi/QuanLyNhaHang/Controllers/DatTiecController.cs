@@ -16,51 +16,44 @@ namespace QuanLyNhaHang.Controllers
         [HttpPost]
         public IActionResult DatTiec(DatTiecVM model)
         {
+            // 1. KIỂM TRA ĐĂNG NHẬP
+            // Lấy Mã khách hàng từ Session (đã lưu lúc đăng nhập)
+            var maKhachHang = HttpContext.Session.GetString("MaKhachHang");
+
+            if (string.IsNullOrEmpty(maKhachHang))
+            {
+                // Nếu chưa đăng nhập -> Thông báo và chuyển sang trang Đăng nhập
+                TempData["ErrorMessage"] = "Bạn cần đăng nhập để thực hiện đặt tiệc!";
+                return RedirectToAction("Index", "DangNhap"); // Chuyển hướng sang Controller DangNhap
+            }
+
+            // 2. Xử lý đặt tiệc (Khi đã đăng nhập)
             if (ModelState.IsValid)
             {
                 try
                 {
-                    // 1. Xử lý Khách Hàng
-                    var khachHang = _context.KhachHangs.FirstOrDefault(k => k.SdtKhachHang == model.SDT);
-                    if (khachHang == null)
-                    {
-                        khachHang = new KhachHang
-                        {
-                            MaKhachHang = PhatSinhMaKH(),
-                            TenKhachHang = model.HoTen,
-                            SdtKhachHang = model.SDT,
-                            //EmailKhachHang = model.Email,
-                            TrangThaiKhachHang = "Tiềm năng"
-                        };
-                        _context.KhachHangs.Add(khachHang);
-                        _context.SaveChanges();
-                    }
-
-                    // 2. Tạo Đơn Đặt Tiệc
+                    // Tạo Đơn Đặt Tiệc
                     var tiec = new DatTiec
                     {
                         MaDatTiec = PhatSinhMaTiec(),
-                        MaKhachHang = khachHang.MaKhachHang,
+                        MaKhachHang = maKhachHang, // Lấy trực tiếp từ Session, không cần tạo mới
                         TenCoDau = model.TenCoDau,
                         TenChuRe = model.TenChuRe,
                         NgayToChuc = model.NgayToChuc,
                         SoBanDat = model.SoBanDat,
                         NgayDatTiec = DateTime.Now,
-                        TrangThai = "Mới đặt",
-                        GiaBan = 0, // Tạm thời để 0 hoặc giá mặc định để tránh lỗi database
+                        TrangThai = "Mới đặt", // Trạng thái mặc định
+                        GiaBan = 0,
                         TienCoc = 0,
                         ChiTiet = $"Dự phòng: {model.SoBanDuPhong} bàn. Ghi chú: {model.GhiChu}"
                     };
 
                     _context.DatTiecs.Add(tiec);
-                    _context.SaveChanges();
+                    _context.SaveChanges(); // Lưu để có MaDatTiec
 
-
-                    // --- 3. XỬ LÝ THÊM CHI TIẾT THỰC ĐƠN (MỚI) ---
+                    // 3. Xử lý Chi tiết thực đơn (Combo/Món lẻ)
                     if (!string.IsNullOrEmpty(model.LoaiThucDon))
                     {
-                        // Lấy ngẫu nhiên 5 món ăn từ Database
-                        // Guid.NewGuid() là mẹo để sort ngẫu nhiên trong SQL
                         var randomMonAns = _context.MonAns
                                             .OrderBy(r => Guid.NewGuid())
                                             .Take(5)
@@ -70,47 +63,37 @@ namespace QuanLyNhaHang.Controllers
                         {
                             var chiTiet = new ChiTietThucDon
                             {
-                                MaChiTietThucDon = Guid.NewGuid().ToString().Substring(0, 20), // Tạo ID ngẫu nhiên ngắn
+                                MaChiTietThucDon = Guid.NewGuid().ToString().Substring(0, 20),
                                 MaDatTiec = tiec.MaDatTiec,
                                 MaMonAn = mon.MaMonAn,
-                                SoLuongMotBan = 1, // Mặc định 1 phần/bàn
-                                GhiChuThem = "Món theo set " + model.LoaiThucDon
+                                SoLuongMotBan = 1,
+                                GhiChuThem = "Thuộc menu: " + model.LoaiThucDon
                             };
                             _context.ChiTietThucDons.Add(chiTiet);
                         }
                         _context.SaveChanges();
                     }
 
+                    // 4. Xử lý Dịch vụ
                     if (!string.IsNullOrEmpty(model.LoaiDichVu))
                     {
-                        // Xác định tên dịch vụ cần tìm dựa trên lựa chọn của khách
-                        // (Dữ liệu này phải khớp với dữ liệu mẫu bạn đã tạo trong HomeController)
                         string tenDichVuCanTim = "";
-                        if (model.LoaiDichVu == "Basic")
-                        {
-                            tenDichVuCanTim = "Combo Trang Trí Cơ Bản";
-                        }
-                        else if (model.LoaiDichVu == "VIP")
-                        {
-                            tenDichVuCanTim = "Combo Trang Trí VIP";
-                        }
+                        if (model.LoaiDichVu == "Basic") tenDichVuCanTim = "Combo Trang Trí Cơ Bản";
+                        else if (model.LoaiDichVu == "VIP") tenDichVuCanTim = "Combo Trang Trí VIP";
 
-                        // Tìm dịch vụ trong Database
                         var dichVuDb = _context.DichVus.FirstOrDefault(d => d.TenDichVu == tenDichVuCanTim);
 
                         if (dichVuDb != null)
                         {
-                            // Tạo thông tin sử dụng dịch vụ
                             var suDungDV = new TT_SuDungDichVu
                             {
-                                MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20), // Tạo ID ngẫu nhiên
+                                MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20),
                                 MaDatTiec = tiec.MaDatTiec,
                                 MaDichVu = dichVuDb.MaDichVu,
-                                SoLuong = 1, // Combo thì thường số lượng là 1
+                                SoLuong = 1,
                                 NgaySuDung = tiec.NgayToChuc,
-                                GhiChu = "Khách chọn gói " + model.LoaiDichVu
+                                GhiChu = "Gói: " + model.LoaiDichVu
                             };
-
                             _context.TT_SuDungDichVus.Add(suDungDV);
                             _context.SaveChanges();
                         }
@@ -121,32 +104,18 @@ namespace QuanLyNhaHang.Controllers
                 }
                 catch (Exception ex)
                 {
-                    // Bắt lỗi nếu lưu SQL bị fail (ví dụ thiếu trường bắt buộc)
                     TempData["ErrorMessage"] = "Lỗi hệ thống: " + ex.Message;
                     return RedirectToAction("Index", "Home");
                 }
             }
 
-            // 3. Nếu dữ liệu nhập vào bị sai (Validation False)
-            // Lấy danh sách lỗi để hiển thị ra (Debug)
+            // Nếu Validation lỗi
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-            string loiNhanVien = string.Join(", ", errors);
-
-            TempData["ErrorMessage"] = "Vui lòng kiểm tra lại thông tin: " + loiNhanVien;
-
+            TempData["ErrorMessage"] = "Vui lòng kiểm tra lại: " + string.Join(", ", errors);
             return RedirectToAction("Index", "Home");
         }
 
-        // --- HÀM SINH MÃ TỰ ĐỘNG ---
-        private string PhatSinhMaKH()
-        {
-            var lastItem = _context.KhachHangs.OrderByDescending(x => x.MaKhachHang).FirstOrDefault();
-            if (lastItem == null) return "KH001";
-            // Lấy số cuối (VD: KH005 -> 5)
-            int nextId = int.Parse(lastItem.MaKhachHang.Substring(2)) + 1;
-            return "KH" + nextId.ToString("D3");
-        }
-
+        // Hàm sinh mã Tiệc (Giữ nguyên)
         private string PhatSinhMaTiec()
         {
             var lastItem = _context.DatTiecs.OrderByDescending(x => x.MaDatTiec).FirstOrDefault();
