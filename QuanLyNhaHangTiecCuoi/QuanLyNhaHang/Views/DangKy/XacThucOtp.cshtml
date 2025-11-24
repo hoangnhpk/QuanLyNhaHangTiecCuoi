@@ -1,0 +1,184 @@
+﻿@{
+    ViewData["Title"] = "Xác Thực OTP";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        /* --- KHẮC PHỤC LỖI LỆCH --- */
+        /* Reset box-sizing để padding không làm vỡ khung */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #cda45e;
+            --bg-overlay: rgba(0, 0, 0, 0.7);
+            --form-bg: rgba(12, 11, 9, 0.9);
+            --text-color: #ffffff;
+        }
+
+        body {
+            font-family: "Open Sans", sans-serif;
+            background: url('https://toplist.vn/images/800px/nha-hang-long-phung-805463.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-color);
+        }
+
+            body::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: var(--bg-overlay);
+                z-index: -1;
+            }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .form-box {
+            background: var(--form-bg);
+            padding: 40px 30px;
+            border-radius: 8px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            text-align: center; /* Căn giữa nội dung trong box */
+        }
+
+        h2 {
+            font-family: "Playfair Display", serif;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 32px;
+            text-transform: uppercase;
+        }
+
+        p {
+            color: #ccc;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        /* INPUT OTP */
+        input {
+            width: 100%;
+            padding: 15px; /* Tăng padding cho đẹp */
+            background: transparent;
+            border: 1px solid #625b4b;
+            color: #fff;
+            border-radius: 4px;
+            outline: none;
+            transition: 0.3s;
+            /* Style riêng cho mã OTP */
+            font-size: 24px;
+            letter-spacing: 8px; /* Giãn cách số */
+            text-align: center; /* Căn giữa số khi nhập */
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+            input:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 10px rgba(205, 164, 94, 0.3);
+            }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            border: none;
+            color: #000;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 25px;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+            .btn-submit:hover {
+                background: #d4ac6e;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(205, 164, 94, 0.4);
+            }
+
+        .links {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+            .links a {
+                color: var(--primary);
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+                .links a:hover {
+                    text-decoration: underline;
+                    color: #fff;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="form-box">
+            <h2>Xác Thực OTP</h2>
+            <p>Nhập mã OTP (6 số) đã được gửi đến email của bạn.</p>
+
+            <form asp-action="XacThucOtp" method="post">
+                <input type="text" name="MaOtp" placeholder="XXXXXX" required maxlength="6" autocomplete="off" />
+
+                <button type="submit" class="btn-submit">Xác Nhận</button>
+            </form>
+
+            <div class="links">
+                <p>Nhập sai email? <a href="@Url.Action("Index", "DangKy")">Đăng ký lại</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (TempData["Type"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                    icon: '@TempData["Type"]',
+                    title: '@TempData["Title"]',
+                    /* QUAN TRỌNG: Dùng html và Html.Raw để hiển thị đúng định dạng */
+                    html: '@Html.Raw(TempData["Message"])',
+                    background: '#1a1814',
+                    color: '#fff',
+                    confirmButtonText: 'Đồng ý',
+                    confirmButtonColor: '#cda45e'
+                });
+            });
+        </script>
+    }
+
+</body>
+</html>

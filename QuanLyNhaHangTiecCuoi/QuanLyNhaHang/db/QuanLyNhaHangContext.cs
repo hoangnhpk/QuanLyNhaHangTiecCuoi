@@ -16,9 +16,8 @@ namespace QuanLyNhaHang.Models
             if (!optionsBuilder.IsConfigured)
             {
                 // Sửa lại cho khớp với máy tính của bạn (SQLEXPRESS)
-                // Lưu ý: Trong C# string dùng @ đằng trước thì chỉ cần 1 dấu \
-
-                optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-UKUNQ3QE\SQLEXPRESS;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Trust Server Certificate=True");
+                // Lưu ý: Trong C# string dùng @ đằng trước thì 
+                optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-ANJJC90;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Trust Server Certificate=True");
 
             }
         }
