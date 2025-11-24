@@ -8,12 +8,10 @@ namespace QuanLyNhaHang.Models
     {
         [Key]
         [StringLength(20)]
-        public string MaNhanVien { get; set; } 
+        public string MaNhanVien { get; set; }
 
         [StringLength(20)]
         public string? MaBoPhan { get; set; }
-        [StringLength(20)]
-        public string? MaTaiKhoan { get; set; }
 
         [StringLength(100)]
         public string? TenNhanVien { get; set; }
@@ -30,8 +28,8 @@ namespace QuanLyNhaHang.Models
         [StringLength(100)]
         public string? MailNV { get; set; }
 
-        [StringLength(30)]
-        public string? MatKhau { get; set; }
+        // Xóa MatKhau ở đây vì đã có bên bảng TaiKhoan
+
         [StringLength(30)]
         public string? ChucVuNV { get; set; }
 
@@ -42,7 +40,8 @@ namespace QuanLyNhaHang.Models
 
         [ForeignKey("MaBoPhan")]
         public virtual BoPhan BoPhan { get; set; }
-        [ForeignKey("MaTaiKhoan")]
-        public virtual TaiKhoan TaiKhoan { get; set; }
+
+        // --- SỬA: Quan hệ 1-Nhiều (Một nhân viên có nhiều lần phục vụ) ---
+        public virtual ICollection<TT_SuDungNhanVien> TT_SuDungNhanViens { get; set; }
     }
 }

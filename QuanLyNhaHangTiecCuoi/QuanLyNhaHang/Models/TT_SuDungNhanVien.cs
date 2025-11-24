@@ -16,6 +16,9 @@ namespace QuanLyNhaHang.Models
         [StringLength(20)]
         public string? MaNhanVien { get; set; }
 
+        [StringLength(20)]
+        public string? MaNhanVienPT { get; set; }
+
         public string? GhiChu { get; set; }
 
         [ForeignKey("MaDatTiec")]
@@ -23,5 +26,7 @@ namespace QuanLyNhaHang.Models
 
         [ForeignKey("MaNhanVien")]
         public virtual NhanVien NhanVien { get; set; }
+        [ForeignKey("MaNhanVienPT")]
+        public virtual NhanVienPartTime NhanVienPartTime { get; set; }
     }
 }

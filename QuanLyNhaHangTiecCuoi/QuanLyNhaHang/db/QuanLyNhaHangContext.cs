@@ -17,7 +17,7 @@ namespace QuanLyNhaHang.Models
             {
                 // Sửa lại cho khớp với máy tính của bạn (SQLEXPRESS)
                 // Lưu ý: Trong C# string dùng @ đằng trước thì 
-                optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-ANJJC90;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Trust Server Certificate=True");
+                optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-NVBKKGJ\SQLEXPRESS;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
 
             }
         }
@@ -36,6 +36,7 @@ namespace QuanLyNhaHang.Models
         public DbSet<ComboMon> ComboMons { get; set; }
         public DbSet<ChiTietCombo> ChiTietCombos { get; set; }
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+        public DbSet<NhanVienPartTime> NhanVienPartTimes { get; set; }
 
         // Các bảng trung gian
         public DbSet<ChiTietThucDon> ChiTietThucDons { get; set; }
