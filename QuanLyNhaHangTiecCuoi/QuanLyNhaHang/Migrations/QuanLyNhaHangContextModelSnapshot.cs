@@ -486,6 +486,50 @@ namespace QuanLyNhaHang.Migrations
                     b.ToTable("PHIEU_THANH_TOAN");
                 });
 
+            modelBuilder.Entity("QuanLyNhaHang.Models.QuanTriVien", b =>
+                {
+                    b.Property<string>("MaQuanTriVien")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Cccd")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("DiaChi")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("GhiChu")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MaTaiKhoan")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("SdtNV")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<string>("TenQuanTriVien")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("TrangThai")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("MaQuanTriVien");
+
+                    b.HasIndex("MaTaiKhoan");
+
+                    b.ToTable("QUAN_TRI_VIEN");
+                });
+
             modelBuilder.Entity("QuanLyNhaHang.Models.TT_SuDungDichVu", b =>
                 {
                     b.Property<string>("MaThongTinDV")
@@ -662,6 +706,15 @@ namespace QuanLyNhaHang.Migrations
                         .IsRequired();
 
                     b.Navigation("DatTiec");
+                });
+
+            modelBuilder.Entity("QuanLyNhaHang.Models.QuanTriVien", b =>
+                {
+                    b.HasOne("QuanLyNhaHang.Models.TaiKhoan", "TaiKhoan")
+                        .WithMany()
+                        .HasForeignKey("MaTaiKhoan");
+
+                    b.Navigation("TaiKhoan");
                 });
 
             modelBuilder.Entity("QuanLyNhaHang.Models.TT_SuDungDichVu", b =>
