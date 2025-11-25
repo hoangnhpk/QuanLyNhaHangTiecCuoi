@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuanLyNhaHang.Models;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 // --- BẮT ĐẦU ĐOẠN CẦN THÊM ---
@@ -14,6 +15,9 @@ builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+// Đăng ký Controller và Fix lỗi JSON bị vòng lặp ---
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 
 var app = builder.Build();
