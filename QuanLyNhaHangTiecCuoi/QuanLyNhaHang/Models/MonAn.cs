@@ -53,7 +53,7 @@ namespace QuanLyNhaHang.Models
 
         public string? HinhAnhMonAn { get; set; }
 
-       
+        
 
     }
 }

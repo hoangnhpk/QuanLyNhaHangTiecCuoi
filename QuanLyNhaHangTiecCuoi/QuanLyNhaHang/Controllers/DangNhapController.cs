@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System;
 
 namespace QuanLyNhaHang.Controllers
 {
@@ -16,22 +17,20 @@ namespace QuanLyNhaHang.Controllers
             _context = context;
         }
 
+        // --- TRANG ĐĂNG NHẬP ---
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-
         public IActionResult Index(string TaiKhoan, string MatKhau)
         {
-            // Tìm tài khoản theo username hoặc email
             var taiKhoan = _context.TaiKhoans
                 .FirstOrDefault(t => (t.UserName == TaiKhoan || t.Email == TaiKhoan) && t.Password == MatKhau);
 
             if (taiKhoan != null)
             {
-                // Lấy thông tin khách hàng gắn với tài khoản
                 var khach = _context.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == taiKhoan.MaTaiKhoan);
 
                 if (khach != null)
@@ -41,20 +40,17 @@ namespace QuanLyNhaHang.Controllers
                     HttpContext.Session.SetString("TenKhachHang", khach.TenKhachHang ?? "");
                 }
 
+                TempData["Type"] = "success";
+                TempData["Message"] = "Đăng nhập thành công!";
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewBag.ThongBao = "Sai tài khoản hoặc mật khẩu!";
-            return View();
+            TempData["Type"] = "error";
+            TempData["Message"] = "Sai tài khoản hoặc mật khẩu!";
+            return RedirectToAction("Index");
         }
 
-
-        public IActionResult DangXuat()
-        {
-            HttpContext.Session.Clear(); // Xóa toàn bộ session
-            return RedirectToAction("Index", "Home");
-        }
-        [HttpGet]
+        // --- 1. QUÊN MẬT KHẨU (Bước 1: Nhập Email) ---
         [HttpGet]
         public IActionResult QuenMatKhau()
         {
@@ -62,94 +58,45 @@ namespace QuanLyNhaHang.Controllers
         }
 
         [HttpPost]
-
         public IActionResult QuenMatKhau(string Email)
         {
             var taiKhoan = _context.TaiKhoans.FirstOrDefault(t => t.Email == Email);
+
+            // Nếu Email không tồn tại -> Báo lỗi
             if (taiKhoan == null)
             {
-                ViewBag.ThongBao = "Email không tồn tại.";
+                TempData["Type"] = "error";
+                TempData["Message"] = "Email này không tồn tại trong hệ thống.";
                 return View();
             }
 
-            // Tạo mã OTP
+            // Nếu tồn tại -> Gửi OTP
             string otp = new Random().Next(100000, 999999).ToString();
 
-            // Lưu vào session
+            // Lưu Session
             HttpContext.Session.SetString("OTP_Reset", otp);
             HttpContext.Session.SetString("OTP_Email", Email);
             HttpContext.Session.SetString("OTP_Expiry", DateTime.Now.AddMinutes(10).ToString());
 
-            // Gửi email
-            string subject = "Mã OTP đặt lại mật khẩu";
-            string body = $"Xin chào {taiKhoan.UserName},\n\nMã OTP để đặt lại mật khẩu của bạn là: {otp}\nMã có hiệu lực trong 10 phút.";
-
             try
             {
-                var smtpClient = new SmtpClient("smtp.gmail.com")
-                {
-                    Port = 587,
-                    Credentials = new NetworkCredential("aunxpk04299@gmail.com", "fqme nhhv ngbv rsed"),
-                    EnableSsl = true,
-                };
+                SendEmailOtp(Email, otp);
 
-                var mailMessage = new MailMessage
-                {
-                    From = new MailAddress("aunxpk04299@gmail.com"),
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = false,
-                };
-                mailMessage.To.Add(Email);
-
-                smtpClient.Send(mailMessage);
+                // Thông báo thành công -> Chuyển sang trang nhập OTP
+                TempData["Type"] = "success";
+                TempData["Title"] = "Đã gửi OTP";
+                TempData["Message"] = $"Mã OTP đã được gửi đến <b>{Email}</b>";
                 return RedirectToAction("XacThucOtp");
             }
             catch (Exception ex)
             {
-                ViewBag.ThongBao = "Không thể gửi email. Vui lòng thử lại sau.";
-                Console.WriteLine("Lỗi gửi OTP: " + ex.Message);
+                TempData["Type"] = "error";
+                TempData["Message"] = "Lỗi gửi email: " + ex.Message;
                 return View();
             }
         }
 
-
-        [HttpGet]
-        public IActionResult DatLaiMatKhau()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult DatLaiMatKhau(string MatKhauMoi, string XacNhanMatKhauMoi)
-        {
-            var email = HttpContext.Session.GetString("ResetEmail");
-            if (string.IsNullOrEmpty(email))
-            {
-                return Content("Phiên không hợp lệ.");
-            }
-
-            if (MatKhauMoi != XacNhanMatKhauMoi)
-            {
-                ViewBag.ThongBao = "Mật khẩu xác nhận không khớp!";
-                return View();
-            }
-
-            var taiKhoan = _context.TaiKhoans.FirstOrDefault(t => t.Email == email);
-            if (taiKhoan != null)
-            {
-                return Content("Liên kết không hợp lệ hoặc đã hết hạn.");
-            }
-
-
-                taiKhoan.Password = MatKhauMoi; // TODO: Hash mật khẩu
-                _context.SaveChanges();
-
-                HttpContext.Session.Remove("ResetEmail");
-                return RedirectToAction("Index", "DangNhap");
-            }
-
-            
+        // --- 2. XÁC THỰC OTP (Bước 2: Nhập Mã) ---
         [HttpGet]
         public IActionResult XacThucOtp()
         {
@@ -160,33 +107,98 @@ namespace QuanLyNhaHang.Controllers
         public IActionResult XacThucOtp(string MaOtp)
         {
             var otpSession = HttpContext.Session.GetString("OTP_Reset");
-            var email = HttpContext.Session.GetString("OTP_Email");
             var expiryString = HttpContext.Session.GetString("OTP_Expiry");
 
-            if (string.IsNullOrEmpty(otpSession) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(expiryString))
+            // Kiểm tra OTP
+            if (string.IsNullOrEmpty(otpSession) || MaOtp != otpSession)
             {
-                ViewBag.ThongBao = "Phiên OTP không hợp lệ. Vui lòng thử lại.";
+                TempData["Type"] = "error";
+                TempData["Message"] = "Mã OTP không đúng!";
                 return View();
             }
 
-            if (MaOtp != otpSession)
-            {
-                ViewBag.ThongBao = "Mã OTP không đúng.";
-                return View();
-            }
-
+            // Kiểm tra hết hạn
             if (DateTime.TryParse(expiryString, out DateTime expiry) && DateTime.Now > expiry)
             {
-                ViewBag.ThongBao = "Mã OTP đã hết hạn.";
-                return View();
+                TempData["Type"] = "error";
+                TempData["Message"] = "Mã OTP đã hết hạn!";
+                return RedirectToAction("QuenMatKhau");
             }
 
-            // OTP hợp lệ → chuyển sang form đặt lại mật khẩu
-            HttpContext.Session.SetString("ResetEmail", email);
+            // Đúng hết -> Cho phép đặt lại mật khẩu
+            TempData["Type"] = "success";
+            TempData["Message"] = "Xác thực thành công. Vui lòng đặt lại mật khẩu.";
             return RedirectToAction("DatLaiMatKhau");
         }
 
+        // --- 3. ĐẶT LẠI MẬT KHẨU (Bước 3: Nhập MK Mới) ---
+        [HttpGet]
+        public IActionResult DatLaiMatKhau()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        public IActionResult DatLaiMatKhau(string MatKhauMoi, string XacNhanMatKhauMoi)
+        {
+            if (MatKhauMoi != XacNhanMatKhauMoi)
+            {
+                TempData["Type"] = "error";
+                TempData["Message"] = "Mật khẩu xác nhận không khớp!";
+                return View();
+            }
 
+            var email = HttpContext.Session.GetString("OTP_Email");
+            var taiKhoan = _context.TaiKhoans.FirstOrDefault(t => t.Email == email);
+
+            if (taiKhoan != null)
+            {
+                taiKhoan.Password = MatKhauMoi; // Lưu mật khẩu mới
+                _context.SaveChanges();
+
+                // Xóa Session OTP
+                HttpContext.Session.Remove("OTP_Reset");
+                HttpContext.Session.Remove("OTP_Email");
+
+                // Thông báo kèm mật khẩu mới (như bạn yêu cầu)
+                TempData["Type"] = "success";
+                TempData["Title"] = "Thành công";
+                TempData["Message"] = $"Mật khẩu đã thay đổi.<br>Mật khẩu mới là: <b style='color:#cda45e'>{MatKhauMoi}</b>";
+
+                return RedirectToAction("Index"); // Về trang đăng nhập
+            }
+
+            TempData["Type"] = "error";
+            TempData["Message"] = "Có lỗi xảy ra, không tìm thấy tài khoản.";
+            return RedirectToAction("Index");
+        }
+
+        // --- 4. ĐĂNG XUẤT (CHỈ GIỮ LẠI 1 HÀM DUY NHẤT) ---
+        public IActionResult DangXuat()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
+        // --- HELPER GỬI MAIL ---
+        private void SendEmailOtp(string email, string otp)
+        {
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential("aunxpk04299@gmail.com", "fqme nhhv ngbv rsed"),
+                EnableSsl = true,
+            };
+
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress("aunxpk04299@gmail.com"),
+                Subject = "Mã OTP Đặt Lại Mật Khẩu",
+                Body = $"Mã OTP của bạn là: {otp}\nCó hiệu lực trong 10 phút.",
+                IsBodyHtml = false,
+            };
+            mailMessage.To.Add(email);
+            smtpClient.Send(mailMessage);
+        }
     }
 }

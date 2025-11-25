@@ -64,7 +64,7 @@ namespace QuanLyNhaHang.Controllers
                 if (imageFile != null && imageFile.Length > 0)
                 {
                     // Tạo tên file độc nhất
-                    var fileName = model.MaComboMon + "_" + Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_" + imageFile.FileName;
 
                     // Đường dẫn thư mục: wwwroot/assets/img/combos
                     var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "img", "menu");
@@ -168,8 +168,7 @@ namespace QuanLyNhaHang.Controllers
                     // 1. XỬ LÝ ẢNH (Sửa đường dẫn tại đây)
                     if (imageFile != null && imageFile.Length > 0)
                     {
-                        var fileName = model.MaComboMon + "_" + Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-
+                        var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_" + imageFile.FileName;
                         // Đường dẫn thư mục: wwwroot/assets/img/combos
                         var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "img", "menu");
                         if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
@@ -283,7 +282,8 @@ namespace QuanLyNhaHang.Controllers
                 // 3. Xử lý lưu ảnh
                 if (imageFile != null && imageFile.Length > 0)
                 {
-                    var fileName = model.MaMonAn + "_" + Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                    var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_" + imageFile.FileName;
+
                     var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "img", "menu");
 
                     if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
@@ -341,7 +341,7 @@ namespace QuanLyNhaHang.Controllers
                     // 4. Xử lý ảnh mới (nếu có chọn)
                     if (imageFile != null && imageFile.Length > 0)
                     {
-                        var fileName = model.MaMonAn + "_" + Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                        var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_" + imageFile.FileName;
                         var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "img", "menu");
                         if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
 
