@@ -744,18 +744,25 @@
             <span>Quản lý khách hàng</span>
           </button>
         </li>
-        <li class="nav-item">
-          <button class="nav-link" data-module="managers">
-            <span class="icon">🧑‍💼</span>
-            <span>Nhân viên quản lý</span>
-          </button>
-        </li>
-        <li class="nav-item">
-          <button class="nav-link" data-module="staff">
-            <span class="icon">👥</span>
-            <span>Nhân viên nhà hàng &amp; Part-time</span>
-          </button>
-        </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="QuanTriVien" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">🧑‍💼</span>
+                        <span>Nhân viên quản lý</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">🍳</span> <span>Nhân viên Full-time</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="NhanVienPartTime" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">⏱️</span>
+                        <span>Nhân viên Part-time</span>
+                    </a>
+                </li>
         <li class="nav-item">
           <button class="nav-link" data-module="services">
             <span class="icon">🎁</span>
@@ -814,12 +821,20 @@
           <button class="tab-pill" data-module="customers">
             <span class="dot"></span> Khách hàng
           </button>
-          <button class="tab-pill" data-module="managers">
-            <span class="dot"></span> Nhân viên quản lý
-          </button>
-          <button class="tab-pill" data-module="staff">
-            <span class="dot"></span> Nhân viên nhà hàng &amp; Part-time
-          </button>
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "QuanTriVien" ? "active" : "")"
+                       asp-controller="QuanTriVien" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Nhân viên quản lý
+                    </a>
+
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienFullTime" ? "active" : "")"
+                       asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Nhân viên Full-time
+                    </a>
+
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienPartTime" ? "active" : "")"
+                       asp-controller="NhanVienPartTime" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Nhân viên Part-time
+                    </a>
           <button class="tab-pill" data-module="services">
             <span class="dot"></span> Dịch vụ
           </button>
