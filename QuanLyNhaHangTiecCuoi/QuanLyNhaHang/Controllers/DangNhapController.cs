@@ -34,18 +34,27 @@ namespace QuanLyNhaHang.Controllers
         [HttpPost]
         public IActionResult Index(string TaiKhoan, string MatKhau)
         {
+            // 1. Tìm tài khoản (Email nằm ở đây)
             var taiKhoan = _context.TaiKhoans
                 .FirstOrDefault(t => (t.UserName == TaiKhoan || t.Email == TaiKhoan) && t.Password == MatKhau);
 
             if (taiKhoan != null)
             {
+                // 2. Tìm thông tin khách hàng (Tên, SĐT nằm ở đây)
                 var khach = _context.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == taiKhoan.MaTaiKhoan);
 
                 if (khach != null)
                 {
+                    // Lưu Session
                     HttpContext.Session.SetString("MaKhachHang", khach.MaKhachHang);
                     HttpContext.Session.SetString("TenDangNhap", taiKhoan.UserName ?? "");
+
+                    // Lấy Tên & SĐT từ bảng KHACH_HANG by Hoang
                     HttpContext.Session.SetString("TenKhachHang", khach.TenKhachHang ?? "");
+                    HttpContext.Session.SetString("SdtKhachHang", khach.SdtKhachHang ?? "");
+
+                    // ✅ SỬA LẠI: Lấy Email từ bảng TAI_KHOAN (taiKhoan.Email) by Hoang
+                    HttpContext.Session.SetString("EmailKhachHang", taiKhoan.Email ?? "");
                 }
 
                 TempData["Type"] = "success";
@@ -55,7 +64,7 @@ namespace QuanLyNhaHang.Controllers
 
             TempData["Type"] = "error";
             TempData["Message"] = "Sai tài khoản hoặc mật khẩu!";
-            return RedirectToAction("Index");
+            return View();
         }
 
         // --- 1. QUÊN MẬT KHẨU (Bước 1: Nhập Email) ---

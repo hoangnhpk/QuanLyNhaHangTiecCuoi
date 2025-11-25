@@ -1,0 +1,336 @@
+﻿@{
+    ViewData["Title"] = "Quản lý thanh toán";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="module-view active" id="module-payments" style="display:block;">
+    <div class="module-header">
+        <div>
+            <div class="module-title">Quản lý thanh toán</div>
+            <div class="module-desc">Theo dõi tiền cọc 30% và thanh toán hoàn tất cho từng bữa tiệc.</div>
+        </div>
+        <div class="toolbar">
+            <input type="date" class="input" id="filterDate" style="min-width:160px;" />
+
+            <select class="filter-select" id="filterStatus">
+                <option value="Tất cả trạng thái">Tất cả trạng thái</option>
+                <option value="Đã cọc 30%">Đã cọc 30%</option>
+                <option value="Thanh toán hoàn toàn">Thanh toán hoàn toàn</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="data-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã thanh toán</th>
+                    <th>Mã tiệc</th>
+                    <th>Mã KH</th>
+                    <th>Tổng giá trị</th>
+                    <th>Giá trị 30%</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày đặt cọc</th>
+                    <th>Ngày thanh toán</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="tblPaymentBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="modalPayment">
+    <div class="modal">
+        <div class="modal-header">
+            <div>
+                <div class="pill">Thanh toán</div>
+                <div class="modal-title" id="modalTitleDetail">Chi tiết / Cập nhật thanh toán</div>
+            </div>
+            <button class="btn-close" onclick="closePaymentModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Mã thanh toán</label>
+                    <input class="input" id="txtMaThanhToan" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Mã tiệc</label>
+                    <input class="input" id="txtMaTiec" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Mã khách hàng</label>
+                    <input class="input" id="txtMaKH" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Tổng giá trị bữa tiệc</label>
+                    <input class="input" id="txtTongGiaTri" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Giá trị 30%</label>
+                    <input class="input" id="txtTienCoc" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select class="select" id="selTrangThai">
+                        <option value="Đã cọc 30%">Đã cọc 30%</option>
+                        <option value="Thanh toán hoàn toàn">Thanh toán hoàn toàn</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ngày đặt cọc</label>
+                    <input type="date" class="input" id="dateNgayCoc" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Ngày thanh toán hoàn toàn</label>
+                    <input type="date" class="input" id="dateNgayThanhToan" />
+                </div>
+
+                <div class="form-group">
+                    <label>Phương thức thanh toán</label>
+                    <select class="select" id="selPhuongThuc">
+                        <option value="Tiền mặt">Tiền mặt</option>
+                        <option value="Chuyển khoản">Chuyển khoản</option>
+                        <option value="Thẻ tín dụng">Thẻ tín dụng</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2">
+                    <label>Ghi chú</label>
+                    <input class="input" id="txtGhiChu" placeholder="Nhập ghi chú thanh toán..." />
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="closePaymentModal()">Hủy</button>
+            <button class="btn" id="btnSavePayment">Lưu thanh toán</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const API_URL = '/api/ThanhToan';
+        let currentData = null; // Lưu dữ liệu đang thao tác
+
+        $(document).ready(function () {
+            // Load dữ liệu ban đầu
+            loadPayments();
+
+            // Bắt sự kiện bộ lọc
+            $('#filterStatus, #filterDate').on('change', function () {
+                loadPayments();
+            });
+
+            // Bắt sự kiện nút Lưu ở Modal chi tiết
+            $('#btnSavePayment').on('click', function () {
+                prepareConfirmModal();
+            });
+        });
+
+        // --- 1. TẢI DANH SÁCH ---
+        function loadPayments() {
+            const status = $('#filterStatus').val();
+            const date = $('#filterDate').val();
+
+            $.ajax({
+                url: API_URL,
+                type: 'GET',
+                data: { TrangThai: status, FromDate: date },
+                success: function (data) {
+                    renderTable(data);
+                },
+                error: function (err) {
+                    console.error("Lỗi tải dữ liệu", err);
+                }
+            });
+        }
+
+        function renderTable(data) {
+            const tbody = $('#tblPaymentBody');
+            tbody.empty();
+
+            if (data.length === 0) {
+                tbody.append('<tr><td colspan="9" class="text-center">Không tìm thấy dữ liệu</td></tr>');
+                return;
+            }
+
+            data.forEach(item => {
+                const fmtMoney = new Intl.NumberFormat('vi-VN').format(item.tongGiaTri);
+                const fmtCoc = new Intl.NumberFormat('vi-VN').format(item.tienCoc);
+                const badgeClass = item.isCompleted ? 'badge-success' : 'badge-warning';
+
+                // Logic nút bấm: Nếu xong rồi thì hiện Mắt (Xem), chưa xong hiện Tích (Sửa)
+                let actionBtn = item.isCompleted
+                    ? `<button class="btn-icon" title="Xem chi tiết" onclick="openPaymentDetail('${item.maDatTiec}', true)">👁</button>`
+                    : `<button class="btn-icon" title="Cập nhật trạng thái" onclick="openPaymentDetail('${item.maDatTiec}', false)">✓</button>`;
+
+                const tr = `
+                    <tr>
+                        <td>${item.maThanhToan || '-'}</td>
+                        <td>${item.maDatTiec}</td>
+                        <td>${item.maKhachHang}</td>
+                        <td>${fmtMoney}</td>
+                        <td>${fmtCoc}</td>
+                        <td><span class="badge ${badgeClass}">${item.trangThai}</span></td>
+                        <td>${formatDate(item.ngayDatCoc)}</td>
+                        <td>${item.ngayThanhToan ? formatDate(item.ngayThanhToan) : '-'}</td>
+                        <td><div class="table-actions">${actionBtn}</div></td>
+                    </tr>
+                `;
+                tbody.append(tr);
+            });
+        }
+
+        // --- 2. XỬ LÝ MODAL CHI TIẾT ---
+        function openPaymentDetail(maDatTiec, isViewOnly) {
+            $.ajax({
+                url: `${API_URL}/Detail/${maDatTiec}`,
+                type: 'GET',
+                success: function (data) {
+                    currentData = data;
+
+                    // Fill dữ liệu vào form
+                    $('#txtMaThanhToan').val(data.maThanhToan);
+                    $('#txtMaTiec').val(data.maDatTiec);
+                    $('#txtMaKH').val(data.maKhachHang);
+                    $('#txtTongGiaTri').val(new Intl.NumberFormat('vi-VN').format(data.tongGiaTri));
+                    $('#txtTienCoc').val(new Intl.NumberFormat('vi-VN').format(data.tienCoc));
+                    $('#selTrangThai').val(data.trangThai);
+                    $('#dateNgayCoc').val(formatInputDate(data.ngayDatCoc));
+                    $('#dateNgayThanhToan').val(data.ngayThanhToan ? formatInputDate(data.ngayThanhToan) : '');
+
+                    // --- ĐIỀN DỮ LIỆU VÀO Ô MỚI ---
+                    // Nếu chưa có phương thức, mặc định là Tiền mặt
+                    $('#selPhuongThuc').val(data.phuongThucThanhToan || 'Tiền mặt');
+                    $('#txtGhiChu').val(data.ghiChu || '');
+
+                    // Cấu hình chế độ Xem/Sửa
+                    if (isViewOnly) {
+                        $('#modalTitleDetail').text("Chi tiết thanh toán (Đã hoàn tất)");
+                        // Disable các ô nhập liệu
+                        $('#selTrangThai').prop('disabled', true);
+                        $('#dateNgayThanhToan').prop('disabled', true);
+                        $('#selPhuongThuc').prop('disabled', true); // Khóa ô phương thức
+                        $('#txtGhiChu').prop('readonly', true);     // Khóa ô ghi chú
+
+                        $('#btnSavePayment').hide();
+                    } else {
+                        $('#modalTitleDetail').text("Cập nhật thanh toán");
+                        // Enable các ô nhập liệu
+                        $('#selTrangThai').prop('disabled', false);
+                        $('#dateNgayThanhToan').prop('disabled', false);
+                        $('#selPhuongThuc').prop('disabled', false); // Mở ô phương thức
+                        $('#txtGhiChu').prop('readonly', false);     // Mở ô ghi chú
+
+                        // Mặc định ngày thanh toán là hôm nay nếu chưa có
+                        if(!data.ngayThanhToan) {
+                             $('#dateNgayThanhToan').val(new Date().toISOString().split('T')[0]);
+                        }
+
+                        $('#btnSavePayment').show();
+                    }
+
+                    // Mở Modal (Thêm class active vào backdrop)
+                    $('#modalPayment').addClass('active');
+                },
+                error: function () {
+                    alert('Không thể lấy thông tin chi tiết.');
+                }
+            });
+        }
+
+        function closePaymentModal() {
+            $('#modalPayment').removeClass('active');
+        }
+
+        // --- 3. KẾT NỐI VỚI MODAL XÁC NHẬN CỦA LAYOUT ---
+        function prepareConfirmModal() {
+            // Validate: Phải chọn 'Thanh toán hoàn toàn' mới cho lưu
+            const status = $('#selTrangThai').val();
+            if (status !== 'Thanh toán hoàn toàn') {
+                alert('Vui lòng chọn trạng thái "Thanh toán hoàn toàn" để hoàn tất.');
+                return;
+            }
+
+            // Gọi Modal Confirm có sẵn trong Layout (_LayoutAdmin.cshtml)
+            const modal = document.getElementById('customConfirmModal');
+            const title = document.getElementById('modalTitle');
+            const sub = document.getElementById('modalSubtitle');
+            const btn = document.getElementById('btnConfirmAction');
+            const desc = document.getElementById('modalDesc');
+
+            // Set nội dung
+            sub.innerText = "XÁC NHẬN";
+            title.innerText = "BẠN CÓ CHẮC CHẮN?";
+            desc.innerText = "Bạn có muốn lưu trạng thái thanh toán không? Hành động này sẽ chuyển trạng thái sang 'Đã thanh toán hoàn toàn'.";
+            btn.innerText = "Đồng ý";
+            btn.style.background = "#d4af37";
+
+            // Gán hành động click mới cho nút Đồng Ý
+            btn.onclick = function() {
+                callApiConfirm();
+            };
+
+            // Hiện Modal
+            modal.style.display = 'flex';
+        }
+
+        function callApiConfirm() {
+            // ... (Code gán dữ liệu cũ giữ nguyên) ...
+            if (!currentData.phuongThucThanhToan) currentData.phuongThucThanhToan = "Tiền mặt";
+            if (!currentData.ghiChu) currentData.ghiChu = "Thanh toán hoàn tất";
+
+            // Gọi API Update
+            $.ajax({
+                url: `${API_URL}/Confirm`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(currentData),
+                success: function (res) {
+                    // 1. Ẩn modal xác nhận đen
+                    document.getElementById('customConfirmModal').style.display = 'none';
+                    // 2. Ẩn modal chi tiết
+                    closePaymentModal();
+                    // 3. Load lại dữ liệu bảng
+                    loadPayments();
+
+                    // 4. HIỆN THÔNG BÁO TÍCH XANH (SweetAlert2)
+                    Swal.fire({
+                        title: 'Thành công!',
+                        text: 'Thanh toán đã được cập nhật thành công.',
+                        icon: 'success',               // Icon tích xanh
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#d4af37', // Màu vàng đồng cho hợp tông web
+                        background: '#fff',            // Nền trắng
+                        color: '#333'                  // Chữ đen
+                    });
+                },
+                error: function (err) {
+                    // Hiện thông báo lỗi (Dấu X đỏ)
+                    Swal.fire({
+                        title: 'Lỗi!',
+                        text: (err.responseText || "Có lỗi xảy ra"),
+                        icon: 'error',
+                        confirmButtonColor: '#d33'
+                    });
+                    document.getElementById('customConfirmModal').style.display = 'none';
+                }
+            });
+        }
+
+        // --- HELPER FUNCTIONS ---
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const d = new Date(dateString);
+            return d.toLocaleDateString('vi-VN');
+        }
+
+        function formatInputDate(dateString) {
+            if (!dateString) return '';
+            return new Date(dateString).toISOString().split('T')[0];
+        }
+    </script>
+}
