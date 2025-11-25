@@ -1,0 +1,147 @@
+﻿@model IEnumerable<QuanLyNhaHang.Models.NhanVienPartTime>
+
+@{
+    ViewData["Title"] = "Quản lý Part-time";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/css/QuanTri.css" rel="stylesheet">
+
+<div class="module-view active" style="display:block;">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert-box success"><span class="alert-icon">✓</span><span>@TempData["SuccessMessage"]</span></div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert-box error"><span class="alert-icon">⚠️</span><span>@TempData["ErrorMessage"]</span></div>
+    }
+
+    <div class="module-header">
+        <div>
+            <div class="module-title">Nhân viên Part-time</div>
+            <div class="module-desc">Quản lý nhân viên thời vụ, làm theo giờ.</div>
+        </div>
+        <div class="toolbar">
+            <form asp-action="Index" method="get" style="display: flex; align-items: center; gap: 10px; margin-right: 20px; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 20px;">
+                <input type="text" name="tuKhoa" class="input" placeholder="Tên, Mã PT..." value="@ViewData["CurrentFilter"]" />
+                <button type="submit" class="btn">Tìm kiếm</button>
+            </form>
+            <a asp-action="Them" class="btn" style="text-decoration: none;">Thêm nhân viên</a>
+        </div>
+    </div>
+
+    <div class="data-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã PT</th>
+                    <th>Họ và Tên</th>
+                    <th>SĐT</th>
+                    <th>Email</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.MaNhanVienPT</strong></td>
+                            <td>@item.TenNhanVienPT</td>
+                            <td>@item.SdtNVPT</td>
+                            <td>@item.EmailNVPT</td>
+                            <td>
+                                @if (item.TrangThaiNV == "Đang làm")
+                                {
+                                    <span class="badge badge-success" style="color:#4ade80; background:rgba(74, 222, 128, 0.1);">Đang làm</span>
+                                }
+                                else
+                                {
+
+                                    <span class="badge badge-warning" style="color:#fbbf24; background:rgba(251, 191, 36, 0.1);">@item.TrangThaiNV</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <a asp-action="Sua" asp-route-id="@item.MaNhanVienPT" class="btn-icon" title="Sửa" style="text-decoration: none;">✎</a>
+                                    <button type="button" class="btn-icon" title="Xóa" onclick="confirmDelete('@item.MaNhanVienPT', '@item.TenNhanVienPT')">🗑</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="6" style="text-align:center; padding:20px; color:#999;">Không có dữ liệu.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<form id="deleteForm" method="post" asp-action="Xoa">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="deleteId" />
+</form>
+
+<div id="deleteModal" class="custom-modal-overlay" style="display: none;">
+    <div class="custom-modal-box">
+        <span class="close-icon" onclick="closeDeleteModal()">×</span>
+        <div class="modal-tag">CẢNH BÁO</div>
+        <h3 class="modal-title">XÁC NHẬN XÓA?</h3>
+        <p class="modal-desc">
+            Xóa nhân viên Part-time: <b id="deleteNameDisplay" style="color:#fff;"></b>?<br />
+            Hành động này không thể hoàn tác.
+        </p>
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Hủy bỏ</button>
+            <button type="button" class="btn-confirm" onclick="submitDelete()">Xóa ngay</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(id, name) {
+        document.getElementById('deleteId').value = id;
+        document.getElementById('deleteNameDisplay').innerText = name;
+        document.getElementById('deleteModal').style.display = 'flex';
+    }
+    function closeDeleteModal() { document.getElementById('deleteModal').style.display = 'none'; }
+    function submitDelete() { document.getElementById('deleteForm').submit(); }
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert-box');
+        alerts.forEach(function(alert) {
+            alert.style.transition = "opacity 0.5s ease"; alert.style.opacity = "0";
+            setTimeout(function() { alert.style.display = "none"; }, 500);
+        });
+    }, 3000);
+</script>
+
+<style>
+    .alert-box {
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        border-radius: 8px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+        .alert-box.success {
+            background-color: rgba(20, 83, 45, 0.4);
+            border: 1px solid #22c55e;
+            color: #4ade80;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.1);
+        }
+
+        .alert-box.error {
+            background-color: rgba(127, 29, 29, 0.4);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+        }
+
+</style>

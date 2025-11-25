@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 @{
     ViewData["Title"] = "Trang Chủ";
 }
@@ -97,13 +99,19 @@
                 <form asp-controller="DatTiec" asp-action="DatTiec" method="post" role="form">
                     <div class="row gy-4">
                         <div class="col-lg-6 col-md-6">
-                            <input type="text" name="HoTen" class="form-control" placeholder="Họ và tên người đặt" required>
+                            <input type="text" name="HoTen" class="form-control"
+                                   placeholder="Họ và tên người đặt" required
+                                   value="@HttpContextAccessor.HttpContext.Session.GetString("TenKhachHang")">
                         </div>
                         <div class="col-lg-6 col-md-6">
-                            <input type="text" class="form-control" name="SDT" placeholder="Số điện thoại" required>
+                            <input type="text" class="form-control" name="SDT"
+                                   placeholder="Số điện thoại" required
+                                   value="@HttpContextAccessor.HttpContext.Session.GetString("SdtKhachHang")">
                         </div>
                         <div class="col-lg-12 col-md-12">
-                            <input type="email" class="form-control" name="Email" placeholder="Email">
+                            <input type="email" class="form-control" name="Email"
+                                   placeholder="Email"
+                                   value="@HttpContextAccessor.HttpContext.Session.GetString("EmailKhachHang")">
                         </div>
                         <div class="col-lg-6 col-md-6">
                             <input type="text" name="TenCoDau" class="form-control" placeholder="Tên cô dâu" required>
