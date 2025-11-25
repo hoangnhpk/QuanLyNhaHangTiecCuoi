@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuanLyNhaHang.Models;
+using QuanLyNhaHang.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 // --- BẮT ĐẦU ĐOẠN CẦN THÊM ---
@@ -11,8 +12,10 @@ builder.Services.AddDbContext<QuanLyNhaHangContext>(options =>
 
 // --- Thêm dịch vụ Session ---
 builder.Services.AddSession();
+builder.Services.AddTransient<IEmailService, EmailService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 
 
 var app = builder.Build();
