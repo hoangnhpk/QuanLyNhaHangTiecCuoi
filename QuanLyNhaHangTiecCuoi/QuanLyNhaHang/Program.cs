@@ -11,6 +11,7 @@ builder.Services.AddDbContext<QuanLyNhaHangContext>(options =>
 
 // --- Thêm dịch vụ Session ---
 builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
