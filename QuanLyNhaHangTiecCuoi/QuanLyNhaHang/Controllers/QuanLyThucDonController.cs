@@ -13,19 +13,36 @@ namespace QuanLyNhaHang.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string category)
         {
-            // Lấy danh sách Món lẻ (cho cột phải)
-            var listMonAn = await _context.MonAns.OrderBy(m => m.MaMonAn).ToListAsync();
-
-            // Lấy danh sách Combo (cho cột trái) - kèm chi tiết món
             var listCombo = await _context.ComboMons
                                           .Include(c => c.ChiTietCombos)
                                           .ThenInclude(ct => ct.MonAn)
                                           .OrderByDescending(c => c.NgayTaoCombo)
                                           .ToListAsync();
-
             ViewBag.ListCombo = listCombo;
+
+            var query = _context.MonAns.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(m => m.TenMonAn.Contains(searchString) || m.MaMonAn.Contains(searchString));
+            }
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                query = query.Where(m => m.LoaiMonAn == category);
+            }
+
+            // Lấy dữ liệu cuối cùng
+            var listMonAn = await query.OrderBy(m => m.MaMonAn).ToListAsync();
+
+            // Lưu lại giá trị search/category để hiển thị lại trên View (giữ trạng thái)
+            ViewBag.SearchString = searchString;
+            ViewBag.CurrentCategory = category;
+
+            // Lấy danh sách các danh mục có sẵn để đổ vào dropdown
+            ViewBag.Categories = await _context.MonAns.Select(m => m.LoaiMonAn).Distinct().ToListAsync();
 
             return View(listMonAn);
         }
