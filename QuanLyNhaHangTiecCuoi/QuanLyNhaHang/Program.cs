@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuanLyNhaHang.Models;
+using System.Text.Json.Serialization;
 
 using QuanLyNhaHang.Services;
 
@@ -18,6 +19,7 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 // Đăng ký Controller và Fix lỗi JSON bị vòng lặp ---
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 

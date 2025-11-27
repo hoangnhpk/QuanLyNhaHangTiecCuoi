@@ -789,3 +789,35 @@ textarea {
     color: #666;
     cursor: pointer;
 }
+.form-group {
+    width: 100%;
+}
+
+.password-wrapper {
+    position: relative;
+    width: 100% !important;
+    display: block !important;
+}
+
+    .password-wrapper input {
+        width: 100% !important;
+        display: block;
+        box-sizing: border-box;
+        padding-right: 40px;
+    }
+
+.toggle-password-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #888;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+}
+
+    .toggle-password-icon:hover {
+        color: #fff;
+    }
