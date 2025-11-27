@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using QuanLyNhaHang.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuanLyNhaHang.Models;
 
 namespace QuanLyNhaHang.Controllers
 {
+    [Authorize(Roles = "QuanLy")]
     public class QuanLyThucDonController : Controller
     {
         private readonly QuanLyNhaHangContext _context;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhaHang.Models;
 using System;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace QuanLyNhaHang.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class QuanTriVienController : Controller
     {
         private readonly QuanLyNhaHangContext _context;
