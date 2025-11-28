@@ -6,7 +6,11 @@ using System.Net;
 using System.Net.Mail;
 using System;
 using QuanLyNhaHang.Services;
-
+// --- THÊM THƯ VIỆN ĐỂ DÙNG COOKIE AUTH ---
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Threading.Tasks;
 namespace QuanLyNhaHang.Controllers
 {
     public class DangNhapController : Controller
@@ -20,51 +24,131 @@ namespace QuanLyNhaHang.Controllers
             _emailService = emailService; // Nhận hàng từ DI
         }
 
-        public DangNhapController(QuanLyNhaHangContext context)
-        {
-            _context = context;
-        }
-
         // --- TRANG ĐĂNG NHẬP ---
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index(string returnUrl = null)
         {
+            // Nếu đã đăng nhập rồi thì không cho vào trang Login nữa -> Về trang chủ
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Lưu cái link cũ vào ViewData để lát nữa form POST gửi lên lại
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         [HttpPost]
-        public IActionResult Index(string TaiKhoan, string MatKhau)
+        public async Task<IActionResult> Index(string TaiKhoan, string MatKhau, string returnUrl = null)
         {
-            // 1. Tìm tài khoản (Email nằm ở đây)
-            var taiKhoan = _context.TaiKhoans
+            // 1. Tìm tài khoản
+            var user = _context.TaiKhoans
                 .FirstOrDefault(t => (t.UserName == TaiKhoan || t.Email == TaiKhoan) && t.Password == MatKhau);
 
-            if (taiKhoan != null)
+            if (user != null)
             {
-                // 2. Tìm thông tin khách hàng (Tên, SĐT nằm ở đây)
-                var khach = _context.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == taiKhoan.MaTaiKhoan);
-
-                if (khach != null)
+                // --- SỬA LẠI LOGIC CHECK TRẠNG THÁI (Dựa trên ảnh dữ liệu bạn gửi) ---
+                // Chỉ cho phép đăng nhập nếu trạng thái là "Hoạt động"
+                if (user.TrangThai != "Hoạt động")
                 {
-                    // Lưu Session
-                    HttpContext.Session.SetString("MaKhachHang", khach.MaKhachHang);
-                    HttpContext.Session.SetString("TenDangNhap", taiKhoan.UserName ?? "");
+                    TempData["Type"] = "error";
+                    // Hiển thị thông báo cụ thể (VD: Tài khoản đang bị Khóa)
+                    TempData["Message"] = $"Tài khoản đang ở trạng thái: {user.TrangThai}. Vui lòng liên hệ Admin.";
+                    return View();
+                }
 
-                    // Lấy Tên & SĐT từ bảng KHACH_HANG by Hoang
-                    HttpContext.Session.SetString("TenKhachHang", khach.TenKhachHang ?? "");
-                    HttpContext.Session.SetString("SdtKhachHang", khach.SdtKhachHang ?? "");
+                // 2. Xử lý Vai Trò (Dữ liệu của bạn có dấu tiếng Việt)
+                string tenHienThi = user.UserName;
+                string userId = user.MaTaiKhoan.ToString();
+                string vaiTro = user.VaiTro ?? "Khách hàng"; // Mặc định là Khách hàng
 
-                    // ✅ SỬA LẠI: Lấy Email từ bảng TAI_KHOAN (taiKhoan.Email) by Hoang
-                    HttpContext.Session.SetString("EmailKhachHang", taiKhoan.Email ?? "");
+                // Chuẩn hóa chuỗi vai trò để so sánh (Trim để xóa khoảng trắng thừa nếu có)
+                vaiTro = vaiTro.Trim();
+
+                if (vaiTro == "Admin" || vaiTro == "Quản lý") // "Quản lý" có dấu
+                {
+                    var qtv = _context.QuanTriViens.FirstOrDefault(q => q.MaTaiKhoan == user.MaTaiKhoan);
+                    if (qtv != null) tenHienThi = qtv.TenQuanTriVien;
+                }
+                else // "Khách hàng"
+                {
+                    var khach = _context.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == user.MaTaiKhoan);
+                    if (khach != null) tenHienThi = khach.TenKhachHang;
+                }
+
+                // 3. Tạo Claims
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, tenHienThi),
+                    new Claim(ClaimTypes.NameIdentifier, userId),
+                    new Claim(ClaimTypes.Role, MapRoleToCode(vaiTro)),
+                    new Claim("Email", user.Email ?? "")
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+
+                // 4. Điều hướng
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
                 }
 
                 TempData["Type"] = "success";
                 TempData["Message"] = "Đăng nhập thành công!";
-                return RedirectToAction("Index", "Home");
+
+                // Kiểm tra vai trò gốc từ DB để điều hướng
+                // CASE 1: Nếu là Admin -> Trả về View Quản Trị Viên
+                // Tương ứng với thư mục View: QuanTriVien
+                if (vaiTro == "Admin")
+                {
+                    // Thông báo trong Popup
+                    TempData["Message"] = "Xin chào Administrator. Chúc bạn một ngày làm việc hiệu quả!";
+                    // Thông báo khung xanh (Inline Alert) trong View Admin
+                    TempData["SuccessMessage"] = "Chào mừng Admin quay trở lại hệ thống!";
+
+                    return RedirectToAction("Index", "QuanTriVien", new { area = "Admin" });
+                }
+                else if (vaiTro == "Quản lý")
+                {
+                    // Thông báo trong Popup
+                    TempData["Message"] = $"Xin chào Quản lý {tenHienThi}.";
+                    // Thông báo khung xanh (Inline Alert) trong View Quản lý
+                    TempData["SuccessMessage"] = "Đăng nhập thành công. Hãy kiểm tra thực đơn hôm nay!";
+
+                    return RedirectToAction("Index", "QuanLyThucDon", new { area = "Admin" });
+                }
+                else // Khách hàng
+                {
+                    // Khách hàng chỉ cần Popup, không cần khung xanh inline
+                    TempData["Message"] = $"Chào mừng <b>{tenHienThi}</b> đến với nhà hàng Long Phụng!";
+
+                    // Lưu ý: Khách hàng return về Home
+                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
+                    return RedirectToAction("Index", "Home");
+                }
             }
 
+            ViewData["ReturnUrl"] = returnUrl;
             TempData["Type"] = "error";
             TempData["Message"] = "Sai tài khoản hoặc mật khẩu!";
             return View();
+        }
+
+        // --- HÀM PHỤ: CHUYỂN ĐỔI VAI TRÒ TỪ TIẾNG VIỆT SANG MÃ CODE ---
+        // Giúp bạn dùng [Authorize(Roles="QuanLy")] thay vì phải gõ tiếng Việt trong code
+        private string MapRoleToCode(string dbRole)
+        {
+            if (dbRole == "Quản lý") return "QuanLy";
+            if (dbRole == "Khách hàng") return "KhachHang";
+            if (dbRole == "Admin") return "Admin";
+            return "Guest";
         }
 
         // --- 1. QUÊN MẬT KHẨU (Bước 1: Nhập Email) ---
@@ -190,8 +274,9 @@ namespace QuanLyNhaHang.Controllers
         }
 
         // --- 4. ĐĂNG XUẤT (CHỈ GIỮ LẠI 1 HÀM DUY NHẤT) ---
-        public IActionResult DangXuat()
+        public async Task<IActionResult> DangXuat()
         {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
