@@ -18,6 +18,7 @@
     <!-- ASP.NET Core Validation Scripts -->
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     :root {
       --primary: #cda45e;
@@ -806,7 +807,8 @@
         </div>
         <div class="topbar-actions">
           <div class="chip">Vai trò hiện tại: <strong>Admin / Quản lý</strong></div>
-          <button class="btn btn-ghost">Đăng xuất</button>
+                    <a asp-controller="DangNhap" asp-action="DangXuat"><button class="btn btn-ghost">Đăng xuất</button></a>
+          
         </div>
       </div>
 
@@ -1891,6 +1893,23 @@
         }
     </script>
 </body>
+@if (TempData["Type"] != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: '@TempData["Type"]', // success, error, warning
+                title: '@(TempData["Title"] ?? "Thông báo")',
+                html: '@Html.Raw(TempData["Message"])',
+                // Chỉnh màu tối cho hợp với Admin
+                background: '#15120f',
+                color: '#f4f4f4',
+                confirmButtonText: 'Đồng ý',
+                confirmButtonColor: '#cda45e'
+            });
+        });
+    </script>
+    }
 @await RenderSectionAsync("Scripts", required: false)
 
 </html>
