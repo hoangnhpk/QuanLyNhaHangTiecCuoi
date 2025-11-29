@@ -1,0 +1,247 @@
+﻿@model IEnumerable<QuanLyNhaHang.Models.DichVu>
+
+@{
+    ViewData["Title"] = "Quản Lý Dịch Vụ";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">QUẢN LÝ DỊCH VỤ</h1>
+        <a asp-action="Create" class="btn btn-primary btn-icon-split">
+            <span class="icon text-white-50">
+                <i class="fas fa-plus"></i>
+            </span>
+            <span class="text">Thêm dịch vụ mới</span>
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DANH SÁCH DỊCH VỤ</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>HÌNH ẢNH</th>
+                            <th>MÃ DỊCH VỤ</th>
+                            <th>TÊN DỊCH VỤ</th>
+                            <th>GIÁ DỊCH VỤ</th>
+                            <th>MÔ TẢ</th>
+                            <th>TRẠNG THÁI</th>
+                            <th>THAO TÁC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-center">
+                                    @if (!string.IsNullOrEmpty(item.HinhAnhDichVu))
+                                    {
+                                        <img src="@item.HinhAnhDichVu" alt="Hình ảnh dịch vụ" class="service-image" />
+                                    }
+                                    else
+                                    {
+                                        <div class="no-image">
+                                            <i class="fas fa-image"></i>
+                                            <span>Chưa có ảnh</span>
+                                        </div>
+                                    }
+                                </td>
+                                <td>@Html.DisplayFor(modelItem => item.MaDichVu)</td>
+                                <td>@Html.DisplayFor(modelItem => item.TenDichVu)</td>
+                                <td>@Html.DisplayFor(modelItem => item.GiaDV) VNĐ</td>
+                                <td class="description-cell">
+                                    <div class="truncate-text" title="@item.MoTaDV">
+                                        @Html.DisplayFor(modelItem => item.MoTaDV)
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge @(item.TrangThaiDV == "Hoạt động" ? "badge-success" : "badge-warning")">
+                                        @Html.DisplayFor(modelItem => item.TrangThaiDV)
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <a asp-action="Edit" asp-route-id="@item.MaDichVu" class="btn btn-warning btn-sm text-decoration-none">
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.MaDichVu" class="btn btn-danger btn-sm text-decoration-none">
+                                            <i class="fas fa-trash"></i> Xóa
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Vietnamese.json"
+                },
+                "columnDefs": [
+                    { "orderable": false, "targets": [0, 6] } // Tắt sắp xếp cho cột HÌNH ẢNH và THAO TÁC
+                ]
+            });
+
+            // Hiển thị toast nếu có thông báo từ ViewBag
+        @if (ViewBag.ToastMessage != null)
+        {
+            <text>
+                    showToast('@Html.Raw(ViewBag.ToastMessage)', '@ViewBag.ToastType', '@ViewBag.ToastTitle');
+            </text>
+        }
+        });
+    </script>
+}
+
+<style>
+    /* Xóa gạch chân cho nút Thêm dịch vụ mới */
+    .btn-primary.btn-icon-split {
+        text-decoration: none !important;
+    }
+
+        .btn-primary.btn-icon-split:hover {
+            text-decoration: none !important;
+        }
+
+    /* Căn giữa các nút trong cột THAO TÁC */
+    .d-flex.justify-content-center {
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    .gap-2 {
+        gap: 0.5rem !important;
+    }
+
+    /* Đảm bảo nút có kích thước phù hợp */
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.2rem;
+    }
+
+        /* Xóa gạch chân ở các nút */
+        .btn-sm.text-decoration-none {
+            text-decoration: none !important;
+        }
+
+    /* Căn chỉnh tiêu đề bảng */
+    th {
+        text-align: center;
+        vertical-align: middle;
+        font-weight: 600;
+    }
+
+    /* Căn giữa nội dung các cột */
+    td {
+        vertical-align: middle;
+    }
+
+    /* Style cho hình ảnh dịch vụ */
+    .service-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid #e3e6f0;
+        transition: all 0.3s ease;
+    }
+
+        .service-image:hover {
+            transform: scale(1.8);
+            z-index: 100;
+            position: relative;
+            border-color: #cda45e;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+    /* Style khi không có ảnh */
+    .no-image {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        background-color: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 6px;
+        color: #6c757d;
+        font-size: 0.75rem;
+        text-align: center;
+    }
+
+        .no-image i {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+    /* Thu nhỏ dòng mô tả */
+    .description-cell {
+        max-width: 200px;
+        min-width: 150px;
+    }
+
+    .truncate-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Giới hạn 2 dòng */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.4;
+        max-height: 2.8em; /* 2 dòng x 1.4 line-height */
+        font-size: 0.875rem;
+        word-break: break-word;
+    }
+
+        /* Hiển thị đầy đủ khi hover - SỬA MÀU NỀN */
+        .truncate-text:hover {
+            -webkit-line-clamp: unset;
+            max-height: none;
+            background: #f0f0f0; /* Màu xám nhạt thay vì trắng tinh */
+            padding: 6px 8px;
+            border-radius: 4px;
+            position: relative;
+            z-index: 10;
+            border: 1px solid #ddd;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+    /* Màu sắc cho badge */
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+    }
+</style>
