@@ -4,5 +4,6 @@
     {
         // Hàm gửi email cơ bản
         void GuiEmail(string denEmail, string tieuDe, string noiDung);
+        
     }
 }

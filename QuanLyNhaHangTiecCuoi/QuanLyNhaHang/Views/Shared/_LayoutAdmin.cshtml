@@ -764,6 +764,12 @@
                         <span>Nhân viên Part-time</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="GuiThongBao" asp-action="SoanEmail" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">⏱️</span>
+                        <span>Gửi thông báo</span>
+                    </a>
+                </li>
         <li class="nav-item">
           <button class="nav-link" data-module="services">
             <span class="icon">🎁</span>
@@ -789,6 +795,7 @@
           </button>
         </li>
       </ul>
+           
 
       <div class="sidebar-footer">
         <div class="role-pill">
@@ -850,6 +857,7 @@
             <span class="dot"></span> Thống kê
           </button>
         </div>
+
 
        
         @RenderBody()
