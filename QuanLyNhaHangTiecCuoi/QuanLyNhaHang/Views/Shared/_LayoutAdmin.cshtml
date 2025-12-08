@@ -764,6 +764,12 @@
                         <span>Nhân viên Part-time</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="GuiThongBao" asp-action="SoanEmail" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">⏱️</span>
+                        <span>Gửi thông báo</span>
+                    </a>
+                </li>
         <li class="nav-item">
           <button class="nav-link" data-module="services">
             <span class="icon">🎁</span>
@@ -789,6 +795,7 @@
           </button>
         </li>
       </ul>
+           
 
       <div class="sidebar-footer">
         <div class="role-pill">
@@ -807,7 +814,8 @@
         </div>
         <div class="topbar-actions">
           <div class="chip">Vai trò hiện tại: <strong>Admin / Quản lý</strong></div>
-          <button class="btn btn-ghost">Đăng xuất</button>
+                    <a asp-controller="DangNhap" asp-action="DangXuat"><button class="btn btn-ghost">Đăng xuất</button></a>
+          
         </div>
       </div>
 
@@ -849,6 +857,7 @@
             <span class="dot"></span> Thống kê
           </button>
         </div>
+
 
        
         @RenderBody()
@@ -1892,6 +1901,23 @@
         }
     </script>
 </body>
+@if (TempData["Type"] != null)
+    {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: '@TempData["Type"]', // success, error, warning
+                title: '@(TempData["Title"] ?? "Thông báo")',
+                html: '@Html.Raw(TempData["Message"])',
+                // Chỉnh màu tối cho hợp với Admin
+                background: '#15120f',
+                color: '#f4f4f4',
+                confirmButtonText: 'Đồng ý',
+                confirmButtonColor: '#cda45e'
+            });
+        });
+    </script>
+    }
 @await RenderSectionAsync("Scripts", required: false)
 
 </html>

@@ -1,0 +1,91 @@
+﻿@model QuanLyNhaHang.ViewModels.GuiEmailViewModel
+
+@{
+    ViewData["Title"] = "Gửi Thông Báo Email";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/css/QuanTri.css" rel="stylesheet">
+
+<div class="module-view active" style="display:block;">
+    <div class="module-header">
+        <div class="module-title">GỬI EMAIL THÔNG BÁO</div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div style="background: #1a4d2e; color: #4ade80; padding: 12px 20px; margin: 20px 0; border-radius: 8px; border: 1px solid #4ade80;">
+            ✓ @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card" style="width: 100%; max-width: none; margin: 20px 0; padding: 30px;">
+
+        <form asp-action="SoanEmail" method="post" id="form-send-email">
+            @Html.AntiForgeryToken()
+
+            <div class="form-grid" style="display: block;">
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label asp-for="EmailNguoiNhan" style="font-size: 16px; margin-bottom: 8px; display:block;">Email Khách Hàng </label>
+                    <input asp-for="EmailNguoiNhan" class="input" placeholder="VD:nhapmailkhachhang@gmail.com" style="padding: 12px;" />
+                    <span asp-validation-for="EmailNguoiNhan" style="color:red;"></span>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <label asp-for="TieuDe" style="font-size: 16px; margin-bottom: 8px; display:block;">Tiêu Đề </label>
+                    <input asp-for="TieuDe" class="input" placeholder="VD: Thông báo về tiệc cưới ngày 20/11..." style="padding: 12px;" />
+                    <span asp-validation-for="TieuDe" style="color:red;"></span>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label asp-for="NoiDung" style="font-size: 16px; margin-bottom: 8px; display:block;">Nội Dung </label>
+                    <textarea asp-for="NoiDung" class="input" rows="15" placeholder="Nhập nội dung cần thông báo..." style="padding: 12px; line-height: 1.2;"></textarea>
+                    <span asp-validation-for="NoiDung" style="color:red;"></span>
+                </div>
+
+            </div>
+
+            <div class="form-footer" style="margin-top:30px; display:flex; justify-content:flex-end; gap: 15px;">
+                <button type="reset" class="btn" style=" padding: 12px 25px;">Nhập lại</button>
+
+                <button type="button" class="btn" style="padding: 12px 30px; font-weight: bold;" onclick="openConfirmModal()">Gửi Ngay ➤</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="confirmModal" class="custom-modal-overlay" style="display: none;">
+    <div class="custom-modal-box">
+        <span class="close-icon" onclick="closeConfirmModal()">×</span>
+        <div class="modal-tag">XÁC NHẬN</div>
+        <h3 class="modal-title">BẠN CÓ CHẮC MUỐN GỬI?</h3>
+        <p class="modal-desc">
+            Email sẽ được gửi ngay lập tức đến khách hàng. Hành động này không thể hoàn tác.
+        </p>
+        <div class="modal-actions">
+            <button class="btn" onclick="closeConfirmModal()">Hủy</button>
+            <button class="btn-confirm" onclick="submitRealForm()">Xác Nhận Gửi</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function openConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+
+        function submitRealForm() {
+            
+            document.getElementById('form-send-email').submit();
+        }
+    </script>
+}

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhaHang.Models;
 using QuanLyNhaHang.ViewModels;
@@ -8,6 +9,7 @@ namespace QuanLyNhaHang.Controllers
     // Định tuyến mặc định cho API là: domain/api/ThanhToan
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "QuanLy")]
     public class ThanhToanController : Controller
     {
         private readonly QuanLyNhaHangContext _context;

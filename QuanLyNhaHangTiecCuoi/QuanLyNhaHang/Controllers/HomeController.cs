@@ -100,5 +100,10 @@ namespace QuanLyNhaHang.Controllers
 
             return Content("Đã khởi tạo dữ liệu mẫu thành công! Hãy vào SQL kiểm tra.");
         }
+        [HttpGet]
+        public IActionResult TuChoiTruyCap()
+        {
+            return View();
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace QuanLyNhaHang.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-            {
+
                 optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-UKUNQ3QE\SQLEXPRESS;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Trust Server Certificate=True");
             }
         }
