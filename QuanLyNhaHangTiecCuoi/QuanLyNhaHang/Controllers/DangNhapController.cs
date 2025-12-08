@@ -5,12 +5,20 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System;
+using QuanLyNhaHang.Services;
 
 namespace QuanLyNhaHang.Controllers
 {
     public class DangNhapController : Controller
     {
         private readonly QuanLyNhaHangContext _context;
+        private readonly IEmailService _emailService; // 1. Khai báo biến hứng Service
+        // 2. Tiêm vào Constructor
+        public DangNhapController(QuanLyNhaHangContext context, IEmailService emailService)
+        {
+            _context = context;
+            _emailService = emailService; // Nhận hàng từ DI
+        }
 
         public DangNhapController(QuanLyNhaHangContext context)
         {
@@ -70,28 +78,27 @@ namespace QuanLyNhaHang.Controllers
         public IActionResult QuenMatKhau(string Email)
         {
             var taiKhoan = _context.TaiKhoans.FirstOrDefault(t => t.Email == Email);
-
-            // Nếu Email không tồn tại -> Báo lỗi
             if (taiKhoan == null)
             {
                 TempData["Type"] = "error";
-                TempData["Message"] = "Email này không tồn tại trong hệ thống.";
+                TempData["Message"] = "Email này không tồn tại.";
                 return View();
             }
 
-            // Nếu tồn tại -> Gửi OTP
             string otp = new Random().Next(100000, 999999).ToString();
 
-            // Lưu Session
             HttpContext.Session.SetString("OTP_Reset", otp);
             HttpContext.Session.SetString("OTP_Email", Email);
             HttpContext.Session.SetString("OTP_Expiry", DateTime.Now.AddMinutes(10).ToString());
 
             try
             {
-                SendEmailOtp(Email, otp);
+                // 3. GỌI SERVICE (Gọn gàng hơn hẳn!)
+                string subject = "Mã OTP Đặt Lại Mật Khẩu";
+                string body = $"<h3>Mã OTP của bạn là: <span style='color:red'>{otp}</span></h3><p>Có hiệu lực trong 10 phút.</p>";
 
-                // Thông báo thành công -> Chuyển sang trang nhập OTP
+                _emailService.GuiEmail(Email, subject, body);
+
                 TempData["Type"] = "success";
                 TempData["Title"] = "Đã gửi OTP";
                 TempData["Message"] = $"Mã OTP đã được gửi đến <b>{Email}</b>";
