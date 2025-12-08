@@ -9,7 +9,7 @@ namespace QuanLyNhaHang.db
         public QuanLyNhaHangContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<QuanLyNhaHangContext>();
-            optionsBuilder.UseSqlServer(@"Data Source=YKHIENBLO\SQLEXPRESS01;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-NVBKKGJ\SQLEXPRESS;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Trust Server Certificate=True");
 
             return new QuanLyNhaHangContext(optionsBuilder.Options);
         }

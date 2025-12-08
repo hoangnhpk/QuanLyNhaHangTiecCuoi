@@ -1,0 +1,107 @@
+﻿@model IEnumerable<QuanLyNhaHang.Models.DatTiec>
+
+@{
+    ViewData["Title"] = "Quản lý Đặt Tiệc";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml"; // Dùng layout riêng cho Admin
+}
+
+<div class="module-view active" id="module-orders" style="display:block;">
+    <div class="module-header">
+        <div>
+            <div class="module-title">Duyệt đơn đặt tiệc</div>
+            <div class="module-desc">Quản lý danh sách các tiệc đã được khách hàng đặt.</div>
+        </div>
+
+        <div class="toolbar">
+            <input type="text" id="searchInput" class="search-input"
+                   placeholder="Tìm theo tên hoặc SĐT..."
+                   onkeyup="searchOrder()" />
+
+            <select class="filter-select" id="statusFilter" onchange="searchOrder()">
+                <option value="All">Tất cả trạng thái</option>
+                <option value="Mới đặt">Mới đặt</option>
+                <option value="Đã duyệt">Đã duyệt</option>
+                <option value="Đã cọc">Đã cọc</option>
+                <option value="Hủy">Hủy</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="data-card">
+        <table style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>Mã</th>
+                    <th>Khách hàng</th>
+                    <th>Cô dâu / Chú rể</th>
+                    <th>Ngày tổ chức</th>
+                    <th>Số bàn</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <partial name="_OrderTable" model="Model" />
+            </tbody>
+        </table>
+    </div>
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="background: #15120f; color: #fff;">
+                <div id="modalContentContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+        // --- 1. BIẾN TOÀN CỤC ---
+        // Đổi tên thành searchTimer để không bị trùng với các thư viện khác
+        let searchTimer = null;
+
+        // --- 2. HÀM TÌM KIẾM & LỌC (GỘP CHUNG) ---
+        function searchOrder() {
+            // Lấy giá trị từ cả ô tìm kiếm và dropdown
+            let keyword = document.getElementById('searchInput').value;
+            let status = document.getElementById('statusFilter').value;
+
+            // Nếu đang đếm ngược thì hủy đi để đếm lại (Debounce)
+            if (searchTimer) {
+                clearTimeout(searchTimer);
+            }
+
+            // Đợi 300ms sau khi ngừng thao tác mới gửi request (cho mượt)
+            searchTimer = setTimeout(function () {
+                $.get("/AdminDatTiec/Search?keyword=" + keyword + "&status=" + status, function (data) {
+                    // Thay thế nội dung bảng bằng dữ liệu mới
+                    $("#tableBody").html(data);
+                });
+            }, 300);
+        }
+
+        // --- 3. HÀM XEM CHI TIẾT (MODAL) ---
+        function loadDetails(id) {
+            $.get("/AdminDatTiec/GetDetails/" + id, function (data) {
+                $("#modalContentContainer").html(data);
+                var myModal = new bootstrap.Modal(document.getElementById('detailModal'));
+                myModal.show();
+            });
+        }
+
+        // --- 4. HÀM CẬP NHẬT TRẠNG THÁI (DUYỆT/HỦY) ---
+        function updateStatus(id, status) {
+            if (confirm('Bạn có chắc muốn chuyển trạng thái thành "' + status + '" không?')) {
+                $.post("/AdminDatTiec/UpdateStatus", { id: id, status: status }, function (res) {
+                    if (res.success) {
+                        location.reload(); // Tải lại trang để cập nhật giao diện
+                    } else {
+                        alert(res.message);
+                    }
+                });
+            }
+        }
+    </script>
+}
