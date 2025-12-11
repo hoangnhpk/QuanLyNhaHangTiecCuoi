@@ -1,115 +1,173 @@
 ﻿@model QuanLyNhaHang.Models.KhachHang
 
-
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết khách hàng";
 }
 
 <div class="crud-container">
-    <h1>Chi Tiết Khách Hàng</h1>
-
-    <div>
-        <h4 class="details-title">Khách Hàng: @Model?.MaKhachHang</h4>
-        <hr class="header-hr" />
-
-        <div class="row details-layout">
-
-            <div class="col-lg-6 col-md-12 details-section">
-                <h5 class="section-heading"><i class="fa fa-user-circle"></i> Thông tin Người Dùng</h5>
-                <dl class="row details-list">
-                    <dt class="col-sm-4">Tên Khách Hàng</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TenKhachHang)</dd>
-
-                    <dt class="col-sm-4">CCCD</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.CccdKhachHang)</dd>
-
-                    <dt class="col-sm-4">SĐT</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.SdtKhachHang)</dd>
-
-                    <dt class="col-sm-4">Địa Chỉ</dt>
-                    <dd class="col-sm-8">@Html.DisplayFor(model => model.DiaChiKhachHang)</dd>
-
-                    <dt class="col-sm-4">Trạng Thái KH</dt>
-                    <dd class="col-sm-8">
-                        @{
-                            // DỊCH TRẠNG THÁI KHÁCH HÀNG
-                            var khStatus = Model.TrangThaiKhachHang == "Active" ? "Hoạt động" : "Khóa";
-                            var khStatusClass = Model.TrangThaiKhachHang == "Active" ? "Active" : "Inactive";
-                        }
-                        <span class="status-display status-@khStatusClass">@khStatus</span>
-                    </dd>
-
-                    <dt class="col-sm-4">Ghi Chú</dt>
-                    <dd class="col-sm-8 note-field">@Html.DisplayFor(model => model.GhiChu)</dd>
-                </dl>
-            </div>
-
-            <div class="col-lg-6 col-md-12 details-section">
-                <h5 class="section-heading"><i class="fa fa-lock"></i> Thông tin Tài khoản Đăng nhập</h5>
-
-                @if (Model.TaiKhoan != null)
-                {
-                    <dl class="row details-list">
-                        <dt class="col-sm-4">Mã Tài Khoản</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.MaTaiKhoan)</dd>
-
-                        <dt class="col-sm-4">Email</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.Email)</dd>
-
-                        <dt class="col-sm-4">Tài Khoản (Username)</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.UserName)</dd>
-
-                        <dt class="col-sm-4">Vai Trò</dt>
-                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TaiKhoan.VaiTro)</dd>
-
-                        <dt class="col-sm-4">Trạng Thái TK</dt>
-                        <dd class="col-sm-8">
-                            @{
-                                // DỊCH TRẠNG THÁI TÀI KHOẢN
-                                var tkStatus = Model.TaiKhoan.TrangThai == "Active" ? "Hoạt động" : "Khóa";
-                                var tkStatusClass = Model.TaiKhoan.TrangThai == "Active" ? "Active" : "Inactive";
-                            }
-                            <span class="status-display status-@tkStatusClass">@tkStatus</span>
-                        </dd>
-
-                        <dt class="col-sm-4">Mật Khẩu (Hash)</dt>
-                        <dd class="col-sm-8 password-hash-field">
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span id="passwordDisplay">********</span>
-                                <button type="button" class="btn-toggle-password" id="togglePasswordBtn"
-                                        data-hash="@(Model.TaiKhoan.Password)">
-                                    <i class="fa fa-eye"></i> Xem Hash
-                                </button>
-                            </div>
-                        </dd>
-                    </dl>
-                }
-                else
-                {
-                    <div class="no-account-info">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        <p>Khách hàng này chưa được gán Tài khoản đăng nhập.</p>
-                        <a asp-action="Edit" asp-route-id="@Model?.MaKhachHang" class="btn-create-tk">Tạo/Gán Tài Khoản Ngay</a>
-                    </div>
-                }
-            </div>
-
-        </div>
+    <div class="details-header">
+        <h1><i class="fas fa-user-circle"></i> Chi Tiết Khách Hàng</h1>
+        <div class="customer-id">Mã: @Model.MaKhachHang</div>
     </div>
 
-    <div class="crud-actions">
-        <a asp-action="Edit" asp-route-id="@Model?.MaKhachHang" class="btn-action btn-edit"><i class="fa fa-pencil"></i> Chỉnh Sửa Thông Tin</a>
-        <a asp-action="Index" class="btn-ghost"><i class="fa fa-arrow-left"></i> Quay lại Danh sách</a>
+    <div class="details-content">
+        <div class="row">
+            <!-- Thông tin cá nhân -->
+            <div class="col-md-6">
+                <div class="details-card">
+                    <div class="card-header">
+                        <i class="fas fa-id-card"></i>
+                        <h3>Thông tin cá nhân</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <span class="info-label">Tên khách hàng:</span>
+                            <span class="info-value">@Model.TenKhachHang</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">CCCD/CMND:</span>
+                            <span class="info-value">@Model.CccdKhachHang</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Số điện thoại:</span>
+                            <span class="info-value">@Model.SdtKhachHang</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Địa chỉ:</span>
+                            <span class="info-value">@Model.DiaChiKhachHang</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Trạng thái:</span>
+                            @{
+                                string statusClass = Model.TrangThaiKhachHang == "Hoạt động" ? "active" : "inactive";
+                            }
+                            <span class="status-badge status-@statusClass">
+                                <i class="fas fa-circle"></i> @Model.TrangThaiKhachHang
+                            </span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-label">Ghi chú:</span>
+                            <span class="info-value note">
+                                @if (string.IsNullOrEmpty(Model.GhiChu))
+                                {
+                                    <span class="text-muted">Không có ghi chú</span>
+                                }
+                                else
+                                {
+                                    @Model.GhiChu
+                                }
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông tin tài khoản -->
+            <div class="col-md-6">
+                <div class="details-card">
+                    <div class="card-header">
+                        <i class="fas fa-user-lock"></i>
+                        <h3>Thông tin tài khoản</h3>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.TaiKhoan != null)
+                        {
+                            <div class="info-item">
+                                <span class="info-label">Mã tài khoản:</span>
+                                <span class="info-value">@Model.TaiKhoan.MaTaiKhoan</span>
+                            </div>
+
+                            <div class="info-item">
+                                <span class="info-label">Email:</span>
+                                <span class="info-value">@Model.TaiKhoan.Email</span>
+                            </div>
+
+                            <div class="info-item">
+                                <span class="info-label">Tên đăng nhập:</span>
+                                <span class="info-value">@Model.TaiKhoan.UserName</span>
+                            </div>
+
+                            <div class="info-item">
+                                <span class="info-label">Vai trò:</span>
+                                <span class="info-value">@Model.TaiKhoan.VaiTro</span>
+                            </div>
+
+                            <div class="info-item">
+                                <span class="info-label">Trạng thái TK:</span>
+                                @{
+                                    string tkStatusClass = Model.TaiKhoan.TrangThai == "Hoạt động" ? "active" : "inactive";
+                                }
+                                <span class="status-badge status-@tkStatusClass">
+                                    <i class="fas fa-circle"></i> @Model.TaiKhoan.TrangThai
+                                </span>
+                            </div>
+
+                            <div class="info-item">
+                                <span class="info-label">Mật khẩu:</span>
+                                <div class="password-container">
+                                    <span class="password-display" id="passwordDisplay">••••••••</span>
+                                    <button type="button" class="btn-toggle-password" id="togglePasswordBtn"
+                                            data-password="@Model.TaiKhoan.Password">
+                                        <i class="fas fa-eye"></i> Xem hash
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="no-account">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h4>Chưa có tài khoản</h4>
+                                <p>Khách hàng này chưa được liên kết với tài khoản đăng nhập.</p>
+                                <a asp-action="Edit" asp-route-id="@Model.MaKhachHang" class="btn-link">
+                                    <i class="fas fa-link"></i> Liên kết tài khoản
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+   
+
+    <div class="details-actions">
+        <a asp-action="Edit" asp-route-id="@Model.MaKhachHang" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+        @if (Model.TrangThaiKhachHang == "Hoạt động")
+        {
+            <form asp-action="Lock" method="post" class="d-inline">
+                <input type="hidden" name="id" value="@Model.MaKhachHang" />
+                <button type="submit" class="btn btn-warning"
+                        onclick="return confirm('Bạn có chắc muốn KHÓA khách hàng @Model.TenKhachHang?')">
+                    <i class="fas fa-lock"></i> Khóa tài khoản
+                </button>
+            </form>
+        }
+        else
+        {
+            <form asp-action="Unlock" method="post" class="d-inline">
+                <input type="hidden" name="id" value="@Model.MaKhachHang" />
+                <button type="submit" class="btn btn-success"
+                        onclick="return confirm('Bạn có chắc muốn MỞ KHÓA khách hàng @Model.TenKhachHang?')">
+                    <i class="fas fa-unlock"></i> Mở khóa tài khoản
+                </button>
+            </form>
+        }
     </div>
 </div>
 
 <style>
-    /* ======================================================= */
-    /* CÁC QUY TẮC CSS CHUNG CHO DETAILS VIEW */
-    /* ======================================================= */
-
-    /* Định nghĩa lại các biến CSS cần thiết */
     :root {
         --primary: #cda45e;
         --primary-soft: rgba(205, 164, 94, 0.12);
@@ -117,19 +175,18 @@
         --text-main: #f4f4f4;
         --text-muted: #a6a6a6;
         --danger: #ff5c5c;
-        --success: #3c9c69;
-        --warning: #e6a84c;
+        --success: #4caf50;
+        --warning: #ff9800;
         --info: #5bc0de;
-        --border-subtle: rgba(255, 255, 255, 0.08); /* Tăng độ đậm border một chút */
+        --border-subtle: rgba(255, 255, 255, 0.06);
         --radius-md: 10px;
-        --radius-pill: 999px;
+        --radius-sm: 5px;
     }
 
-    /* Container chính để áp dụng nền và font */
     .crud-container {
         max-width: 100%;
         margin: 0;
-        padding: 30px 40px; /* Tăng padding */
+        padding: 20px 30px;
         background-color: var(--bg-elevated);
         color: var(--text-main);
         border-radius: var(--radius-md);
@@ -138,299 +195,371 @@
         border: 1px solid var(--border-subtle);
     }
 
-        .crud-container h1 {
-            font-size: 30px; /* Tăng size H1 */
-            text-transform: uppercase;
-            letter-spacing: 0.1em; /* Tăng spacing */
+    .details-header {
+        text-align: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--primary-soft);
+    }
+
+        .details-header h1 {
+            font-size: 28px;
             color: var(--primary);
-            border-bottom: 2px solid var(--primary-soft);
-            padding-bottom: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-    .details-title {
-        font-size: 20px;
-        color: var(--text-main);
-        margin-top: 15px;
-        margin-bottom: 10px;
-        font-weight: 600;
-    }
+        .details-header .customer-id {
+            font-size: 16px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px 15px;
+            border-radius: var(--radius-pill);
+            display: inline-block;
+        }
 
-    .header-hr {
-        border-color: rgba(255, 255, 255, 0.1); /* Sắc nét hơn */
-        margin-top: 5px;
-        margin-bottom: 20px;
-    }
-
-    /* =================================================== */
-    /* CSS CHO BỐ CỤC 2 CỘT */
-    /* =================================================== */
-
-    .details-layout {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px; /* Thêm khoảng cách giữa các section */
-        margin: 0;
-    }
-
-    .details-section {
-        flex: 1; /* Chia đều không gian */
-        min-width: 45%; /* Đảm bảo xếp chồng trên màn hình nhỏ */
-        padding: 20px; /* Tăng padding section */
+    .details-card {
+        background: rgba(255, 255, 255, 0.02);
         border: 1px solid var(--border-subtle);
         border-radius: var(--radius-md);
-        background-color: rgba(0, 0, 0, 0.1); /* Hơi tối hơn nền container */
-        margin-bottom: 0; /* Loại bỏ margin-bottom cũ */
-        transition: box-shadow 0.3s;
-    }
-
-        /* Hiệu ứng focus nhẹ */
-        .details-section:hover {
-            box-shadow: 0 0 15px var(--primary-soft);
-        }
-
-    /* Tiêu đề từng phần (Thông tin Người Dùng / Tài khoản) */
-    .section-heading {
-        color: var(--primary);
-        font-size: 16px;
         margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid var(--primary-soft);
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        display: flex;
-        align-items: center;
+        overflow: hidden;
     }
 
-        .section-heading i {
-            margin-right: 10px;
-            color: var(--text-main);
-            font-size: 18px;
-        }
-
-    /* Định dạng danh sách chi tiết (Details List - DL/DT/DD) */
-    .details-list {
-        width: 100%;
-        margin-bottom: 0;
-    }
-
-        .details-list dt {
-            color: var(--text-muted);
-            font-weight: 500;
-            padding: 8px 0;
-            text-transform: capitalize; /* Chuyển về chữ hoa đầu */
-            font-size: 13px;
-            letter-spacing: 0.03em;
-            line-height: 1.4;
-        }
-
-        .details-list dd {
-            color: var(--text-main);
-            font-weight: 600;
-            padding: 8px 0;
-            font-size: 14px;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.08); /* Border mờ nhạt hơn */
-            line-height: 1.4;
-        }
-
-            .details-list dd:last-child {
-                border-bottom: none;
-            }
-
-    /* =================================================== */
-    /* STYLE CHO CỘT GHI CHÚ */
-    /* =================================================== */
-    .note-field {
-        font-style: italic;
-        color: var(--warning);
-        font-size: 13px !important; /* Tăng nhẹ size */
-        white-space: pre-wrap;
-    }
-
-    /* =================================================== */
-    /* STYLE CHO TRẠNG THÁI (STATUS BADGES) */
-    /* =================================================== */
-    .status-display {
-        font-weight: 700 !important;
-        padding: 4px 10px !important;
-        border-radius: var(--radius-pill);
-        display: inline-block;
-        font-size: 11px !important;
-        line-height: 1.2;
-        text-transform: uppercase;
-        margin-top: 2px; /* Căn chỉnh nhẹ */
-    }
-
-    .status-Active {
-        background-color: var(--success);
-        color: #fff;
-    }
-
-    .status-Inactive, .status-Suspended {
-        background-color: var(--danger);
-        color: #fff;
-    }
-
-    /* =================================================== */
-    /* STYLE CHO THÔNG BÁO KHÔNG CÓ TÀI KHOẢN */
-    /* =================================================== */
-    .no-account-info {
-        text-align: center;
-        padding: 40px 10px; /* Tăng padding */
-        border: 2px dashed rgba(255, 92, 92, 0.4); /* Border rõ hơn */
-        border-radius: var(--radius-md);
-        background-color: rgba(255, 92, 92, 0.08); /* Nền mờ hơn */
-        color: var(--danger);
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-
-        .no-account-info i {
-            font-size: 32px; /* Tăng size icon */
-            margin-bottom: 15px;
-        }
-
-        .no-account-info p {
-            font-size: 14px;
-        }
-
-    /* Nút Tạo/Gán TK trong khung báo lỗi */
-    .btn-create-tk {
-        display: inline-block;
-        padding: 8px 15px;
-        border-radius: var(--radius-pill);
-        font-size: 13px;
-        font-weight: 600;
-        text-decoration: none;
-        color: #fff; /* Đổi màu chữ sang trắng */
-        background-color: var(--danger);
-        transition: all 0.2s;
-        margin-top: 15px;
-    }
-
-        .btn-create-tk:hover {
-            opacity: 0.9;
-            transform: scale(1.03);
-            box-shadow: 0 4px 15px rgba(255, 92, 92, 0.3);
-        }
-
-    /* =================================================== */
-    /* NÚT ACTIONS */
-    /* =================================================== */
-    .crud-actions {
-        display: flex;
-        justify-content: center;
-        gap: 20px; /* Tăng khoảng cách */
-        padding-top: 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        margin-top: 30px;
-    }
-
-    .btn-action.btn-edit, .btn-ghost {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 20px; /* Tăng padding */
-        border-radius: var(--radius-pill);
-        font-size: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.2s ease-out;
-    }
-
-    .btn-action.btn-edit {
-        color: #120f0a;
-        background: linear-gradient(135deg, #e0b46e, #cda45e); /* Gradient đẹp hơn */
-        box-shadow: 0 8px 25px rgba(205, 164, 94, 0.3);
-    }
-
-        .btn-action.btn-edit:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-    .btn-ghost {
-        color: var(--text-main);
-        background: transparent;
-        border: 1px solid var(--text-muted); /* Viền rõ hơn */
-    }
-
-        .btn-ghost:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: var(--primary);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-
-    /* STYLE MẬT KHẨU ĐÃ SỬA */
-    .password-hash-field {
-        font-style: normal; /* Bỏ italic */
-        color: var(--text-main) !important;
-        font-size: 14px !important;
+    .card-header {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border-subtle);
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    /* STYLE CHO NÚT XEM MẬT KHẨU */
-    .btn-toggle-password {
-        background: rgba(255, 255, 255, 0.05); /* Nền nhẹ */
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: var(--primary); /* Màu vàng/đồng */
-        padding: 6px 10px;
-        border-radius: var(--radius-md);
-        font-size: 11px;
-        cursor: pointer;
-        transition: all 0.2s;
+        .card-header i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            color: var(--text-main);
+            margin: 0;
+            font-weight: 600;
+        }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+    }
+
+        .info-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+    .info-label {
+        flex: 0 0 40%;
+        color: var(--text-muted);
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    .info-value {
+        flex: 1;
+        color: var(--text-main);
+        font-weight: 400;
+        font-size: 14px;
+    }
+
+    .note {
+        font-style: italic;
+        color: var(--warning);
+    }
+
+    .status-badge {
         display: inline-flex;
         align-items: center;
         gap: 5px;
+        padding: 5px 12px;
+        border-radius: var(--radius-pill);
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-active {
+        color: var(--success);
+        background: rgba(76, 175, 80, 0.15);
+        border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+
+    .status-inactive {
+        color: var(--danger);
+        background: rgba(255, 92, 92, 0.15);
+        border: 1px solid rgba(255, 92, 92, 0.3);
+    }
+
+    .no-account {
+        text-align: center;
+        padding: 30px 20px;
+        color: var(--warning);
+    }
+
+        .no-account i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+
+        .no-account h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .no-account p {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: var(--text-muted);
+        }
+
+    .btn-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(205, 164, 94, 0.1);
+        color: var(--primary);
+        border: 1px solid rgba(205, 164, 94, 0.3);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+        .btn-link:hover {
+            background: rgba(205, 164, 94, 0.2);
+            transform: translateY(-2px);
+        }
+
+    .password-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .password-display {
+        font-family: 'Courier New', monospace;
+        letter-spacing: 2px;
+        font-weight: 600;
+    }
+
+    .btn-toggle-password {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--info);
+        padding: 5px 10px;
+        border-radius: var(--radius-sm);
+        font-size: 11px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s;
     }
 
         .btn-toggle-password:hover {
-            background-color: var(--primary-soft);
-            color: #fff;
-            border-color: var(--primary);
+            background: rgba(91, 192, 222, 0.1);
+            border-color: var(--info);
         }
+
+    /* Table for booking history */
+    .table {
+        background: transparent;
+        color: var(--text-main);
+        font-size: 13px;
+    }
+
+        .table thead th {
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        .table tbody td {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+    .btn-view-more {
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+        .btn-view-more:hover {
+            text-decoration: underline;
+        }
+
+    /* Action buttons */
+    .details-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-subtle);
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: #000;
+        border-color: var(--primary);
+    }
+
+        .btn-primary:hover {
+            background: #d8b474;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(205, 164, 94, 0.3);
+        }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-main);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+    .btn-warning {
+        background: var(--warning);
+        color: #000;
+        border-color: var(--warning);
+    }
+
+        .btn-warning:hover {
+            background: #ffb347;
+            transform: translateY(-2px);
+        }
+
+    .btn-success {
+        background: var(--success);
+        color: #000;
+        border-color: var(--success);
+    }
+
+        .btn-success:hover {
+            background: #5dbf5f;
+            transform: translateY(-2px);
+        }
+
+    .d-inline {
+        display: inline-block;
+    }
+
+    .text-muted {
+        color: var(--text-muted) !important;
+        font-style: italic;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .crud-container {
+            padding: 15px;
+        }
+
+        .details-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .info-item {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .info-label {
+            flex: none;
+        }
+    }
 </style>
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('togglePasswordBtn');
             const passwordDisplay = document.getElementById('passwordDisplay');
 
             if (toggleBtn && passwordDisplay) {
-                const actualHash = toggleBtn.getAttribute('data-hash');
-                const maskedText = '********';
-                let isHashVisible = false;
+                const passwordHash = toggleBtn.getAttribute('data-password');
+                let isVisible = false;
 
-                passwordDisplay.textContent = maskedText;
-
-                toggleBtn.addEventListener('click', function () {
-                    // Kiểm tra trường hợp hash rỗng hoặc hash giả định (từ Controller)
-                    if (!actualHash || actualHash.trim() === '' || actualHash.includes('HASHED_')) {
-                        passwordDisplay.textContent = '(Hash không khả dụng)';
-                        this.style.display = 'none'; // Ẩn nút nếu hash không hợp lệ
+                toggleBtn.addEventListener('click', function() {
+                    if (!passwordHash || passwordHash.trim() === '') {
+                        passwordDisplay.textContent = '(Không có mật khẩu)';
                         return;
                     }
 
-                    isHashVisible = !isHashVisible;
+                    isVisible = !isVisible;
 
-                    if (isHashVisible) {
-                        // Hiển thị chuỗi Hash đầy đủ
-                        passwordDisplay.textContent = actualHash;
-                        this.innerHTML = '<i class="fa fa-eye-slash"></i> Ẩn Hash';
+                    if (isVisible) {
+                        passwordDisplay.textContent = passwordHash;
+                        toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Ẩn hash';
+                        toggleBtn.classList.add('active');
                     } else {
-                        // Ẩn chuỗi Hash
-                        passwordDisplay.textContent = maskedText;
-                        this.innerHTML = '<i class="fa fa-eye"></i> Xem Hash';
+                        passwordDisplay.textContent = '••••••••';
+                        toggleBtn.innerHTML = '<i class="fas fa-eye"></i> Xem hash';
+                        toggleBtn.classList.remove('active');
                     }
                 });
+
+                // Auto-hide password after 10 seconds if visible
+                setInterval(() => {
+                    if (isVisible) {
+                        isVisible = false;
+                        passwordDisplay.textContent = '••••••••';
+                        toggleBtn.innerHTML = '<i class="fas fa-eye"></i> Xem hash';
+                        toggleBtn.classList.remove('active');
+                    }
+                }, 10000);
             }
         });
     </script>
