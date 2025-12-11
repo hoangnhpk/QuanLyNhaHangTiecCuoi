@@ -1,0 +1,204 @@
+﻿@model QuanLyNhaHang.Models.DichVu
+
+@{
+    ViewData["Title"] = "Xóa Dịch Vụ";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">XÓA DỊCH VỤ</h1>
+        <a asp-action="Index" class="btn btn-secondary text-decoration-none">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-danger">
+            <h6 class="m-0 font-weight-bold text-white">CẢNH BÁO XÓA DỮ LIỆU</h6>
+        </div>
+        <div class="card-body">
+            <h4 class="text-danger mb-4">Bạn có chắc chắn muốn xóa dịch vụ này?</h4>
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Lưu ý:</strong> Hành động này không thể hoàn tác. Tất cả dữ liệu liên quan đến dịch vụ này sẽ bị xóa vĩnh viễn.
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <dl class="row">
+                        <dt class="col-sm-4">Mã dịch vụ:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MaDichVu)</dd>
+
+                        <dt class="col-sm-4">Tên dịch vụ:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.TenDichVu)</dd>
+
+                        <dt class="col-sm-4">Giá dịch vụ:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.GiaDV) VNĐ</dd>
+
+                        <dt class="col-sm-4">Trạng thái:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.TrangThaiDV == "Hoạt động" ? "badge-success" : "badge-warning")">
+                                @Html.DisplayFor(model => model.TrangThaiDV)
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Mô tả:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.MoTaDV)</dd>
+
+                        <dt class="col-sm-4">Ghi chú:</dt>
+                        <dd class="col-sm-8">@Html.DisplayFor(model => model.GhiChu)</dd>
+                    </dl>
+                </div>
+                <div class="col-md-4">
+                    <!-- Hiển thị hình ảnh dịch vụ -->
+                    <div class="form-group">
+                        <label class="control-label font-weight-bold">HÌNH ẢNH DỊCH VỤ</label>
+                        @if (!string.IsNullOrEmpty(Model.HinhAnhDichVu))
+                        {
+                            <div class="current-image mb-3 text-center">
+                                <img src="@Model.HinhAnhDichVu" class="img-thumbnail" style="max-height: 250px; width: auto;" alt="Ảnh dịch vụ" />
+                                <small class="form-text text-muted d-block mt-2">Hình ảnh sẽ bị xóa</small>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-warning text-center">
+                                <i class="fas fa-image"></i>
+                                <div>Chưa có hình ảnh</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="MaDichVu" />
+
+                <!-- Phần nút bấm - CĂN GIỮA với nền đen -->
+                <div class="form-group mt-4 button-container">
+                    <button type="submit" class="btn btn-delete">
+                        <i class="fas fa-trash"></i> Xác nhận xóa
+                    </button>
+                    <a asp-action="Index" class="btn btn-cancel text-decoration-none">Hủy bỏ</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* CSS CHO 2 NÚT - NỀN ĐEN */
+    .button-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 15px !important;
+        background-color: #000000 !important; /* Nền màu đen */
+        padding: 15px 20px !important;
+        border-radius: 8px !important;
+        margin-top: 20px !important;
+        border: 1px solid #333 !important;
+    }
+
+        .button-container .btn {
+            padding: 8px 25px !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            border-radius: 6px !important;
+            transition: all 0.3s ease !important;
+            min-width: 140px !important;
+            border: 2px solid transparent !important;
+            height: 38px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: white !important;
+        }
+
+        /* Nút Xóa - Màu đỏ */
+        .button-container .btn-delete {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+            border-color: #dc3545 !important;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4) !important;
+        }
+
+            .button-container .btn-delete:hover {
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(220, 53, 69, 0.6) !important;
+                background: linear-gradient(135deg, #c82333 0%, #dc3545 100%) !important;
+            }
+
+        /* Nút Hủy - Màu xám đậm */
+        .button-container .btn-cancel {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+            border-color: #545b62 !important;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3) !important;
+        }
+
+            .button-container .btn-cancel:hover {
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4) !important;
+                background: linear-gradient(135deg, #495057 0%, #6c757d 100%) !important;
+            }
+
+        /* Hiệu ứng click */
+        .button-container .btn:active {
+            transform: translateY(0) !important;
+        }
+
+        /* Icon trong nút */
+        .button-container .btn i {
+            margin-right: 6px !important;
+            font-size: 13px !important;
+        }
+
+    /* Bỏ gạch chân cho tất cả các nút và link */
+    .btn, a {
+        text-decoration: none !important;
+    }
+
+        /* Đảm bảo các nút không có gạch chân khi hover */
+        .btn:hover, a:hover {
+            text-decoration: none !important;
+        }
+
+    /* Style cho hình ảnh */
+    .current-image {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background: #f8f9fa;
+    }
+
+    .img-thumbnail {
+        max-width: 100%;
+        height: auto;
+        border: 2px solid #dee2e6;
+    }
+
+    /* Màu sắc cho badge */
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .badge-warning {
+        background-color: #ffc107;
+        color: #212529;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.4em;
+        font-size: 75%;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+    }
+</style>
