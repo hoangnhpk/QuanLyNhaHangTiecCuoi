@@ -771,10 +771,10 @@
                     </a>
                 </li>
         <li class="nav-item">
-          <button class="nav-link" data-module="services">
-            <span class="icon">🎁</span>
-            <span>Quản lý dịch vụ</span>
-          </button>
+                    <a class="nav-link" asp-controller="QLDichVu" asp-action="SoanEmail" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">⏱️</span>
+                        <span>Quản Lý Dịch Vụ</span>
+                    </a>
         </li>
         <li class="nav-item">
                     <a class="nav-link" asp-controller="ThanhToan" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
@@ -821,15 +821,18 @@
 
       <section class="content">
         <div class="tabs-header" id="tabsHeader">
-          <button class="tab-pill active" data-module="orders">
-            <span class="dot"></span> Đơn đặt tiệc
-          </button>
-          <button class="tab-pill" data-module="menu">
-            <span class="dot"></span> Thực đơn
-          </button>
-          <button class="tab-pill" data-module="customers">
-            <span class="dot"></span> Khách hàng
-          </button>
+                    < <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminDatTiec" ? "active" : "")"
+                         asp-controller="AdminDatTiec" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Nhân viên
+                    </a>
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "QuanLyThucDon" ? "active" : "")"
+                       asp-controller="QuanLyThucDon" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Nhân viên
+                    </a>
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "QL_KhachHang" ? "active" : "")"
+                       asp-controller="QL_KhachHang" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Nhân viên
+                    </a>
                     <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "QuanTriVien" ? "active" : "")"
                        asp-controller="QuanTriVien" asp-action="Index" style="text-decoration:none;">
                         <span class="dot"></span> Nhân viên quản lý
@@ -857,9 +860,6 @@
             <span class="dot"></span> Thống kê
           </button>
         </div>
-
-
-       
         @RenderBody()
       </section>
     </main>
@@ -1721,6 +1721,185 @@
         }
     }
 </script>
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 10000; max-width: 400px;"></div>
+
+    <style>
+        .custom-toast {
+            background: linear-gradient(135deg, #15120f, #110f0c);
+            border: 1px solid rgba(205, 164, 94, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+            min-width: 300px;
+        }
+
+            .custom-toast::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 4px;
+                background: linear-gradient(180deg, #cda45e, #b4883d);
+            }
+
+            .custom-toast.success::before {
+                background: linear-gradient(180deg, #4caf50, #45a049);
+            }
+
+            .custom-toast.error::before {
+                background: linear-gradient(180deg, #f44336, #d32f2f);
+            }
+
+            .custom-toast.warning::before {
+                background: linear-gradient(180deg, #ff9800, #f57c00);
+            }
+
+        .toast-icon {
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: #f4f4f4;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .toast-message {
+            font-size: 12px;
+            color: #a6a6a6;
+            line-height: 1.4;
+            font-family: "Poppins", sans-serif;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #a6a6a6;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+            .toast-close:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: #f4f4f4;
+            }
+
+        @@keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @@keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .toast-hiding {
+            animation: slideOutRight 0.3s ease-in forwards;
+        }
+    </style>
+
+    <script>
+        // Hàm hiển thị toast thông báo
+        function showToast(message, type = 'success', title = null) {
+            const toastContainer = document.getElementById('toastContainer');
+
+            // Tự động tạo title dựa trên type
+            if (!title) {
+                switch(type) {
+                    case 'success': title = 'Thành công'; break;
+                    case 'error': title = 'Lỗi'; break;
+                    case 'warning': title = 'Cảnh báo'; break;
+                    default: title = 'Thông báo';
+                }
+            }
+
+            // Icon tương ứng
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `custom-toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type] || icons.info}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Tự động xóa sau 5 giây
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.add('toast-hiding');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 5000);
+
+            return toast;
+        }
+
+        // Hiển thị toast từ TempData (nếu có)
+        document.addEventListener('DOMContentLoaded', function() {
+        @if (TempData["ToastMessage"] != null)
+        {
+            <text>
+                    showToast('@Html.Raw(TempData["ToastMessage"])', '@TempData["ToastType"]', '@TempData["ToastTitle"]');
+            </text>
+        }
+
+            // Tự động hiển thị toast khi form submit thành công
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('success') === 'true') {
+                showToast('Thao tác thành công!', 'success');
+            }
+        });
+
+        // Hàm hiển thị toast nhanh
+        function showQuickToast(message, type = 'success') {
+            return showToast(message, type);
+        }
+    </script>
 </body>
 @if (TempData["Type"] != null)
     {

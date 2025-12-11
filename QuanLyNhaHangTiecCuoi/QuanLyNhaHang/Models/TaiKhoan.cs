@@ -27,7 +27,7 @@ namespace QuanLyNhaHang.Models
 
         [StringLength(30, MinimumLength = 6, ErrorMessage = "Mật khẩu phải từ 6 đến 30 ký tự.")]
         [DisplayName("Mật Khẩu")]
-        [Required(ErrorMessage = "Vui lòng nhập mật khẩu.")]
+       
         [DataType(DataType.Password)] 
         public string? Password { get; set; }
 

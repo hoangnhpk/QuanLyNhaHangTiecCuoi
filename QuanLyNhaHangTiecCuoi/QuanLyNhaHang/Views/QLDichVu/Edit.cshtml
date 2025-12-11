@@ -1,0 +1,258 @@
+﻿@model QuanLyNhaHang.Models.DichVu
+
+@{
+    ViewData["Title"] = "Sửa Thông Tin Dịch Vụ";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">SỬA THÔNG TIN DỊCH VỤ</h1>
+        <a asp-action="Index" class="btn btn-secondary text-decoration-none">
+            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">THÔNG TIN DỊCH VỤ</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" id="editForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="MaDichVu" />
+
+                <div class="row">
+                    <!-- Cột trái: Thông tin cơ bản -->
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label class="control-label font-weight-bold">Mã Dịch Vụ</label>
+                            <input class="form-control" readonly value="@Model.MaDichVu" />
+                            <small class="form-text text-muted">Mã dịch vụ không thể thay đổi</small>
+                        </div>
+
+                        <!-- Tên Dịch Vụ -->
+                        <div class="form-group">
+                            <label asp-for="TenDichVu" class="control-label font-weight-bold">Tên Dịch Vụ *</label>
+                            <input asp-for="TenDichVu" class="form-control" required />
+                            <span asp-validation-for="TenDichVu" class="text-danger"></span>
+                        </div>
+
+                        <!-- Giá Dịch Vụ -->
+                        <div class="form-group">
+                            <label asp-for="GiaDV" class="control-label font-weight-bold">Giá Dịch Vụ *</label>
+                            <input asp-for="GiaDV" class="form-control" type="number" min="0" required />
+                            <span asp-validation-for="GiaDV" class="text-danger"></span>
+                        </div>
+
+                        <!-- Mô Tả -->
+                        <div class="form-group">
+                            <label asp-for="MoTaDV" class="control-label font-weight-bold">Mô Tả Dịch Vụ</label>
+                            <textarea asp-for="MoTaDV" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="MoTaDV" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Cột phải: Hình ảnh và trạng thái -->
+                    <div class="col-md-4">
+                        <!-- Hình Ảnh Hiện Tại -->
+                        <div class="form-group">
+                            <label class="control-label font-weight-bold">Hình Ảnh Hiện Tại</label>
+                            @if (!string.IsNullOrEmpty(Model.HinhAnhDichVu))
+                            {
+                                <div class="current-image mb-3">
+                                    <img src="@Model.HinhAnhDichVu" class="img-thumbnail" style="max-height: 200px; width: auto;" alt="Ảnh hiện tại" />
+                                    <small class="form-text text-muted d-block mt-2">Ảnh hiện tại</small>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i> Chưa có hình ảnh
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Upload Hình Ảnh Mới -->
+                        <div class="form-group">
+                            <label class="control-label font-weight-bold">Hình Ảnh Mới</label>
+                            <div class="custom-file">
+                                <input type="file" name="HinhAnhDichVu" class="custom-file-input" id="customFile" accept="image/png,image/jpeg,image/jpg">
+                                <label class="custom-file-label" for="customFile">Chọn file ảnh mới...</label>
+                            </div>
+                            <small class="form-text text-muted">Để trống nếu giữ nguyên ảnh cũ</small>
+                            <span asp-validation-for="HinhAnhDichVu" class="text-danger"></span>
+                        </div>
+
+                        <!-- Trạng Thái -->
+                        <div class="form-group">
+                            <label asp-for="TrangThaiDV" class="control-label font-weight-bold">Trạng Thái</label>
+                            <select asp-for="TrangThaiDV" class="form-control">
+                                <option value="Hoạt động">Hoạt động</option>
+                                <option value="Tạm ngừng">Tạm ngừng</option>
+                                <option value="Bảo trì">Bảo trì</option>
+                            </select>
+                            <span asp-validation-for="TrangThaiDV" class="text-danger"></span>
+                        </div>
+
+                        <!-- Ghi Chú -->
+                        <div class="form-group">
+                            <label asp-for="GhiChu" class="control-label font-weight-bold">Ghi Chú</label>
+                            <textarea asp-for="GhiChu" class="form-control" rows="2"></textarea>
+                            <span asp-validation-for="GhiChu" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phần nút bấm - CĂN GIỮA với nền đen và nút màu #C99F58 -->
+                <div class="form-group mt-4 button-container">
+                    <button type="submit" class="btn btn-update">
+                        <i class="fas fa-save"></i>Cập nhật
+                    </button>
+                    <a asp-action="Index" class="btn btn-cancel text-decoration-none">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            // Hiển thị tên file khi chọn
+            $('.custom-file-input').on('change', function() {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            });
+
+            // Validate form
+            $('#editForm').on('submit', function(e) {
+                const tenDichVu = $('#TenDichVu').val().trim();
+                const giaDV = $('#GiaDV').val();
+
+                if (!tenDichVu || !giaDV) {
+                    e.preventDefault();
+                    alert('⚠️ Vui lòng điền đầy đủ thông tin bắt buộc!');
+                    return false;
+                }
+
+                // Kiểm tra file ảnh nếu có chọn
+                const fileInput = document.getElementById('customFile');
+                if (fileInput.files[0]) {
+                    const file = fileInput.files[0];
+                    const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+
+                    if (!validTypes.includes(file.type)) {
+                        e.preventDefault();
+                        alert('❌ Chỉ chấp nhận file PNG và JPG');
+                        return false;
+                    }
+
+                    if (file.size > 5 * 1024 * 1024) {
+                        e.preventDefault();
+                        alert('❌ File quá lớn. Kích thước tối đa là 5MB');
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    .current-image {
+        text-align: center;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background: #f8f9fa;
+    }
+
+    .custom-file-label::after {
+        content: "Duyệt";
+    }
+
+    .img-thumbnail {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Bỏ gạch chân cho tất cả các nút và link */
+    .btn, a {
+        text-decoration: none !important;
+    }
+
+        /* Đảm bảo các nút không có gạch chân khi hover */
+        .btn:hover, a:hover {
+            text-decoration: none !important;
+        }
+
+    /* CSS CHO 2 NÚT - NỀN ĐEN, NÚT MÀU #C99F58 */
+    .button-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 15px !important;
+        background-color: #000000 !important; /* Nền màu đen */
+        padding: 15px 20px !important;
+        border-radius: 8px !important;
+        margin-top: 20px !important;
+        border: 1px solid #333 !important;
+    }
+
+        .button-container .btn {
+            padding: 8px 25px !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            border-radius: 6px !important;
+            transition: all 0.3s ease !important;
+            min-width: 110px !important;
+            border: 2px solid transparent !important;
+            height: 38px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: white !important;
+        }
+
+        /* Nút Cập nhật - Màu #C99F58 */
+        .button-container .btn-update {
+            background: linear-gradient(135deg, #C99F58 0%, #b38947 100%) !important;
+            border-color: #C99F58 !important;
+            box-shadow: 0 2px 8px rgba(201, 159, 88, 0.4) !important;
+        }
+
+            .button-container .btn-update:hover {
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(201, 159, 88, 0.6) !important;
+                background: linear-gradient(135deg, #b38947 0%, #C99F58 100%) !important;
+            }
+
+        /* Nút Hủy - Màu xám đậm */
+        .button-container .btn-cancel {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+            border-color: #545b62 !important;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3) !important;
+        }
+
+            .button-container .btn-cancel:hover {
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4) !important;
+                background: linear-gradient(135deg, #495057 0%, #6c757d 100%) !important;
+            }
+
+        /* Hiệu ứng click */
+        .button-container .btn:active {
+            transform: translateY(0) !important;
+        }
+
+        /* Icon trong nút */
+        .button-container .btn i {
+            margin-right: 6px !important;
+            font-size: 13px !important;
+        }
+</style>

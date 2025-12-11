@@ -2,128 +2,156 @@
 
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa khách hàng";
 }
 
 <div class="crud-container">
-    <h1>Chỉnh Sửa Thông Tin</h1> <h4>Khách Hàng</h4>
+    <h1>Chỉnh Sửa Thông Tin</h1>
+    <h4>Khách Hàng: @Model.TenKhachHang</h4>
     <hr />
 
+    <!-- Hiển thị thông báo -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert success-alert">
+            <strong>Thành công!</strong> @TempData["SuccessMessage"]
+            <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert danger-alert">
+            <strong>Lỗi!</strong> @TempData["ErrorMessage"]
+            <button type="button" class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+    }
+
     <div class="row">
-        <div class="col-md-4">
-            <form asp-controller="QL_KhachHang" asp-action="Edit" asp-route-id="@Model.MaKhachHang" method="post">
+        <div class="col-md-6">
+            <form asp-action="Edit" method="post" id="editForm">
                 @Html.AntiForgeryToken()
 
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                <!-- ✅ CHỈ GIỮ 1 INPUT CHO MaKhachHang -->
                 <input type="hidden" asp-for="MaKhachHang" />
                 <input type="hidden" asp-for="MaTaiKhoan" />
 
-                <div class="form-group">
-                    <label asp-for="MaKhachHang" class="control-label">Mã Khách Hàng</label>
-                    <input asp-for="MaKhachHang" class="form-control" readonly />
-                    <span asp-validation-for="MaKhachHang" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="TenKhachHang" class="control-label">Tên Khách Hàng</label>
-                    <input asp-for="TenKhachHang" class="form-control" name="TenKhachHang" />
-                    <span asp-validation-for="TenKhachHang" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="CccdKhachHang" class="control-label">Số CCCD/CMND</label>
-                    <input asp-for="CccdKhachHang" class="form-control" name="CccdKhachHang" />
-                    <span asp-validation-for="CccdKhachHang" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="SdtKhachHang" class="control-label">Số Điện Thoại</label>
-                    <input asp-for="SdtKhachHang" class="form-control" name="SdtKhachHang" />
-                    <span asp-validation-for="SdtKhachHang" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="DiaChiKhachHang" class="control-label">Địa Chỉ</label>
-                    <input asp-for="DiaChiKhachHang" class="form-control" name="DiaChiKhachHang" />
-                    <span asp-validation-for="DiaChiKhachHang" class="text-danger"></span>
-                </div>
-
-                <hr style="border-color: var(--primary-soft); margin: 20px 0;" />
-                <h5 style="color:var(--primary); font-size: 16px; margin-bottom: 15px;">Thông tin Tài khoản</h5>
-
-                @if (Model.TaiKhoan != null)
-                {
-                    <input type="hidden" name="TaiKhoan.MaTaiKhoan" value="@Model.TaiKhoan.MaTaiKhoan" />
+                <div class="form-section">
+                    <h5 class="section-title">Thông tin cá nhân</h5>
 
                     <div class="form-group">
-                        <label asp-for="TaiKhoan.VaiTro" class="control-label">Vai Trò</label>
-                        <input asp-for="TaiKhoan.VaiTro" class="form-control" readonly name="TaiKhoan.VaiTro" />
-                        <span asp-validation-for="TaiKhoan.VaiTro" class="text-danger"></span>
+                        <label asp-for="MaKhachHang" class="form-label">Mã khách hàng</label>
+                        <input asp-for="MaKhachHang" class="form-control" readonly />
+                        <small class="text-muted">Không thể thay đổi mã khách hàng</small>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="TaiKhoan.Email" class="control-label">Email</label>
-                        <input asp-for="TaiKhoan.Email" class="form-control" name="TaiKhoan.Email" />
-                        <span asp-validation-for="TaiKhoan.Email" class="text-danger"></span>
+                        <label asp-for="TenKhachHang" class="form-label">Tên khách hàng *</label>
+                        <input asp-for="TenKhachHang" class="form-control" required />
+                        <span asp-validation-for="TenKhachHang" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="TaiKhoan.UserName" class="control-label">Tài Khoản Đăng Nhập</label>
-                        <input asp-for="TaiKhoan.UserName" class="form-control" name="TaiKhoan.UserName" />
-                        <span asp-validation-for="TaiKhoan.UserName" class="text-danger"></span>
+                        <label asp-for="CccdKhachHang" class="form-label">CCCD/CMND *</label>
+                        <input asp-for="CccdKhachHang" class="form-control" required />
+                        <span asp-validation-for="CccdKhachHang" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="TaiKhoan.Password" class="control-label">Mật Khẩu (Để trống nếu không đổi)</label>
-                        <input asp-for="TaiKhoan.Password" type="password" class="form-control" name="TaiKhoan.Password" value="" />
-                        <span asp-validation-for="TaiKhoan.Password" class="text-danger"></span>
+                        <label asp-for="SdtKhachHang" class="form-label">Số điện thoại *</label>
+                        <input asp-for="SdtKhachHang" class="form-control" required />
+                        <span asp-validation-for="SdtKhachHang" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label asp-for="TaiKhoan.TrangThai" class="control-label">Trạng Thái Tài Khoản</label>
-                        <select asp-for="TaiKhoan.TrangThai" class="form-control" name="TaiKhoan.TrangThai">
-                            <option value="Active">Hoạt Động</option>
-                            <option value="Inactive">Ngừng Hoạt Động</option>
+                        <label asp-for="DiaChiKhachHang" class="form-label">Địa chỉ</label>
+                        <textarea asp-for="DiaChiKhachHang" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="DiaChiKhachHang" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TrangThaiKhachHang" class="form-label">Trạng thái khách hàng *</label>
+                        <select asp-for="TrangThaiKhachHang" class="form-control" required>
+                            <option value="">-- Chọn trạng thái --</option>
+                            <option value="Hoạt động">Hoạt động</option>
+                            <option value="Khóa">Khóa</option>
                         </select>
-                        <span asp-validation-for="TaiKhoan.TrangThai" class="text-danger"></span>
+                        <span asp-validation-for="TrangThaiKhachHang" class="text-danger"></span>
                     </div>
-                }
-                else
-                {
-                    <p class="text-info" style="font-size: 13px;">Khách hàng này chưa được gán tài khoản đăng nhập.</p>
-                }
 
-                <div class="form-group">
-                    <label asp-for="TrangThaiKhachHang" class="control-label">Trạng Thái Khách Hàng</label>
-                    <select asp-for="TrangThaiKhachHang" class="form-control" name="TrangThaiKhachHang">
-                        <option value="Active">Hoạt Động</option>
-                        <option value="Inactive">Ngừng Hoạt Động</option>
-                    </select>
-                    <span asp-validation-for="TrangThaiKhachHang" class="text-danger"></span>
+                    <div class="form-group">
+                        <label asp-for="GhiChu" class="form-label">Ghi chú</label>
+                        <textarea asp-for="GhiChu" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="GhiChu" class="text-danger"></span>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="GhiChu" class="control-label">Ghi Chú</label>
-                    <input asp-for="GhiChu" class="form-control" name="GhiChu" />
-                    <span asp-validation-for="GhiChu" class="text-danger"></span>
+                <div class="form-section">
+                    <h5 class="section-title">Thông tin tài khoản</h5>
+
+                    @if (Model.TaiKhoan != null)
+                    {
+                        <input type="hidden" name="TaiKhoan.MaTaiKhoan" value="@Model.TaiKhoan.MaTaiKhoan" />
+
+                        <div class="form-group">
+                            <label asp-for="TaiKhoan.UserName" class="form-label">Tên đăng nhập</label>
+                            <input asp-for="TaiKhoan.UserName" class="form-control" />
+                            <span asp-validation-for="TaiKhoan.UserName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="TaiKhoan.Email" class="form-label">Email *</label>
+                            <input asp-for="TaiKhoan.Email" class="form-control" type="email" required />
+                            <span asp-validation-for="TaiKhoan.Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="TaiKhoan.Password" class="form-label">Mật khẩu mới</label>
+                            <input asp-for="TaiKhoan.Password" class="form-control" type="password"
+                                   placeholder="Chỉ nhập nếu muốn đổi mật khẩu" />
+                            <small class="text-muted">Để trống nếu không muốn thay đổi mật khẩu</small>
+                            <span asp-validation-for="TaiKhoan.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="TaiKhoan.VaiTro" class="form-label">Vai trò</label>
+                            <input asp-for="TaiKhoan.VaiTro" class="form-control" readonly />
+                            <small class="text-muted">Không thể thay đổi vai trò</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="TaiKhoan.TrangThai" class="form-label">Trạng thái tài khoản *</label>
+                            <select asp-for="TaiKhoan.TrangThai" class="form-control" required>
+                                <option value="">-- Chọn trạng thái --</option>
+                                <option value="Hoạt động">Hoạt động</option>
+                                <option value="Khóa">Khóa</option>
+                            </select>
+                            <span asp-validation-for="TaiKhoan.TrangThai" class="text-danger"></span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert info-alert">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Khách hàng này chưa có tài khoản đăng nhập.</strong>
+                            <p class="mb-0">Liên kết tài khoản có thể được tạo trong phần quản lý tài khoản.</p>
+                        </div>
+                    }
                 </div>
 
-                <div class="form-group">
-                    <button type="submit" class="btn-save btn-primary">Lưu Thay Đổi</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-save">
+                        <i class="fas fa-save"></i> Lưu thay đổi
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary btn-back">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
                 </div>
             </form>
         </div>
     </div>
-
-    <div>
-        <a asp-controller="QL_KhachHang" asp-action="Index" class="btn-ghost">Quay lại danh sách</a>
-    </div>
 </div>
 
 <style>
-    /* CSS styles giữ nguyên như của bạn */
     :root {
         --primary: #cda45e;
         --primary-soft: rgba(205, 164, 94, 0.12);
@@ -131,9 +159,12 @@
         --text-main: #f4f4f4;
         --text-muted: #a6a6a6;
         --danger: #ff5c5c;
+        --success: #4caf50;
+        --info: #5bc0de;
+        --warning: #ff9800;
         --border-subtle: rgba(255, 255, 255, 0.06);
         --radius-md: 10px;
-        --radius-pill: 999px;
+        --radius-sm: 5px;
     }
 
     .crud-container {
@@ -148,7 +179,228 @@
         border: 1px solid var(--border-subtle);
     }
 
-    /* ... các CSS styles khác giữ nguyên ... */
+        .crud-container h1 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .crud-container h4 {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+    hr {
+        border-color: var(--border-subtle);
+        margin: 20px 0;
+    }
+
+    /* Form sections */
+    .form-section {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        color: var(--primary);
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid var(--primary-soft);
+    }
+
+    /* Form controls */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        color: var(--text-main);
+        font-weight: 500;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: var(--radius-sm);
+        color: var(--text-main);
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(205, 164, 94, 0.2);
+        }
+
+        .form-control:read-only,
+        .form-control[readonly] {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23cda45e' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 12px;
+        padding-right: 35px;
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    /* Form validation */
+    .text-danger {
+        color: var(--danger) !important;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    .text-muted {
+        color: var(--text-muted) !important;
+        font-size: 12px;
+        margin-top: 5px;
+        display: block;
+    }
+
+    /* Buttons */
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-subtle);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: #000;
+        border-color: var(--primary);
+    }
+
+        .btn-primary:hover {
+            background: #d8b474;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(205, 164, 94, 0.3);
+        }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-main);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+    .btn i {
+        font-size: 12px;
+    }
+
+    /* Alerts */
+    .alert {
+        position: relative;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .success-alert {
+        color: var(--success);
+        background: rgba(76, 175, 80, 0.15);
+        border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+
+    .danger-alert {
+        color: var(--danger);
+        background: rgba(255, 92, 92, 0.15);
+        border: 1px solid rgba(255, 92, 92, 0.3);
+    }
+
+    .info-alert {
+        color: var(--info);
+        background: rgba(91, 192, 222, 0.15);
+        border: 1px solid rgba(91, 192, 222, 0.3);
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 18px;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0 5px;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+        .close-btn:hover {
+            opacity: 1;
+        }
+
+    /* Required field indicator */
+    .form-label:after {
+        content: '*';
+        color: var(--danger);
+        margin-left: 4px;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .crud-container {
+            padding: 15px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
 </style>
 
 @section Scripts {
@@ -157,24 +409,30 @@
     }
 
     <script>
-        console.log('Script loaded!');
-
         document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            console.log('Form element:', form);
-            console.log('Form action:', form ? form.action : 'No form found');
+            // Auto-hide alerts after 5 seconds
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(alert => {
+                    alert.style.display = 'none';
+                });
+            }, 5000);
 
+            // Form submission handler
+            const form = document.getElementById('editForm');
             if (form) {
                 form.addEventListener('submit', function(e) {
-                    console.log('===== FORM SUBMIT EVENT =====');
-                    console.log('Action URL:', this.action);
-                    console.log('Method:', this.method);
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
 
-                    // Log tất cả các giá trị trong form
-                    const formData = new FormData(this);
-                    for (let [key, value] of formData.entries()) {
-                        console.log(key + ': ' + value);
-                    }
+                    // Disable button and show loading
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+                    // Auto-enable after 5 seconds in case of error
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }, 5000);
                 });
             }
         });
