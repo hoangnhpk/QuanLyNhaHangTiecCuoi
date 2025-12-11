@@ -3,7 +3,6 @@ using QuanLyNhaHang.Models;
 using System.Text.Json.Serialization;
 // 1. Thêm thư viện dùng Cookie Authentication
 using Microsoft.AspNetCore.Authentication.Cookies;
-
 using QuanLyNhaHang.Services;
 
 
@@ -24,8 +23,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         // Khi người dùng đăng nhập rồi nhưng không đủ quyền (VD: Khách vào trang Admin)
         options.AccessDeniedPath = "/Home/TuChoiTruyCap";
 
-        // Thời gian sống của Cookie (VD: 60 phút)
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+        // Thời gian sống của Cookie (VD: 7 ngày)
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
     });
 
 
