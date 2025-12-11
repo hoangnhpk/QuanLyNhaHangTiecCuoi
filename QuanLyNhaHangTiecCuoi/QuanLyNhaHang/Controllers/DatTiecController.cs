@@ -14,6 +14,11 @@ namespace QuanLyNhaHang.Controllers
         {
             _context = context;
         }
+        public class DichVuTuChonItem
+        {
+            public string MaDichVu { get; set; }
+            public int SoLuong { get; set; }
+        }
 
         [HttpPost]
         public IActionResult DatTiec(DatTiecVM model)
@@ -81,8 +86,24 @@ namespace QuanLyNhaHang.Controllers
                         giaThucDonMoiBan = 2000000;
                     }
 
-                    // B. Tính tiền Dịch vụ
-                    if (model.LoaiDichVu == "Basic") giaDichVuTotal = 15000000;
+                    // B. TÍNH TIỀN DỊCH VỤ (LOGIC MỚI)
+                    if (model.LoaiDichVu == "TuChon" && !string.IsNullOrEmpty(model.DichVuTuChonJson))
+                    {
+                        var danhSachDV = JsonConvert.DeserializeObject<List<DichVuTuChonItem>>(model.DichVuTuChonJson);
+                        if (danhSachDV != null)
+                        {
+                            foreach (var item in danhSachDV)
+                            {
+                                var dvDb = _context.DichVus.Find(item.MaDichVu);
+                                if (dvDb != null && dvDb.GiaDV.HasValue)
+                                {
+                                    // Cộng thẳng vào tổng tiền (Không nhân số bàn)
+                                    giaDichVuTotal += (dvDb.GiaDV.Value * item.SoLuong);
+                                }
+                            }
+                        }
+                    }
+                    else if (model.LoaiDichVu == "Basic") giaDichVuTotal = 15000000;
                     else if (model.LoaiDichVu == "VIP") giaDichVuTotal = 50000000;
 
                     // C. Tổng kết con số
@@ -158,25 +179,72 @@ namespace QuanLyNhaHang.Controllers
                         _context.SaveChanges();
                     }
 
-                    // --- BƯỚC 4: LƯU DỊCH VỤ (GIỮ NGUYÊN) ---
+                    // ... (Đoạn tính tiền món ăn ở trên giữ nguyên) ...
+
+                    // B. TÍNH TIỀN DỊCH VỤ (LOGIC MỚI)
+                    if (model.LoaiDichVu == "TuChon" && !string.IsNullOrEmpty(model.DichVuTuChonJson))
+                    {
+                        var danhSachDV = JsonConvert.DeserializeObject<List<DichVuTuChonItem>>(model.DichVuTuChonJson);
+                        if (danhSachDV != null)
+                        {
+                            foreach (var item in danhSachDV)
+                            {
+                                var dvDb = _context.DichVus.Find(item.MaDichVu);
+                                if (dvDb != null && dvDb.GiaDV.HasValue)
+                                {
+                                    // Cộng thẳng vào tổng tiền (Không nhân số bàn)
+                                    giaDichVuTotal += (dvDb.GiaDV.Value * item.SoLuong);
+                                }
+                            }
+                        }
+                    }
+                    else if (model.LoaiDichVu == "Basic") giaDichVuTotal = 15000000;
+                    else if (model.LoaiDichVu == "VIP") giaDichVuTotal = 50000000;
+
+                    // ... (Đoạn tính tổng tiền và tạo đơn hàng giữ nguyên) ...
+
+                    // --- BƯỚC 4: LƯU DỊCH VỤ (LOGIC MỚI) ---
                     if (!string.IsNullOrEmpty(model.LoaiDichVu))
                     {
-                        string tenDichVuCanTim = (model.LoaiDichVu == "Basic") ? "Combo Trang Trí Cơ Bản" : "Combo Trang Trí VIP";
-                        var dichVuDb = _context.DichVus.FirstOrDefault(d => d.TenDichVu == tenDichVuCanTim);
-
-                        if (dichVuDb != null)
+                        // TRƯỜNG HỢP 1: TỰ CHỌN
+                        if (model.LoaiDichVu == "TuChon" && !string.IsNullOrEmpty(model.DichVuTuChonJson))
                         {
-                            _context.TT_SuDungDichVus.Add(new TT_SuDungDichVu
+                            var danhSachDV = JsonConvert.DeserializeObject<List<DichVuTuChonItem>>(model.DichVuTuChonJson);
+                            if (danhSachDV != null)
                             {
-                                MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20),
-                                MaDatTiec = tiec.MaDatTiec,
-                                MaDichVu = dichVuDb.MaDichVu,
-                                SoLuong = 1,
-                                NgaySuDung = tiec.NgayToChuc,
-                                GhiChu = "Gói: " + model.LoaiDichVu
-                            });
-                            _context.SaveChanges();
+                                foreach (var item in danhSachDV)
+                                {
+                                    _context.TT_SuDungDichVus.Add(new TT_SuDungDichVu
+                                    {
+                                        MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20),
+                                        MaDatTiec = tiec.MaDatTiec,
+                                        MaDichVu = item.MaDichVu,
+                                        SoLuong = item.SoLuong,
+                                        NgaySuDung = tiec.NgayToChuc,
+                                        GhiChu = "Dịch vụ tự chọn"
+                                    });
+                                }
+                            }
                         }
+                        // TRƯỜNG HỢP 2: COMBO CÓ SẴN (Giữ nguyên code cũ)
+                        else
+                        {
+                            string tenDichVuCanTim = (model.LoaiDichVu == "Basic") ? "Combo Trang Trí Cơ Bản" : "Combo Trang Trí VIP";
+                            var dichVuDb = _context.DichVus.FirstOrDefault(d => d.TenDichVu == tenDichVuCanTim);
+                            if (dichVuDb != null)
+                            {
+                                _context.TT_SuDungDichVus.Add(new TT_SuDungDichVu
+                                {
+                                    MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20),
+                                    MaDatTiec = tiec.MaDatTiec,
+                                    MaDichVu = dichVuDb.MaDichVu,
+                                    SoLuong = 1,
+                                    NgaySuDung = tiec.NgayToChuc,
+                                    GhiChu = "Gói: " + model.LoaiDichVu
+                                });
+                            }
+                        }
+                        _context.SaveChanges();
                     }
 
                     TempData["SuccessMessage"] = $"Đặt tiệc thành công! Tổng tiền: {tongTienHopDong:N0} VNĐ. Vui lòng thanh toán cọc: {tienCocPhaiDong:N0} VNĐ";
@@ -220,6 +288,18 @@ namespace QuanLyNhaHang.Controllers
             return PartialView("_ThucDonTuChon", danhSachNhom);
         }
         // Class nhỏ giúp giải mã JSON
+
+        // GET: /DatTiec/GetDichVuTuChon
+        [HttpGet]
+        public IActionResult GetDichVuTuChon()
+        {
+            // Lấy tất cả dịch vụ đang hoạt động
+            var danhSachDichVu = _context.DichVus
+                .Where(dv => dv.TrangThaiDV != "Ngừng phục vụ")
+                .ToList();
+
+            return PartialView("_DichVuTuChon", danhSachDichVu);
+        }
         public class MonTuChonItem
         {
             public string MaMonAn { get; set; }

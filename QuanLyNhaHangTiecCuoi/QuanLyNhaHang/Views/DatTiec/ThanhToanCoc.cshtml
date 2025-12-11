@@ -3,11 +3,10 @@
 @{
     ViewData["Title"] = "Thanh Toán Tiền Cọc";
     // Cấu hình tài khoản nhận tiền của BẠN ở đây
-    string nganHang = "BIDV"; // Ví dụ: MB, VCB, TPB, VPB...
-    string soTaiKhoan = "6310871922"; // Thay số tài khoản của bạn vào đây
-    string chuTaiKhoan = "NGUYEN HHUY HOANG"; // Tên chủ tài khoản (viết hoa không dấu)
+    string nganHang = "BIDV";
+    string soTaiKhoan = "6310871922"; 
+    string chuTaiKhoan = "NGUYEN HHUY HOANG"; 
 
-    // Tạo nội dung chuyển khoản: "COC TIEC DTxxx"
     string noiDungCK = "COC TIEC " + Model.MaDatTiec;
     decimal soTien = Model.TienCoc ?? 0;
 

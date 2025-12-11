@@ -122,6 +122,7 @@
                         <input type="hidden" name="LoaiThucDon" id="inputLoaiThucDon" />
                         <input type="hidden" name="LoaiDichVu" id="inputLoaiDichVu" />
                         <input type="hidden" name="ThucDonTuChonJson" id="inputThucDonTuChonJson" />
+                        <input type="hidden" name="DichVuTuChonJson" id="inputDichVuTuChonJson" />
                         <div class="col-lg-6 col-md-6">
                             <label>Ngày tổ chức</label>
                             <input type="date" name="NgayToChuc" class="form-control" required onchange="tinhTongTienTam()">
@@ -282,6 +283,9 @@
         <div class="modal-content" style="background-color: #29261f; color: rgba(255, 255, 255, 0.7);">
             <div class="modal-header" style="border-bottom-color: rgba(255, 255, 255, 0.1);">
                 <h5 class="modal-title" style="color: #fff;">Chọn Dịch Vụ</h5>
+                <button type="button" class="btn btn-outline-warning btn-sm ms-3" onclick="moModalTuChonDichVu()">
+                    <i class="bi bi-list-check"></i> Tự chọn dịch vụ
+                </button>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -325,6 +329,25 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                 <button type="button" class="btn btn-primary" style="background-color: #cda45e; border: none;" onclick="xacNhanTuChonMon()">
                     Xác nhận thực đơn này
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="tuChonDichVuModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="background-color: #1a1814; color: #fff;">
+            <div class="modal-header" style="border-bottom: 1px solid #333;">
+                <h5 class="modal-title">Tự chọn dịch vụ</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="containerTuChonDichVu">
+                <div class="text-center p-5"><div class="spinner-border text-warning"></div></div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #333;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" style="background-color: #cda45e; border: none;" onclick="xacNhanTuChonDichVu()">
+                    Xác nhận dịch vụ này
                 </button>
             </div>
         </div>
@@ -543,6 +566,83 @@
         document.getElementById('inputGiaBan').value = giaMoiBan;
         document.getElementById('inputTongTien').value = tongTien;
         document.getElementById('inputTienCoc').value = tienCoc;
+    }
+
+        // --- LOGIC TỰ CHỌN DỊCH VỤ ---
+
+    function moModalTuChonDichVu() {
+        $('#dichVuModal').modal('hide'); // Đóng modal combo cũ
+        $('#tuChonDichVuModal').modal('show'); // Mở modal mới
+
+        // Gọi AJAX lấy danh sách dịch vụ
+        $.get("/DatTiec/GetDichVuTuChon", function(data) {
+            $("#containerTuChonDichVu").html(data);
+        });
+    }
+
+    function tinhTienDichVuTuChon() {
+        let tongTienDV = 0;
+
+        document.querySelectorAll('.service-checkbox').forEach(function (checkbox) {
+            let id = checkbox.value;
+            let qtyControl = document.getElementById('qty_dv_' + id);
+            let inputQty = document.getElementById('input_qty_dv_' + id);
+            let price = parseFloat(checkbox.getAttribute('data-price'));
+
+            if (checkbox.checked) {
+                qtyControl.style.display = 'block';
+                let sl = parseInt(inputQty.value) || 1;
+                tongTienDV += price * sl; // Giá * Số lượng (Cộng thẳng)
+            } else {
+                qtyControl.style.display = 'none';
+                inputQty.value = 1;
+            }
+        });
+
+        let strTien = tongTienDV.toLocaleString('vi-VN') + ' VNĐ';
+        document.getElementById('totalServiceMoneyDisplay').innerText = strTien;
+    }
+
+    function xacNhanTuChonDichVu() {
+        let danhSachDV = [];
+        let tongTienDV = 0;
+
+        document.querySelectorAll('.service-checkbox:checked').forEach(function (checkbox) {
+            let id = checkbox.value;
+            let sl = parseInt(document.getElementById('input_qty_dv_' + id).value);
+            let price = parseFloat(checkbox.getAttribute('data-price'));
+
+            danhSachDV.push({
+                MaDichVu: id,
+                SoLuong: sl,
+                DonGia: price // Lưu để controller tham khảo (không tin tưởng hoàn toàn)
+            });
+
+            tongTienDV += price * sl;
+        });
+
+        // 1. Lưu JSON
+        document.getElementById('inputDichVuTuChonJson').value = JSON.stringify(danhSachDV);
+
+        // 2. Gán loại là "TuChon"
+        document.getElementById('inputLoaiDichVu').value = "TuChon";
+
+        // 3. Reset giao diện
+        if(document.getElementById('cardBasic')) document.getElementById('cardBasic').style.backgroundColor = "transparent";
+        if(document.getElementById('cardVIP')) document.getElementById('cardVIP').style.backgroundColor = "transparent";
+
+        // 4. Cập nhật nút bấm
+        document.querySelectorAll('.btn-chon-modal')[1].innerText =
+            `Đã chọn: ${danhSachDV.length} dịch vụ (${tongTienDV.toLocaleString('vi-VN')} VNĐ)`;
+
+        // 5. Cập nhật biến toàn cục để tính tổng tiền đơn hàng
+        // LƯU Ý: Biến giaDichVuTotal này phải được khai báo ở đầu file script (bước trước mình đã làm)
+        giaDichVuTotal = tongTienDV;
+
+        // 6. Tính lại tổng tiền form chính
+        tinhTongTienTam();
+
+        $('#tuChonDichVuModal').modal('hide');
     }
 
     // Gắn sự kiện khi thay đổi số bàn thì tính lại tiền
