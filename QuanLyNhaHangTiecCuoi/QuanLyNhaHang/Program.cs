@@ -1,70 +1,74 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using QuanLyNhaHang.Models;
 using System.Text.Json.Serialization;
-// 1. Thêm thư viện dùng Cookie Authentication
 using Microsoft.AspNetCore.Authentication.Cookies;
-
 using QuanLyNhaHang.Services;
 
-
 var builder = WebApplication.CreateBuilder(args);
-// --- BẮT ĐẦU ĐOẠN CẦN THÊM ---
+
+// --- 1. CẤU HÌNH DỊCH VỤ (SERVICES) ---
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<QuanLyNhaHangContext>(options =>
     options.UseSqlServer(connectionString));
-// --- CẤU HÌNH AUTHENTICATION ---
+
+// Cấu hình Cache & Session (CHỈ KHAI BÁO 1 LẦN DUY NHẤT Ở ĐÂY)
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60); // Tăng lên 60 phút cho thoải mái
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // Bắt buộc có dòng này
+    options.Cookie.Name = ".NhaHang.Session"; // Đặt tên cho dễ quản lý
+});
+
+// Cấu hình Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        // Khi người dùng bấm vào trang có gắn thẻ [Authorize] mà chưa đăng nhập
-        // Hệ thống sẽ tự động đá về đường dẫn này
         options.LoginPath = "/DangNhap/Index";
-
-        // Khi người dùng đăng nhập rồi nhưng không đủ quyền (VD: Khách vào trang Admin)
         options.AccessDeniedPath = "/Home/TuChoiTruyCap";
-
-        // Thời gian sống của Cookie (VD: 60 phút)
         options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
     });
 
-
-// --- Thêm dịch vụ Session ---
-builder.Services.AddSession();
+// Đăng ký các dịch vụ khác
 builder.Services.AddTransient<IEmailService, EmailService>();
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-// Đăng ký Controller và Fix lỗi JSON bị vòng lặp ---
 builder.Services.AddHttpContextAccessor();
+
+// Đăng ký Controller & Fix lỗi JSON vòng lặp
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// --- 2. CẤU HÌNH MIDDLEWARE (PIPELINE) ---
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// --- THỨ TỰ QUAN TRỌNG: Session -> Routing -> Auth ---
+
+// 1. Kích hoạt Session ĐẦU TIÊN (để các bước sau có thể dùng dữ liệu session)
+app.UseSession();
+
+// 2. Sau đó mới đến định tuyến
 app.UseRouting();
 
-// --- KÍCH HOẠT MIDDLEWARE  ---
-app.UseAuthentication(); // <--- Phân quyền
-app.UseAuthorization();  // <--- Quyền Hạn
+// 3. Cuối cùng là xác thực và phân quyền
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.UseSession();
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.Run();
