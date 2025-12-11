@@ -29,7 +29,14 @@ namespace QuanLyNhaHang.Models.ViewModels
         public int? SoBanDat { get; set; }
 
         public int? SoBanDuPhong { get; set; }
+        public string? ThucDonTuChonJson { get; set; }
 
         public string? GhiChu { get; set; } // Dùng để lưu tạm các yêu cầu khác
+        public TimeSpan? GioToChuc { get; set; } // Giờ
+
+        public decimal? GiaBan { get; set; } // Giá món ăn/bàn
+        public decimal? TienCoc { get; set; } // Tiền cọc
+                                              // Tổng tiền không cần lưu vào bảng DatTiec (vì nó tính toán được), 
+                                              // nhưng nếu muốn lưu vào PhieuThanhToan thì thêm vào sau.
     }
 }

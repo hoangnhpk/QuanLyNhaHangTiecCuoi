@@ -105,5 +105,21 @@ namespace QuanLyNhaHang.Controllers
         {
             return View();
         }
+
+        public IActionResult CheckSession()
+        {
+            var maKH = HttpContext.Session.GetString("MaKhachHang");
+            var tenKH = HttpContext.Session.GetString("TenKhachHang");
+            var sessionID = HttpContext.Session.Id;
+
+            if (string.IsNullOrEmpty(maKH))
+            {
+                return Content($"SESSION RỖNG! (SessionID: {sessionID})\nKhông tìm thấy MaKhachHang nào cả.");
+            }
+            else
+            {
+                return Content($"SESSION OK! (SessionID: {sessionID})\n- Mã Khách: {maKH}\n- Tên: {tenKH}");
+            }
+        }
     }
 }
