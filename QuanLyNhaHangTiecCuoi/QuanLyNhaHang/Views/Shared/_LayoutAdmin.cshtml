@@ -754,16 +754,16 @@
 
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
-                        <span class="icon">🍳</span> <span>Nhân viên Full-time</span>
+                        <span class="icon">🍳</span> <span>Quản lý nhân viên</span>
                     </a>
                 </li>
 
-                <li class="nav-item">
+                @* <li class="nav-item">
                     <a class="nav-link" asp-controller="NhanVienPartTime" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">⏱️</span>
                         <span>Nhân viên Part-time</span>
                     </a>
-                </li>
+                </li> *@
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="GuiThongBao" asp-action="SoanEmail" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">📜</span>
@@ -837,13 +837,13 @@
 
                     <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienFullTime" ? "active" : "")"
                        asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration:none;">
-                        <span class="dot"></span> Nhân viên Full-time
+                        <span class="dot"></span> Quản lý nhân viên
                     </a>
 
-                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienPartTime" ? "active" : "")"
+                  @*   <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienPartTime" ? "active" : "")"
                        asp-controller="NhanVienPartTime" asp-action="Index" style="text-decoration:none;">
                         <span class="dot"></span> Nhân viên Part-time
-                    </a>
+                    </a> *@
           <button class="tab-pill" data-module="services">
             <span class="dot"></span> Dịch vụ
           </button>

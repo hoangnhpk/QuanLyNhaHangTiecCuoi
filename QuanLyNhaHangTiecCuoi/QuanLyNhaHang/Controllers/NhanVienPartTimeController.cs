@@ -44,7 +44,7 @@ namespace QuanLyNhaHang.Controllers
                     if (string.IsNullOrEmpty(nv.TrangThaiNV)) nv.TrangThaiNV = "Đang làm";
                     _context.Add(nv);
                     await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Thêm NV Part-time thành công!";
+                    TempData["SuccessMessage"] = "Thêm NV Part-time thành công";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -76,7 +76,7 @@ namespace QuanLyNhaHang.Controllers
                 {
                     _context.Update(nv);
                     await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Cập nhật thành công!";
+                    TempData["SuccessMessage"] = "Cập nhật thành công";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -98,7 +98,7 @@ namespace QuanLyNhaHang.Controllers
                 {
                     _context.NhanVienPartTimes.Remove(nv);
                     await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "Đã xóa nhân viên Part-time!";
+                    TempData["SuccessMessage"] = "Đã xóa nhân viên Part-time";
                 }
                 catch (Exception)
                 {

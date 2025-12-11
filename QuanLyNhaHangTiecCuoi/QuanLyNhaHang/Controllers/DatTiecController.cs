@@ -161,7 +161,9 @@ namespace QuanLyNhaHang.Controllers
                     // --- BƯỚC 4: LƯU DỊCH VỤ (GIỮ NGUYÊN) ---
                     if (!string.IsNullOrEmpty(model.LoaiDichVu))
                     {
-                        string tenDichVuCanTim = (model.LoaiDichVu == "Basic") ? "Combo Trang Trí Cơ Bản" : "Combo Trang Trí VIP";
+                        string tenDichVuCanTim = (model.LoaiDichVu == "Basic")
+                         ? "Combo Cơ Bản"   // <--- Khớp với dòng 1 trong ảnh
+                         : "Combo VIP";
                         var dichVuDb = _context.DichVus.FirstOrDefault(d => d.TenDichVu == tenDichVuCanTim);
 
                         if (dichVuDb != null)
