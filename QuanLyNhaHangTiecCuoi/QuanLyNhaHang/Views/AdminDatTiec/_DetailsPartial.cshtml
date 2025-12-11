@@ -1,0 +1,108 @@
+﻿@model QuanLyNhaHang.Models.DatTiec
+
+<div class="modal-header">
+    <div>
+        <div class="pill">Chi tiết đơn hàng</div>
+        <div class="modal-title">Mã: #@Model.MaDatTiec</div>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+</div>
+
+<div class="modal-body">
+    <div class="split-columns">
+        <div>
+            <div class="card-title" style="color: #cda45e;">Thông tin khách hàng</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Họ & tên người đặt</label>
+                    <input class="input" value="@(Model.KhachHang?.TenKhachHang ?? "Vãng lai")" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input class="input" value="@(Model.KhachHang?.SdtKhachHang)" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Cô dâu & Chú rể</label>
+                    <input class="input" value="@Model.TenCoDau & @Model.TenChuRe" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Ngày tổ chức</label>
+                    <input class="input" value="@(Model.NgayToChuc?.ToString("dd/MM/yyyy"))" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Quy mô</label>
+                    <input class="input" value="@Model.SoBanDat bàn" readonly />
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <input class="input" value="@Model.TrangThai" readonly style="color: #cda45e; font-weight: bold;" />
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card-title" style="color: #cda45e;">Chi tiết sử dụng</div>
+
+            <div class="form-group">
+                <label>Thực đơn đã chọn</label>
+                <div class="data-card" style="max-height: 150px; overflow-y: auto;">
+                    <ul style="list-style: none; padding: 0; font-size: 12px;">
+                        @if (Model.ChiTietThucDons != null && Model.ChiTietThucDons.Any())
+                        {
+                            foreach (var item in Model.ChiTietThucDons)
+                            {
+                                <li style="padding: 4px 0; border-bottom: 1px dashed #333;">
+                                    + @item.MonAn?.TenMonAn
+                                    <span style="float:right; color: #888;">(@item.SoLuongMotBan/bàn)</span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>Chưa chọn món</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="form-group mt-2">
+                <label>Dịch vụ đi kèm</label>
+                <div class="data-card">
+                    <ul style="list-style: none; padding: 0; font-size: 12px;">
+                        @if (Model.TT_SuDungDichVus != null && Model.TT_SuDungDichVus.Any())
+                        {
+                            foreach (var item in Model.TT_SuDungDichVus)
+                            {
+                                <li style="padding: 4px 0; border-bottom: 1px dashed #333;">
+                                    ★ @item.DichVu?.TenDichVu
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li>Không sử dụng dịch vụ thêm</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mt-3">
+        <label>Ghi chú của khách</label>
+        <textarea class="input" readonly>@Model.ChiTiet</textarea>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Đóng</button>
+
+    @if (Model.TrangThai == "Mới đặt" || Model.TrangThai == "Chờ duyệt")
+    {
+        <button type="button" class="btn" onclick="updateStatus('@Model.MaDatTiec', 'Đã duyệt')">Duyệt đơn này</button>
+    }
+    else
+    {
+        <button type="button" class="btn" disabled style="opacity: 0.5">@Model.TrangThai</button>
+    }
+</div>

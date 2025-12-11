@@ -4,41 +4,102 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>Nhà Hàng Restaurantly</title>
+    <title>@ViewData["Title"] - Nhà Hàng Long Phụng</title>
     <meta name="description" content="Nhà hàng cao cấp phục vụ món ăn ngon hơn 18 năm">
     <meta name="keywords" content="nhà hàng, ẩm thực, đặt bàn">
 
-    <!-- Favicons -->
     <link href="~/assets/img/favicon.png" rel="icon">
     <link href="~/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-    <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-    <!-- Vendor CSS Files -->
     <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="~/assets/vendor/aos/aos.css" rel="stylesheet">
     <link href="~/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
     <link href="~/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
-    <!-- Main CSS File -->
     <link href="~/assets/css/main.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <style>
+        /* Thêm style để nút bấm giống input placeholder */
+        .book-a-table .php-email-form .btn-chon-modal {
+            text-align: left;
+            font-weight: 400;
+            font-size: 14px;
+            padding: 10px 15px;
+            box-shadow: none;
+            border-radius: 0;
+            color: color-mix(in srgb, var(--default-color), transparent 70%);
+            background-color: color-mix(in srgb, var(--background-color), transparent 20%);
+            border-color: color-mix(in srgb, var(--default-color), transparent 80%);
+        }
+
+            .book-a-table .php-email-form .btn-chon-modal:hover {
+                border-color: var(--accent-color);
+                color: color-mix(in srgb, var(--default-color), transparent 70%);
+                background-color: color-mix(in srgb, var(--background-color), transparent 20%);
+            }
+
+        /* CSS bổ sung cho modal */
+        .menu-item-card:hover {
+            border-color: var(--accent-color) !important;
+            transform: translateY(-2px);
+        }
+
+        .menu-item-card.selected {
+            border-color: var(--accent-color) !important;
+            background-color: color-mix(in srgb, var(--accent-color), transparent 90%) !important;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .form-check-input:disabled {
+            opacity: 0.3;
+        }
+
+        /* Đồng bộ font Footer */
+        .footer {
+            font-family: var(--default-font);
+        }
+
+            .footer h4, .footer .sitename {
+                font-family: var(--heading-font);
+            }
+
+            .footer .footer-links a, .footer .footer-contact p, .footer .footer-newsletter p {
+                font-family: var(--nav-font);
+            }
+
+            .footer .copyright p, .footer .credits {
+                font-family: var(--default-font);
+            }
+
+            .footer .footer-newsletter input[type=email] {
+                font-family: var(--default-font);
+            }
+
+            .footer .footer-newsletter input[type=submit] {
+                font-family: var(--nav-font);
+                font-weight: 500;
+            }
+    </style>
 </head>
 
 <body class="index-page">
 
     <header id="header" class="header fixed-top">
-
         <div class="topbar d-flex align-items-center">
             <div class="container d-flex justify-content-center justify-content-md-between">
                 <div class="contact-info d-flex align-items-center">
-                    <i class="bi bi-envelope d-flex align-items-center">
-                        <a href="mailto:lienhe@nhahang.vn">lienhe@nhahang.vn</a>
-                    </i>
+                    <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:lienhe@longphung.vn">lienhe@longphung.vn</a></i>
                     <i class="bi bi-phone d-flex align-items-center ms-4"><span>+84 236 3888 888</span></i>
                 </div>
                 <div class="languages d-none d-md-flex align-items-center">
@@ -48,22 +109,19 @@
                     </ul>
                 </div>
             </div>
-        </div><!-- End Top Bar -->
+        </div>
 
         <div class="branding d-flex align-items-cente">
-
             <div class="container position-relative d-flex align-items-center justify-content-between">
-                <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+                <a href="/" class="logo d-flex align-items-center me-auto me-xl-0">
                     <h1 class="sitename">Long Phụng</h1>
                 </a>
 
                 <nav id="navmenu" class="navmenu">
                     <ul>
-                        <li><a href="#hero" class="active">Trang Chủ<br></a></li>
-                        <li><a href="#about">Giới Thiệu</a></li>
-                        <li><a href="#menu">Thực Đơn</a></li>
-                        <li><a href="#specials">Đặc Biệt</a></li>
-                        <li><a href="#events">Sự Kiện</a></li>
+                        <li><a href="/#hero" class="active">Trang Chủ<br></a></li>
+                        <li><a href="/#about">Giới Thiệu</a></li>
+                        <li><a href="/#menu">Thực Đơn</a></li>
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li><a asp-controller="DangKy" asp-action="Index">Đăng Ký</a></li>
@@ -85,27 +143,29 @@
                                         <li><a asp-area="Admin" asp-controller="QuanLyThucDon" asp-action="Index">Trang Quản Lý</a></li>
                                     }
                                     <li>
-                                        <a asp-controller="DangNhap" asp-action="DangXuat">Đăng xuất</a>
+                                        <a asp-controller="TTCaNhan" asp-action="Index">Thông Tin Cá Nhân</a>
                                     </li>
+                                    <li>
+                                        <a href="#" onclick="confirmLogout(event)">Đăng xuất</a>
+                                    </li>
+                                    
                                 </ul>
                             </li>
                         }
-                        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+                    </ul>
+                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>
 
-                <a class="btn-book-a-table d-none d-xl-block" href="#book-a-table">Đặt Tiệc Cưới</a>
-
+                <a class="btn-book-a-table d-none d-xl-block" href="/#book-a-table">Đặt Tiệc Cưới</a>
             </div>
-
         </div>
-
     </header>
 
-    @RenderBody()
-
+    <main class="main">
+        @RenderBody()
+    </main>
 
     <footer id="footer" class="footer">
-
         <div class="container footer-top">
             <div class="row gy-4">
                 <div class="col-lg-4 col-md-6 footer-about">
@@ -114,76 +174,39 @@
                     </a>
                     <div class="footer-contact pt-3">
                         <p>99 Nguyễn Văn Linh</p>
-                        <p>Ea Tu, Buôn Ma Thuột, Đắk Lắk 630000, Vietnam</p>
-                        <p class="mt-3"><strong>Điện thoại:</strong> <span>+1 5589 55488 55</span></p>
+                        <p>Ea Tu, Buôn Ma Thuột, Đắk Lắk</p>
+                        <p class="mt-3"><strong>Điện thoại:</strong> <span>+84 909 123 456</span></p>
                         <p><strong>Email:</strong> <span>longphung@gmail.com</span></p>
                     </div>
                     <div class="social-links d-flex mt-4">
                         <a href=""><i class="bi bi-twitter-x"></i></a>
                         <a href=""><i class="bi bi-facebook"></i></a>
                         <a href=""><i class="bi bi-instagram"></i></a>
-                        <a href=""><i class="bi bi-linkedin"></i></a>
                     </div>
                 </div>
-
-                <div class="col-lg-2 col-md-3 footer-links">
-                    <h4>Liên kết hữu ích</h4>
-                    <ul>
-                        <li><a href="#">Trang chủ</a></li>
-                        <li><a href="#">Giới thiệu</a></li>
-                        <li><a href="#">Dịch vụ</a></li>
-                        <li><a href="#">Điều khoản dịch vụ</a></li>
-                        <li><a href="#">Chính sách bảo mật</a></li>
-                    </ul>
-                </div>
-
-                <div class="col-lg-2 col-md-3 footer-links">
-                    <h4>Dịch vụ của chúng tôi</h4>
-                    <ul>
-                        <li><a href="#">Thiết kế Web</a></li>
-                        <li><a href="#">Phát triển Web</a></li>
-                        <li><a href="#">Quản lý sản phẩm</a></li>
-                        <li><a href="#">Marketing</a></li>
-                        <li><a href="#">Thiết kế đồ họa</a></li>
-                    </ul>
-                </div>
-
                 <div class="col-lg-4 col-md-12 footer-newsletter">
                     <h4>Bản tin của chúng tôi</h4>
-                    <p>Đăng ký nhận bản tin và cập nhật tin tức mới nhất về sản phẩm và dịch vụ của chúng tôi!</p>
-                    <form action="forms/newsletter.php" method="post" class="php-email-form">
-                        <div class="newsletter-form">
-                            <input type="email" name="email" placeholder="Email của bạn"><input type="submit" value="Đăng ký">
-                        </div>
+                    <p>Đăng ký nhận bản tin và cập nhật tin tức mới nhất!</p>
+                    <form action="#" method="post" class="php-email-form">
+                        <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Đăng ký"></div>
                         <div class="loading">Đang xử lý</div>
                         <div class="error-message"></div>
-                        <div class="sent-message">Yêu cầu đăng ký của bạn đã được gửi. Cảm ơn bạn!</div>
+                        <div class="sent-message">Cảm ơn bạn đã đăng ký!</div>
                     </form>
                 </div>
-
             </div>
         </div>
-
         <div class="container copyright text-center mt-4">
-            <p>
-                © <span>Bản quyền</span> <strong class="px-1 sitename">Long Phụng</strong> <span>Đã đăng ký bản quyền</span>
-            </p>
-            <div class="credits">
-                Thiết kế bởi <a href="https://bootstrapmade.com/">BootstrapMade</a>
-            </div>
+            <p>© <span>Bản quyền</span> <strong class="px-1 sitename">Long Phụng</strong> <span>Đã đăng ký bản quyền</span></p>
         </div>
-
     </footer>
 
-    <!-- Scroll Top -->
-    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
-        <i class="bi bi-arrow-up-short"></i>
-    </a>
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    <!-- Preloader -->
     <div id="preloader"></div>
 
-    <!-- Vendor JS Files -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/assets/vendor/php-email-form/validate.js"></script>
     <script src="~/assets/vendor/aos/aos.js"></script>
@@ -192,195 +215,51 @@
     <script src="~/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
     <script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
 
-    <!-- Main JS File -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="~/assets/js/main.js"></script>
-    <!-- THÊM JAVASCRIPT MỚI CHO MODAL ĐẶT TIỆC -->
+
     <script>
-        // JavaScript cho chức năng modal
-        let selectedMenu = null;
-
-        function selectMenu(menuType, element) {
-          // Remove selected class from all menu items
-          document.querySelectorAll('.menu-item-card').forEach(card => {
-            card.classList.remove('selected');
-          });
-
-          // Add selected class to clicked item
-          element.classList.add('selected');
-          selectedMenu = menuType;
-
-          console.log('Đã chọn thực đơn:', menuType);
+        // Hàm xác nhận đăng xuất
+        function confirmLogout(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Đăng xuất?',
+                text: "Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#cda45e',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Đăng xuất',
+                cancelButtonText: 'Hủy',
+                background: '#1a1814',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/DangNhap/DangXuat';
+                }
+            })
         }
-
-        function toggleCombo(checkbox) {
-          const comboCheckboxes = ['comboBasic', 'comboPremium', 'comboVIP'];
-          const dichVuLeCheckboxes = document.querySelectorAll('.dichvu-le');
-
-          if (checkbox.checked) {
-            // Uncheck other combo checkboxes
-            comboCheckboxes.forEach(id => {
-              if (id !== checkbox.id) {
-                document.getElementById(id).checked = false;
-              }
-            });
-
-            // Disable and dim individual service checkboxes
-            dichVuLeCheckboxes.forEach(cb => {
-              cb.disabled = true;
-              cb.checked = false;
-            });
-
-            console.log('Đã chọn combo:', checkbox.id);
-          } else {
-            // Check if any combo is still selected
-            const anyComboChecked = comboCheckboxes.some(id => document.getElementById(id).checked);
-
-            // If no combo is selected, enable individual services
-            if (!anyComboChecked) {
-              dichVuLeCheckboxes.forEach(cb => {
-                cb.disabled = false;
-              });
-              console.log('Đã bỏ combo, kích hoạt dịch vụ lẻ');
-            }
-          }
-        }
-
-        // Optional: Log selected services when modal closes
-        document.getElementById('dichVuModal').addEventListener('hidden.bs.modal', function () {
-          const selectedServices = [];
-          document.querySelectorAll('#dichVuModal input[type="checkbox"]:checked').forEach(cb => {
-            selectedServices.push(cb.id);
-          });
-          console.log('Các dịch vụ đã chọn:', selectedServices);
-        });
-
-        // Optional: Log selected menu when modal closes
-        document.getElementById('thucDonModal').addEventListener('hidden.bs.modal', function () {
-          if (selectedMenu) {
-            console.log('Thực đơn cuối cùng đã chọn:', selectedMenu);
-          }
-        });
     </script>
+
     @if (TempData["Type"] != null)
     {
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 Swal.fire({
-                    icon: '@TempData["Type"]', // success, error, warning
+                    icon: '@TempData["Type"]',
                     title: '@(TempData["Title"] ?? "Thông báo")',
                     html: '@Html.Raw(TempData["Message"])',
-                    background: '#1a1814',  // Màu tối theo theme của bạn
-                    color: '#fff',          // Chữ trắng
+                    background: '#1a1814',
+                    color: '#fff',
                     confirmButtonText: 'Đồng ý',
-                    confirmButtonColor: '#cda45e' // Nút vàng
+                    confirmButtonColor: '#cda45e'
                 });
             });
         </script>
     }
+
+    @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
-
-</html>
-<style>
-      /* Thêm style để nút bấm giống input placeholder */
-      .book-a-table .php-email-form .btn-chon-modal {
-        text-align: left;
-        font-weight: 400;
-        font-size: 14px;
-        padding: 10px 15px;
-        box-shadow: none;
-        border-radius: 0;
-        color: color-mix(in srgb, var(--default-color), transparent 70%);
-        background-color: color-mix(in srgb, var(--background-color), transparent 20%);
-        border-color: color-mix(in srgb, var(--default-color), transparent 80%);
-      }
-
-      .book-a-table .php-email-form .btn-chon-modal:hover {
-        border-color: var(--accent-color);
-        color: color-mix(in srgb, var(--default-color), transparent 70%);
-        background-color: color-mix(in srgb, var(--background-color), transparent 20%);
-      }
-
-      /* CSS bổ sung cho modal */
-      .menu-item-card:hover {
-        border-color: var(--accent-color) !important;
-        transform: translateY(-2px);
-      }
-
-      .menu-item-card.selected {
-        border-color: var(--accent-color) !important;
-        background-color: color-mix(in srgb, var(--accent-color), transparent 90%) !important;
-      }
-
-      .form-check-input:checked {
-        background-color: var(--accent-color);
-        border-color: var(--accent-color);
-      }
-
-      .form-check-input:disabled {
-        opacity: 0.3;
-      }
-      /*--------------------------------------------------------------
-    # Đồng bộ font Footer với Header
-    --------------------------------------------------------------*/
-
-    /* Font chung cho toàn bộ footer */
-    .footer {
-      font-family: var(--default-font); /* Roboto */
-    }
-
-    /* Font cho tiêu đề trong footer */
-    .footer h4,
-    .footer .sitename {
-      font-family: var(--heading-font); /* Playfair Display */
-    }
-
-    /* Font cho các link trong footer */
-    .footer .footer-links a,
-    .footer .footer-contact p,
-    .footer .footer-newsletter p {
-      font-family: var(--nav-font); /* Poppins */
-    }
-
-    /* Font cho copyright text */
-    .footer .copyright p,
-    .footer .credits {
-      font-family: var(--default-font); /* Roboto */
-    }
-
-    /* Font cho newsletter input */
-    .footer .footer-newsletter input[type=email] {
-      font-family: var(--default-font); /* Roboto */
-    }
-
-    /* Font cho newsletter button */
-    .footer .footer-newsletter input[type=submit] {
-      font-family: var(--nav-font); /* Poppins */
-      font-weight: 500;
-    }
-</style>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-    function confirmLogout(e) {
-        e.preventDefault(); // Chặn chuyển trang ngay lập tức
-
-        Swal.fire({
-            title: 'Đăng xuất?',
-            text: "Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#cda45e', // Màu vàng
-            cancelButtonColor: '#d33',     // Màu đỏ
-            confirmButtonText: 'Đăng xuất',
-            cancelButtonText: 'Hủy',
-            background: '#1a1814',         // Nền tối
-            color: '#fff'                  // Chữ trắng
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Nếu người dùng chọn "Đăng xuất" thì mới chuyển trang
-                window.location.href = '/DangNhap/DangXuat';
-            }
-        })
-    }
-</script>

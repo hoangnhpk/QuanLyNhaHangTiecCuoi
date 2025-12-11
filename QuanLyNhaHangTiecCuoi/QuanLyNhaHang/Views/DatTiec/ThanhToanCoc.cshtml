@@ -1,0 +1,68 @@
+﻿@model QuanLyNhaHang.Models.DatTiec
+
+@{
+    ViewData["Title"] = "Thanh Toán Tiền Cọc";
+    // Cấu hình tài khoản nhận tiền của BẠN ở đây
+    string nganHang = "BIDV";
+    string soTaiKhoan = "6310871922"; 
+    string chuTaiKhoan = "NGUYEN HHUY HOANG"; 
+
+    string noiDungCK = "COC TIEC " + Model.MaDatTiec;
+    decimal soTien = Model.TienCoc ?? 0;
+
+    // Link tạo QR động (VietQR)
+    string qrLink = $"https://img.vietqr.io/image/{nganHang}-{soTaiKhoan}-compact.jpg?amount={soTien}&addInfo={noiDungCK}&accountName={chuTaiKhoan}";
+}
+
+<div class="container mt-5 mb-5" style="padding-top: 80px;">
+    <div class="card shadow-lg border-0" style="max-width: 800px; margin: 0 auto; background: #1a1814; color: #fff;">
+        <div class="card-header text-center" style="background: #cda45e; color: #000;">
+            <h3 class="mb-0 fw-bold">THANH TOÁN TIỀN CỌC</h3>
+        </div>
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-md-5 text-center mb-3 mb-md-0">
+                    <div style="background: #fff; padding: 10px; border-radius: 8px; display: inline-block;">
+                        <img src="@qrLink" alt="Mã QR Thanh Toán" class="img-fluid" style="max-width: 100%;">
+                    </div>
+                    <p class="mt-2 text-muted small">Mở App ngân hàng để quét</p>
+                </div>
+
+                <div class="col-md-7">
+                    <h5 style="color: #cda45e;">Thông tin đơn đặt tiệc</h5>
+                    <ul class="list-group list-group-flush mb-3" style="border-radius: 8px;">
+                        <li class="list-group-item bg-transparent text-white border-secondary">
+                            Mã tiệc: <strong>#@Model.MaDatTiec</strong>
+                        </li>
+                        <li class="list-group-item bg-transparent text-white border-secondary">
+                            Khách hàng: <strong>@Model.KhachHang?.TenKhachHang</strong>
+                        </li>
+                        <li class="list-group-item bg-transparent text-white border-secondary">
+                            Ngày tổ chức: <strong>@Model.NgayToChuc?.ToString("dd/MM/yyyy")</strong>
+                        </li>
+                        <li class="list-group-item bg-transparent text-white border-secondary">
+                            Tổng giá trị: <span>@string.Format("{0:N0}", Model.GiaBan) VNĐ</span>
+                        </li>
+                        <li class="list-group-item bg-transparent text-white border-secondary">
+                            <span style="font-size: 1.2rem;">Cần thanh toán (30%):</span>
+                            <br>
+                            <strong style="color: #cda45e; font-size: 1.5rem;">@string.Format("{0:N0}", soTien) VNĐ</strong>
+                        </li>
+                    </ul>
+
+                    <div class="alert alert-warning" style="background: rgba(205, 164, 94, 0.2); border: 1px solid #cda45e; color: #fff;">
+                        <i class="bi bi-info-circle"></i> Vui lòng quét mã và thực hiện chuyển khoản. Sau khi chuyển xong, bấm nút xác nhận bên dưới.
+                    </div>
+
+                    <form asp-action="XacNhanDaCoc" method="post">
+                        <input type="hidden" name="maDatTiec" value="@Model.MaDatTiec" />
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold"
+                                style="background: #cda45e; border: none; font-size: 18px;">
+                            <i class="bi bi-check-circle-fill"></i> TÔI ĐÃ CHUYỂN KHOẢN
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
