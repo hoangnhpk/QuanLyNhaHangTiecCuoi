@@ -2,6 +2,7 @@
 using QuanLyNhaHang.Models;
 using QuanLyNhaHang.Models.ViewModels;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace QuanLyNhaHang.Controllers
 {
@@ -179,7 +180,7 @@ namespace QuanLyNhaHang.Controllers
                     }
 
                     TempData["SuccessMessage"] = $"Đặt tiệc thành công! Tổng tiền: {tongTienHopDong:N0} VNĐ. Vui lòng thanh toán cọc: {tienCocPhaiDong:N0} VNĐ";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("ThanhToanCoc", new { maDatTiec = tiec.MaDatTiec });
                 }
                 catch (Exception ex)
                 {
@@ -225,6 +226,38 @@ namespace QuanLyNhaHang.Controllers
             public string TenMonAn { get; set; }
             public int SoLuong { get; set; }
             public decimal DonGia { get; set; }
+        }
+
+        // GET: /DatTiec/ThanhToanCoc?maDatTiec=DT00x
+        [HttpGet]
+        public IActionResult ThanhToanCoc(string maDatTiec)
+        {
+            if (string.IsNullOrEmpty(maDatTiec)) return NotFound();
+
+            // Lấy thông tin tiệc để hiện số tiền
+            var tiec = _context.DatTiecs
+                .Include(t => t.KhachHang)
+                .FirstOrDefault(t => t.MaDatTiec == maDatTiec);
+
+            if (tiec == null) return NotFound();
+
+            return View(tiec);
+        }
+
+        // POST: /DatTiec/XacNhanDaCoc
+        [HttpPost]
+        public IActionResult XacNhanDaCoc(string maDatTiec)
+        {
+            var tiec = _context.DatTiecs.Find(maDatTiec);
+            if (tiec != null)
+            {
+                // Cập nhật trạng thái
+                tiec.TrangThai = "Chờ duyệt (Đã chuyển khoản)";
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Cảm ơn bạn! Chúng tôi sẽ kiểm tra và liên hệ lại sớm nhất.";
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }
