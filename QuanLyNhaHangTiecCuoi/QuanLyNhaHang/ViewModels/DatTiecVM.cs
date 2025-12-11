@@ -30,6 +30,7 @@ namespace QuanLyNhaHang.Models.ViewModels
 
         public int? SoBanDuPhong { get; set; }
         public string? ThucDonTuChonJson { get; set; }
+        public string? DichVuTuChonJson { get; set; }
 
         public string? GhiChu { get; set; } // Dùng để lưu tạm các yêu cầu khác
         public TimeSpan? GioToChuc { get; set; } // Giờ
