@@ -71,10 +71,20 @@ namespace QuanLyNhaHang.Controllers
                     var qtv = _context.QuanTriViens.FirstOrDefault(q => q.MaTaiKhoan == user.MaTaiKhoan);
                     if (qtv != null) tenHienThi = qtv.TenQuanTriVien;
                 }
-                else // "Khách hàng"
+                else // "Khách hàng" Haong
                 {
                     var khach = _context.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == user.MaTaiKhoan);
-                    if (khach != null) tenHienThi = khach.TenKhachHang;
+                    if (khach != null)
+                    {
+                        tenHienThi = khach.TenKhachHang;
+
+                        // --- BỔ SUNG: LƯU THÔNG TIN VÀO SESSION ---
+                        HttpContext.Session.SetString("MaKhachHang", khach.MaKhachHang);
+                        HttpContext.Session.SetString("TenKhachHang", khach.TenKhachHang);
+                        HttpContext.Session.SetString("SdtKhachHang", khach.SdtKhachHang ?? "");
+                        HttpContext.Session.SetString("EmailKhachHang", user.Email ?? "");
+                        // -------------------------------------------
+                    }
                 }
 
                 // 3. Tạo Claims
@@ -131,7 +141,7 @@ namespace QuanLyNhaHang.Controllers
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Home");
+                    return Redirect(Url.Action("Index", "Home") + "#book-a-table");
                 }
             }
 

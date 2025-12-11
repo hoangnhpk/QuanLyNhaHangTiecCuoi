@@ -1,0 +1,51 @@
+﻿@model QuanLyNhaHang.Models.DatTiec
+@{
+    ViewData["Title"] = "Thanh toán tiền cọc";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Dùng Layout của khách
+}
+
+<div class="container" style="padding-top: 100px; padding-bottom: 50px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card bg-dark text-white border-warning">
+                <div class="card-header bg-warning text-dark font-weight-bold text-center">
+                    <h3>ĐẶT TIỆC THÀNH CÔNG!</h3>
+                    <p class="mb-0">Mã đơn tiệc: <b>#@Model.MaDatTiec</b></p>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Quý khách vui lòng thanh toán tiền cọc <b>30%</b> để nhà hàng xác nhận giữ chỗ.
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6 border-end border-secondary">
+                            <h5 class="text-warning">Thông tin thanh toán</h5>
+                            <p>Tổng giá trị tạm tính: <b>@string.Format("{0:N0}", Model.GiaBan * Model.SoBanDat) VNĐ</b></p>
+                            <hr />
+                            <h4 class="text-white">Số tiền cọc cần chuyển:</h4>
+                            <h2 class="text-danger">@string.Format("{0:N0}", Model.TienCoc) VNĐ</h2>
+                            <p class="text-muted small mt-3">
+                                * Sau khi chuyển khoản, nhân viên sẽ gọi điện xác nhận trong vòng 15 phút.
+                            </p>
+                        </div>
+
+                        <div class="col-md-6 text-center">
+                            <h5 class="text-warning mb-3">Quét mã QR để thanh toán</h5>
+
+                            <img src="https://img.vietqr.io/image/MB-0333666999-compact.png?amount=@(Model.TienCoc)&addInfo=COC @(Model.MaDatTiec)"
+                                 class="img-fluid border p-2 bg-white"
+                                 style="max-width: 250px; border-radius: 10px;" />
+
+                            <p class="mt-2 small">Ngân hàng: <b>MB Bank</b></p>
+                            <p class="small">Chủ TK: <b>NHA HANG LONG PHUNG</b></p>
+                            <p class="small">Nội dung: <b>COC @Model.MaDatTiec</b></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="/" class="btn btn-outline-light">Về trang chủ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
