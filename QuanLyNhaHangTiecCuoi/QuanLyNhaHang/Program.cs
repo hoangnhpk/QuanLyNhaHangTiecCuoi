@@ -28,7 +28,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/DangNhap/Index";
         options.AccessDeniedPath = "/Home/TuChoiTruyCap";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+
+        // Thời gian sống của Cookie (VD: 7 ngày)
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
     });
 
 // Đăng ký các dịch vụ khác
