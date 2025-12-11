@@ -1,0 +1,61 @@
+﻿@model QuanLyNhaHang.Models.DatTiec
+
+@{
+    ViewData["Title"] = "Xác nhận hủy đơn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="fa fa-exclamation-triangle"></i> YÊU CẦU HỦY ĐƠN ĐẶT TIỆC</h4>
+                </div>
+                <div class="card-body text-center">
+
+                    @if (Model.TienCoc > 0)
+                    {
+                        <div class="alert alert-danger border-danger">
+                            <h4 class="alert-heading">CẢNH BÁO QUAN TRỌNG!</h4>
+                            <p>
+                                Đơn tiệc <strong>@Model.MaDatTiec</strong> đã đặt cọc số tiền:
+                                <br><strong class="text-danger" style="font-size:1.5rem">@Model.TienCoc.Value.ToString("#,##0") VNĐ</strong>.
+                            </p>
+                            <hr>
+                            <p class="mb-0 font-weight-bold">
+                                Nếu bạn hủy bây giờ, số tiền cọc này sẽ KHÔNG ĐƯỢC HOÀN LẠI.
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            Bạn có chắc chắn muốn hủy đơn đặt tiệc <strong>@Model.MaDatTiec</strong> này không?
+                        </div>
+                    }
+
+                    <div class="text-left bg-light p-3 rounded mb-4">
+                        <p><strong>Cô dâu - Chú rể:</strong> @Model.TenCoDau & @Model.TenChuRe</p>
+                        <p><strong>Ngày tổ chức:</strong> @(Model.NgayToChuc.HasValue? Model.NgayToChuc.Value.ToString("dd/MM/yyyy") : "")</p>
+                    </div>
+
+                    <form asp-action="HuyDon" method="post">
+                        <input type="hidden" name="id" value="@Model.MaDatTiec" />
+
+                        <button type="submit" class="btn btn-danger btn-lg px-4">
+                            @(Model.TienCoc > 0 ? "Tôi chấp nhận mất cọc và Hủy" : "Xác nhận Hủy đơn")
+                        </button>
+
+                        <a asp-action="Index" class="btn btn-secondary btn-lg ml-2">Quay lại</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    main.main {
+        margin-top: 160px;
+    }
+</style>

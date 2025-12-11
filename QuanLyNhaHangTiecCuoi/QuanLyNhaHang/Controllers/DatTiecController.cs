@@ -206,45 +206,22 @@ namespace QuanLyNhaHang.Controllers
                     // --- BƯỚC 4: LƯU DỊCH VỤ (LOGIC MỚI) ---
                     if (!string.IsNullOrEmpty(model.LoaiDichVu))
                     {
-                        // TRƯỜNG HỢP 1: TỰ CHỌN
-                        if (model.LoaiDichVu == "TuChon" && !string.IsNullOrEmpty(model.DichVuTuChonJson))
+                        string tenDichVuCanTim = (model.LoaiDichVu == "Basic") ? "Combo Trang Trí Cơ Bản" : "Combo Trang Trí VIP";
+                        var dichVuDb = _context.DichVus.FirstOrDefault(d => d.TenDichVu == tenDichVuCanTim);
+
+                        if (dichVuDb != null)
                         {
-                            var danhSachDV = JsonConvert.DeserializeObject<List<DichVuTuChonItem>>(model.DichVuTuChonJson);
-                            if (danhSachDV != null)
+                            _context.TT_SuDungDichVus.Add(new TT_SuDungDichVu
                             {
-                                foreach (var item in danhSachDV)
-                                {
-                                    _context.TT_SuDungDichVus.Add(new TT_SuDungDichVu
-                                    {
-                                        MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20),
-                                        MaDatTiec = tiec.MaDatTiec,
-                                        MaDichVu = item.MaDichVu,
-                                        SoLuong = item.SoLuong,
-                                        NgaySuDung = tiec.NgayToChuc,
-                                        GhiChu = "Dịch vụ tự chọn"
-                                    });
-                                }
-                            }
+                                MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20),
+                                MaDatTiec = tiec.MaDatTiec,
+                                MaDichVu = dichVuDb.MaDichVu,
+                                SoLuong = 1,
+                                NgaySuDung = tiec.NgayToChuc,
+                                GhiChu = "Gói: " + model.LoaiDichVu
+                            });
+                            _context.SaveChanges();
                         }
-                        // TRƯỜNG HỢP 2: COMBO CÓ SẴN (Giữ nguyên code cũ)
-                        else
-                        {
-                            string tenDichVuCanTim = (model.LoaiDichVu == "Basic") ? "Combo Trang Trí Cơ Bản" : "Combo Trang Trí VIP";
-                            var dichVuDb = _context.DichVus.FirstOrDefault(d => d.TenDichVu == tenDichVuCanTim);
-                            if (dichVuDb != null)
-                            {
-                                _context.TT_SuDungDichVus.Add(new TT_SuDungDichVu
-                                {
-                                    MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20),
-                                    MaDatTiec = tiec.MaDatTiec,
-                                    MaDichVu = dichVuDb.MaDichVu,
-                                    SoLuong = 1,
-                                    NgaySuDung = tiec.NgayToChuc,
-                                    GhiChu = "Gói: " + model.LoaiDichVu
-                                });
-                            }
-                        }
-                        _context.SaveChanges();
                     }
 
                     TempData["SuccessMessage"] = $"Đặt tiệc thành công! Tổng tiền: {tongTienHopDong:N0} VNĐ. Vui lòng thanh toán cọc: {tienCocPhaiDong:N0} VNĐ";

@@ -1,0 +1,73 @@
+﻿@model IEnumerable<QuanLyNhaHang.Models.DatTiec>
+
+@{
+    ViewData["Title"] = "Lịch sử đặt tiệc";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">LỊCH SỬ ĐẶT TIỆC</h2>
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Mã Đơn</th>
+                <th>Ngày Tạo</th>
+                <th>Tổng Tiền</th>
+                <th>Tiền Cọc</th>
+                <th>Trạng Thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MaDatTiec</td>
+                    <td>@(item.NgayDatTiec.HasValue? item.NgayDatTiec.Value.ToString("dd/MM/yyyy HH:mm") : "")</td>
+                    <td>@(item.GiaBan.HasValue? item.GiaBan.Value.ToString("#,##0") : "0") đ</td>
+                    <td class="text-danger font-weight-bold">
+                        @(item.TienCoc.HasValue? item.TienCoc.Value.ToString("#,##0") : "0") đ
+                    </td>
+                    <td>
+                        @if (item.TrangThai == "Cancelled")
+                        {
+                            <span class="text-danger">Đã Hủy</span>
+                        }
+                        else if (item.TrangThai == "Deposited")
+                        {
+
+                            <span class="text-success">Đã Cọc</span>
+                        }
+                        else
+                        {
+
+                            <span class="text-warning">Chờ Duyệt</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="ChiTiet" asp-route-id="@item.MaDatTiec" class="btn btn-primary btn-sm" style="margin-right: 5px;">
+                            Xem chi tiết
+                        </a>
+
+                        @if (item.TrangThai != "Cancelled" && item.TrangThai != "Completed")
+                        {
+                            <a asp-action="XacNhanHuy" asp-route-id="@item.MaDatTiec" class="btn btn-danger btn-sm">
+                                Hủy Đơn
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<style>
+    main{
+        margin-top: 160px;
+    }
+    main.main {
+            margin-top: 160px;
+    }
+    
+ </style>

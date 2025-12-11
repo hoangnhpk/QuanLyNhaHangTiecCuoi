@@ -1,0 +1,156 @@
+﻿@model QuanLyNhaHang.Models.DatTiec
+
+@{
+    ViewData["Title"] = "Chi tiết đơn tiệc " + Model.MaDatTiec;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0 text-uppercase" style="font-weight: 600;">
+                <i class="fa fa-info-circle"></i> CHI TIẾT ĐƠN TIỆC: @Model.MaDatTiec
+            </h4>
+        </div>
+
+        <div class="card-body">
+            <h5 class="text-primary border-bottom pb-2 mb-3">
+                <i class="fa fa-users"></i> I. Thông tin tổ chức
+            </h5>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p><strong>Cô dâu - Chú rể:</strong> @Model.TenCoDau & @Model.TenChuRe</p>
+                    <p><strong>Ngày tổ chức:</strong> @(Model.NgayToChuc.HasValue? Model.NgayToChuc.Value.ToString("dd/MM/yyyy") : "Chưa chốt")</p>
+                    <p><strong>Giờ bắt đầu:</strong> @Model.GioToChuc</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Số bàn đặt:</strong> <span class="badge badge-info" style="font-size: 0.9rem ; color:green">@Model.SoBanDat bàn</span></p>
+                    <p>
+                        <strong>Tổng tiền dự kiến:</strong>
+                        <span class="text-danger font-weight-bold" style="font-size: 1.2rem">
+                            @(Model.GiaBan.HasValue? Model.GiaBan.Value.ToString("#,##0") : "0") VNĐ
+                        </span>
+                    </p>
+
+                    <p>
+                        <strong>Trạng thái:</strong>
+                        @{
+                            string trangThai = Model.TrangThai ?? "Chưa xác định";
+                            string badgeClass = "badge-warning text-dark"; // Mặc định màu xám
+
+                            // Logic chọn màu dựa trên từ khóa trong Database
+                            if (trangThai.Contains("Hủy") || trangThai.Contains("Cancelled"))
+                            {
+                                badgeClass = "badge-danger"; // Màu đỏ
+                            }
+                            else if (trangThai.Contains("Cọc") || trangThai.Contains("Hoàn thành") || trangThai.Contains("Deposited"))
+                            {
+                                badgeClass = "badge-success"; // Màu xanh lá
+                            }
+                            else if (trangThai.Contains("Duyệt") || trangThai.Contains("Đang xử lý") || trangThai.Contains("Process"))
+                            {
+                                badgeClass = "badge-warning text-dark"; // Màu vàng
+                            }
+                        }
+                        <span class="badge @badgeClass" style="padding: 8px 12px; font-size: 0.9rem;">
+                            @trangThai
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <h5 class="text-primary border-bottom pb-2 mb-3">
+                <i class="fa fa-utensils"></i> II. Thực đơn đã chọn
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th style="width: 50%">Tên món ăn</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-right">Đơn giá</th>
+                            <th class="text-right">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ChiTietThucDons != null && Model.ChiTietThucDons.Any())
+                        {
+                            @foreach (var mon in Model.ChiTietThucDons)
+                            {
+                                // 1. Lấy giá (Nếu null thì = 0)
+                                decimal donGia = mon.MonAn?.DonGia ?? 0;
+
+                                // 2. Lấy số lượng (SỬA CHÍNH XÁC DÒNG NÀY)
+                                decimal soLuong = mon.SoLuongMotBan ?? 0;
+
+                                <tr>
+                                    <td>
+                                        <strong>@(mon.MonAn?.TenMonAn ?? "Món đã xóa")</strong>
+                                        <span class="text-muted small">(@(mon.MonAn?.DonViTinh ?? ""))</span>
+                                    </td>
+                                    <td class="text-center">@soLuong</td>
+                                    <td class="text-right">@donGia.ToString("#,##0") đ</td>
+                                    <td class="text-right font-weight-bold">
+                                        @((donGia * soLuong).ToString("#,##0")) đ
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="4" class="text-center text-muted font-italic">Chưa chọn thực đơn nào.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <h5 class="text-primary border-bottom pb-2 mt-4 mb-3">
+                <i class="fa fa-music"></i> III. Dịch vụ đi kèm
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th style="width: 50%">Tên dịch vụ</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-right">Đơn giá</th>
+                            <th class="text-right">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.TT_SuDungDichVus != null && Model.TT_SuDungDichVus.Any())
+                        {
+                            @foreach (var dv in Model.TT_SuDungDichVus)
+                            {
+                                decimal donGia = dv.DichVu?.GiaDV ?? 0;
+                                int soLuong = dv.SoLuong ?? 0;
+
+                                <tr>
+                                    <td><strong>@(dv.DichVu?.TenDichVu ?? "Dịch vụ đã xóa")</strong></td>
+                                    <td class="text-center">@soLuong</td>
+                                    <td class="text-right">@donGia.ToString("#,##0") đ</td>
+                                    <td class="text-right font-weight-bold">@((donGia * soLuong).ToString("#,##0")) đ</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="4" class="text-center text-muted font-italic">Không sử dụng dịch vụ thêm.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-4 text-center">
+                <a asp-action="Index" class="btn btn-secondary px-5 py-2">
+                    <i class="fa fa-arrow-left"></i> Quay lại danh sách
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    main.main {
+        margin-top: 160px;
+    }
+</style>

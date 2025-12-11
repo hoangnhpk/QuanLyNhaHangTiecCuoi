@@ -30,7 +30,7 @@ namespace QuanLyNhaHang.Controllers
             {
                 try
                 {
-                    // Trang trí nội dung HTML một chút cho đẹp
+                    
                     string noiDungDep = $@"
                         <div style='font-family:Arial, sans-serif; padding:20px; border:1px solid #ddd;'>
                             <h2 style='color:#d35400;'>NHÀ HÀNG LONG PHỤNG TRÂN TRỌNG THÔNG BÁO</h2>
@@ -47,7 +47,7 @@ namespace QuanLyNhaHang.Controllers
 
                     TempData["SuccessMessage"] = "Đã gửi thành công tới " + model.EmailNguoiNhan;
 
-                    // Reset form sau khi gửi thành công
+                  
                     return RedirectToAction(nameof(SoanEmail));
                 }
                 catch (Exception ex)
