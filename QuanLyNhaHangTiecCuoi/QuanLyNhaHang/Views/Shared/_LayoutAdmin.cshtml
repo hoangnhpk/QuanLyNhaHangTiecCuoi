@@ -728,10 +728,10 @@
       <div class="sidebar-section-title">Điều hướng</div>
       <ul class="nav-list">
         <li class="nav-item">
-          <button class="nav-link active" data-module="orders">
-            <span class="icon">📜</span>
-            <span>Duyệt đơn đặt tiệc</span>
-          </button>
+                    <a class="nav-link" asp-controller="AdminDatTiec" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">📜</span>
+                        <span>Duyệt đơn đặt tiệc</span>
+                    </a>
         </li>
         <li class="nav-item">
           <button class="nav-link" data-module="menu">
@@ -740,10 +740,10 @@
           </button>
         </li>
         <li class="nav-item">
-          <button class="nav-link" data-module="customers">
-            <span class="icon">👤</span>
-            <span>Quản lý khách hàng</span>
-          </button>
+                    <a class="nav-link" asp-controller="QL_KhachHang" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">👤</span>
+                        <span>Quản lý khách hàng</span>
+                    </a>
         </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="QuanTriVien" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
@@ -777,17 +777,17 @@
           </button>
         </li>
         <li class="nav-item">
-          <button class="nav-link" data-module="payments">
-            <span class="icon">💳</span>
-            <span>Quản lý thanh toán</span>
-          </button>
+                    <a class="nav-link" asp-controller="ThanhToan" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">💳</span>
+                        <span>Quản lý thanh toán</span>
+                    </a>
         </li>
-        <li class="nav-item">
-          <button class="nav-link" data-module="events">
-            <span class="icon">🏛️</span>
-            <span>Quản lý bữa tiệc</span>
-          </button>
-        </li>
+        @* <li class="nav-item"> *@
+        @*   <button class="nav-link" data-module="events"> *@
+        @*     <span class="icon">🏛️</span> *@
+        @*     <span>Quản lý bữa tiệc</span> *@
+        @*   </button> *@
+        @* </li> *@
         <li class="nav-item">
           <button class="nav-link" data-module="analytics">
             <span class="icon">📊</span>

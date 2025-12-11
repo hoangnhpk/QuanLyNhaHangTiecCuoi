@@ -96,7 +96,7 @@
             </div>
 
             <div class="col-lg-6 reservation-form-bg">
-                <form asp-controller="DatTiec" asp-action="DatTiec" method="post" role="form">
+                <form asp-controller="DatTiec" asp-action="DatTiec" method="post" role="form" onsubmit="luuDuLieuTam()">
                     <div class="row gy-4">
                         <div class="col-lg-6 col-md-6">
                             <input type="text" name="HoTen" class="form-control"
@@ -121,14 +121,23 @@
                         </div>
                         <input type="hidden" name="LoaiThucDon" id="inputLoaiThucDon" />
                         <input type="hidden" name="LoaiDichVu" id="inputLoaiDichVu" />
-                        <div class="col-lg-12 col-md-12">
-                            <input type="date" name="NgayToChuc" class="form-control" required>
+                        <input type="hidden" name="ThucDonTuChonJson" id="inputThucDonTuChonJson" />
+                        <div class="col-lg-6 col-md-6">
+                            <label>Ngày tổ chức</label>
+                            <input type="date" name="NgayToChuc" class="form-control" required onchange="tinhTongTienTam()">
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <label>Giờ bắt đầu</label>
+                            <input type="time" name="GioToChuc" class="form-control" required>
                         </div>
                         <div class="col-lg-6 col-md-6">
                             <input type="number" class="form-control" name="SoBanDat" placeholder="Số bàn muốn đặt" required>
                         </div>
                         <div class="col-lg-6 col-md-6">
                             <input type="number" class="form-control" name="SoBanDuPhong" placeholder="Số bàn dự phòng">
+                        </div>
+                        <div class="col-lg-12">
+                            <textarea class="form-control" id="txtGhiChu" placeholder="Ghi chú thêm (nếu có)" rows="3" onchange="document.getElementById('ghiChuInput').value = this.value"></textarea>
                         </div>
                     </div>
 
@@ -148,7 +157,25 @@
                     </div>
 
                     <input type="hidden" name="GhiChu" id="ghiChuInput" />
+                    <div class="alert alert-dark mt-3" style="background: #2c2a27; color: #fff; border: 1px solid #cda45e;">
+                        <div class="d-flex justify-content-between">
+                            <span>Đơn giá bàn (Menu + Dịch vụ):</span>
+                            <strong id="displayGiaBan" style="color: #cda45e;">0 VNĐ</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Tổng tiền dự kiến (<span id="txtSoBan">0</span> bàn):</span>
+                            <strong id="displayTongTien" style="color: #cda45e;">0 VNĐ</strong>
+                        </div>
+                        <hr style="border-color: #555;">
+                        <div class="d-flex justify-content-between">
+                            <span>Tiền cọc cần thanh toán (30%):</span>
+                            <strong id="displayTienCoc" style="color: #ffc107; font-size: 1.2em;">0 VNĐ</strong>
+                        </div>
+                    </div>
 
+                    <input type="hidden" name="GiaBan" id="inputGiaBan" value="0" />
+                    <input type="hidden" name="TongTien" id="inputTongTien" value="0" />
+                    <input type="hidden" name="TienCoc" id="inputTienCoc" value="0" />
                     <div class="text-center mt-3">
                         <button type="submit">Đặt Tiệc Ngay</button>
                     </div>
@@ -217,6 +244,9 @@
         <div class="modal-content" style="background-color: #29261f; color: rgba(255, 255, 255, 0.7);">
             <div class="modal-header" style="border-bottom-color: rgba(255, 255, 255, 0.1);">
                 <h5 class="modal-title" id="thucDonModalLabel" style="color: #fff;">Chọn Thực Đơn</h5>
+                <button type="button" class="btn btn-outline-warning btn-sm ms-3" onclick="moModalTuChonMon()">
+                    <i class="bi bi-list-check"></i> Tự chọn món ăn
+                </button>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -281,6 +311,26 @@
     </div>
 </div>
 
+<div class="modal fade" id="tuChonMonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="background-color: #1a1814; color: #fff;">
+            <div class="modal-header" style="border-bottom: 1px solid #333;">
+                <h5 class="modal-title">Tự xây dựng thực đơn</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="containerTuChonMon">
+                <div class="text-center p-5"><div class="spinner-border text-warning"></div></div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #333;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" style="background-color: #cda45e; border: none;" onclick="xacNhanTuChonMon()">
+                    Xác nhận thực đơn này
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .book-a-table .php-email-form .btn-chon-modal {
         text-align: left; font-weight: 400; font-size: 14px; padding: 10px 15px;
@@ -295,6 +345,8 @@
 </style>
 
 <script>
+        let giaMenuPerTable = 0; // Giá thực đơn/bàn
+    let giaDichVuTotal = 0;  // Giá dịch vụ (tính 1 lần cho cả tiệc)
     function chonThucDon(loaiMenu) {
         // 1. Gán giá trị vào input ẩn để gửi về Server
         document.getElementById('inputLoaiThucDon').value = loaiMenu;
@@ -315,6 +367,12 @@
         document.querySelector('.btn-chon-modal').innerText = "Đã chọn: Thực Đơn " + loaiMenu;
 
         // 4. Tự động đóng modal (tùy chọn, ở đây tôi để mở để khách bấm Xác nhận)
+        // Cập nhật giá
+    if (loaiMenu === 'Vàng') giaMenuPerTable = 1000000;
+    else if (loaiMenu === 'Bạch Kim') giaMenuPerTable = 2000000;
+
+    // Nếu là Tự chọn thì giá sẽ được cập nhật ở hàm xacNhanTuChonMon
+    tinhTongTienTam();
     }
         function chonDichVu(loaiDV) {
         // 1. Gán giá trị vào input ẩn
@@ -333,5 +391,195 @@
         // 3. Cập nhật text nút bấm ngoài form
         // Tìm nút thứ 2 trong nhóm nút (nút Chọn Dịch Vụ)
         document.querySelectorAll('.btn-chon-modal')[1].innerText = "Đã chọn: Combo " + loaiDV;
+        if (loaiDV === 'Basic') giaDichVuTotal = 15000000;
+    else if (loaiDV === 'VIP') giaDichVuTotal = 50000000;
+
+    tinhTongTienTam();
     }
+
+        // Hàm mở Modal tự chọn và tải dữ liệu món ăn
+    function moModalTuChonMon() {
+        // 1. Ẩn modal chọn Combo cũ đi (Dùng jQuery cho chắc ăn)
+        $('#thucDonModal').modal('hide');
+
+        // 2. Hiện modal tự chọn mới
+        $('#tuChonMonModal').modal('show');
+
+        // 3. Gọi AJAX lấy danh sách món ăn từ Server
+        $.get("/DatTiec/GetThucDonTuChon", function(data) {
+            $("#containerTuChonMon").html(data);
+        }).fail(function() {
+            $("#containerTuChonMon").html("<p class='text-danger'>Lỗi tải dữ liệu. Vui lòng thử lại!</p>");
+        });
+    }
+        // --- LOGIC TỰ CHỌN MÓN ĂN ---
+
+    // 1. Hàm tính tiền và hiển thị ô số lượng
+    function tinhTienTuChon() {
+        let tongTien = 0;
+        let demMon = 0;
+
+        // Duyệt qua tất cả các checkbox món ăn
+        document.querySelectorAll('.item-checkbox').forEach(function (checkbox) {
+            let id = checkbox.value;
+            let qtyControl = document.getElementById('qty_' + id);
+            let inputQty = document.getElementById('input_qty_' + id);
+            let price = parseFloat(checkbox.getAttribute('data-price'));
+
+            if (checkbox.checked) {
+                // Nếu tick chọn: Hiện ô số lượng + Cộng tiền
+                qtyControl.style.display = 'block';
+                let sl = parseInt(inputQty.value) || 1;
+                tongTien += price * sl;
+                demMon++;
+            } else {
+                // Nếu bỏ tick: Ẩn ô số lượng + Reset về 1
+                qtyControl.style.display = 'none';
+                inputQty.value = 1;
+            }
+        });
+
+        // Cập nhật hiển thị tổng tiền
+        // Format tiền Việt Nam (VD: 1.000.000 VNĐ)
+        let strTien = tongTien.toLocaleString('vi-VN') + ' VNĐ';
+        document.getElementById('totalMoneyDisplay').innerText = strTien;
+    }
+
+    // 2. Hàm Xác nhận: Đóng gói dữ liệu gửi ra ngoài
+    function xacNhanTuChonMon() {
+        let danhSachDaChon = [];
+        let tongTien = 0;
+
+        // Gom dữ liệu các món đang được tick
+        document.querySelectorAll('.item-checkbox:checked').forEach(function (checkbox) {
+            let id = checkbox.value;
+            let name = checkbox.getAttribute('data-name');
+            let sl = parseInt(document.getElementById('input_qty_' + id).value);
+            let price = parseFloat(checkbox.getAttribute('data-price'));
+
+            // Đẩy vào mảng
+            danhSachDaChon.push({
+                MaMonAn: id,
+                TenMonAn: name,
+                SoLuong: sl,
+                DonGia: price,
+                ThanhTien: sl * price
+            });
+
+            tongTien += sl * price;
+        });
+        giaMenuPerTable = tongTien;
+        if (danhSachDaChon.length === 0) {
+            alert("Bạn chưa chọn món nào!");
+            return;
+        }
+
+        console.log(danhSachDaChon); // Debug xem lấy đúng chưa
+
+        // --- CẬP NHẬT GIAO DIỆN CHÍNH ---
+
+        // 1. Gán giá trị vào Input ẩn (Chuyển mảng thành chuỗi JSON)
+        document.getElementById('inputThucDonTuChonJson').value = JSON.stringify(danhSachDaChon);
+
+        // 2. Gán loại thực đơn là "TuChon"
+        document.getElementById('inputLoaiThucDon').value = "TuChon";
+
+        // 3. Đổi màu giao diện (Bỏ chọn các gói Combo cũ)
+        if(document.getElementById('cardVang'))
+            document.getElementById('cardVang').style.backgroundColor = "transparent";
+        if(document.getElementById('cardBachKim'))
+            document.getElementById('cardBachKim').style.backgroundColor = "transparent";
+
+        // 4. Cập nhật nút bấm bên ngoài
+        let strTongTien = tongTien.toLocaleString('vi-VN');
+        document.querySelector('.btn-chon-modal').innerHTML =
+            `Đã chọn: <b style="color:#cda45e">${danhSachDaChon.length} món</b> (${strTongTien} VNĐ)`;
+
+        $('#tuChonMonModal').modal('hide');
+        tinhTongTienTam();
+    }
+
+        // 1. Hàm lưu dữ liệu vào bộ nhớ trình duyệt
+    function luuDuLieuTam() {
+        // Tạo object chứa thông tin
+        var bookingData = {
+            HoTen: document.querySelector('input[name="HoTen"]').value,
+            SDT: document.querySelector('input[name="SDT"]').value,
+            Email: document.querySelector('input[name="Email"]').value,
+            TenCoDau: document.querySelector('input[name="TenCoDau"]').value,
+            TenChuRe: document.querySelector('input[name="TenChuRe"]').value,
+            NgayToChuc: document.querySelector('input[name="NgayToChuc"]').value,
+            SoBanDat: document.querySelector('input[name="SoBanDat"]').value,
+            SoBanDuPhong: document.querySelector('input[name="SoBanDuPhong"]').value,
+            // Lưu cả lựa chọn Thực đơn và Dịch vụ
+            LoaiThucDon: document.getElementById('inputLoaiThucDon').value,
+            LoaiDichVu: document.getElementById('inputLoaiDichVu').value,
+            GhiChu: document.getElementById('ghiChuInput').value
+        };
+
+        // Lưu vào LocalStorage (chuyển sang chuỗi JSON)
+        localStorage.setItem("PendingBooking", JSON.stringify(bookingData));
+    }
+        // HÀM TÍNH TOÁN CHÍNH
+    function tinhTongTienTam() {
+        let soBan = parseInt(document.querySelector('input[name="SoBanDat"]').value) || 0;
+        document.getElementById('txtSoBan').innerText = soBan;
+
+        // 1. Tính giá mỗi bàn (chỉ tính phần ăn)
+        let giaMoiBan = giaMenuPerTable;
+
+        // 2. Tổng tiền = (Giá ăn * Số bàn) + Giá dịch vụ
+        let tongTien = (giaMoiBan * soBan) + giaDichVuTotal;
+
+        // 3. Tiền cọc 30%
+        let tienCoc = tongTien * 0.3;
+
+        // Hiển thị ra màn hình (Format tiền Việt)
+        document.getElementById('displayGiaBan').innerText = giaMoiBan.toLocaleString('vi-VN') + " VNĐ";
+        document.getElementById('displayTongTien').innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
+        document.getElementById('displayTienCoc').innerText = tienCoc.toLocaleString('vi-VN') + " VNĐ";
+
+        // Gán vào input ẩn để gửi về Server
+        document.getElementById('inputGiaBan').value = giaMoiBan;
+        document.getElementById('inputTongTien').value = tongTien;
+        document.getElementById('inputTienCoc').value = tienCoc;
+    }
+
+    // Gắn sự kiện khi thay đổi số bàn thì tính lại tiền
+    document.querySelector('input[name="SoBanDat"]').addEventListener('input', tinhTongTienTam);
+
+    // 2. Hàm khôi phục dữ liệu (Chạy ngay khi trang web tải xong)
+    document.addEventListener("DOMContentLoaded", function() {
+        // Kiểm tra xem có dữ liệu cũ không
+        var savedData = localStorage.getItem("PendingBooking");
+
+        if (savedData) {
+            var data = JSON.parse(savedData);
+
+            // -- Chỉ điền lại nếu các ô đang trống (tránh ghi đè nếu khách đang nhập dở) --
+
+            // Điền các ô text
+            if(data.HoTen) document.querySelector('input[name="HoTen"]').value = data.HoTen;
+            if(data.SDT) document.querySelector('input[name="SDT"]').value = data.SDT;
+            if(data.Email) document.querySelector('input[name="Email"]').value = data.Email;
+            if(data.TenCoDau) document.querySelector('input[name="TenCoDau"]').value = data.TenCoDau;
+            if(data.TenChuRe) document.querySelector('input[name="TenChuRe"]').value = data.TenChuRe;
+            if(data.NgayToChuc) document.querySelector('input[name="NgayToChuc"]').value = data.NgayToChuc;
+            if(data.SoBanDat) document.querySelector('input[name="SoBanDat"]').value = data.SoBanDat;
+            if(data.SoBanDuPhong) document.querySelector('input[name="SoBanDuPhong"]').value = data.SoBanDuPhong;
+            if(data.GhiChu) document.getElementById('ghiChuInput').value = data.GhiChu;
+
+            // Khôi phục lựa chọn Thực đơn & Dịch vụ (Và trigger lại hiệu ứng chọn)
+            if (data.LoaiThucDon) {
+                chonThucDon(data.LoaiThucDon); // Gọi lại hàm chọn cũ của bạn để nó đổi màu
+            }
+            if (data.LoaiDichVu) {
+                chonDichVu(data.LoaiDichVu); // Gọi lại hàm chọn cũ
+            }
+
+            // Tùy chọn: Xóa dữ liệu sau khi đã điền xong để lần sau không hiện lại
+            // localStorage.removeItem("PendingBooking");
+            // (Hoặc giữ lại phòng trường hợp khách reload trang, tùy bạn)
+        }
+    });
 </script>
