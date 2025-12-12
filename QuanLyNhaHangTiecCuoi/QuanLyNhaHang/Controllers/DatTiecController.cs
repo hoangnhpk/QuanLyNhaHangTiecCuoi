@@ -95,10 +95,9 @@ namespace QuanLyNhaHang.Controllers
                             foreach (var item in danhSachDV)
                             {
                                 var dvDb = _context.DichVus.Find(item.MaDichVu);
-                                if (dvDb != null && dvDb.GiaDV.HasValue)
+                                if (dvDb != null)
                                 {
-                                    // Cộng thẳng vào tổng tiền (Không nhân số bàn)
-                                    giaDichVuTotal += (dvDb.GiaDV.Value * item.SoLuong);
+                                    giaDichVuTotal += (dvDb.GiaDV * item.SoLuong);
                                 }
                             }
                         }
@@ -190,10 +189,11 @@ namespace QuanLyNhaHang.Controllers
                             foreach (var item in danhSachDV)
                             {
                                 var dvDb = _context.DichVus.Find(item.MaDichVu);
-                                if (dvDb != null && dvDb.GiaDV.HasValue)
+                                // SỬA TẠI ĐÂY
+                                if (dvDb != null)
                                 {
                                     // Cộng thẳng vào tổng tiền (Không nhân số bàn)
-                                    giaDichVuTotal += (dvDb.GiaDV.Value * item.SoLuong);
+                                    giaDichVuTotal += (dvDb.GiaDV * item.SoLuong); // Bỏ .Value
                                 }
                             }
                         }
