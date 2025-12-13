@@ -455,7 +455,7 @@
                         </div>
                         <div class="button-row-center">
                             <div class="col-md-8">
-                                <a href="@Url.Action("Index", "DatTiec")" class="btn dark-btn full-width-btn py-3"
+                                <a href="@Url.Action("Index", "LichSuDatTiec")" class="btn dark-btn full-width-btn py-3"
                                    style="background: linear-gradient(45deg, #555, #777); border: 2px solid #ffd700;">
                                     <i class="fas fa-history me-2"></i> LỊCH SỬ ĐẶT TIỆC
                                 </a>
@@ -565,17 +565,7 @@
                                 <textarea name="DiaChiKhachHang" class="form-control" rows="3">${data.diaChiKhachHang || ''}</textarea>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">Trạng thái *</label>
-                                    <select name="TrangThaiKhachHang" class="form-select" required>
-                                        <option value="">-- Chọn trạng thái --</option>
-                                        <option value="Hoạt động" ${data.trangThaiKhachHang === 'Hoạt động' ? 'selected' : ''}>Hoạt động</option>
-                                        <option value="Tạm khóa" ${data.trangThaiKhachHang === 'Tạm khóa' ? 'selected' : ''}>Tạm khóa</option>
-                                        <option value="Ngừng hoạt động" ${data.trangThaiKhachHang === 'Ngừng hoạt động' ? 'selected' : ''}>Ngừng hoạt động</option>
-                                    </select>
-                                </div>
-                            </div>
+                            
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Ghi chú</label>
