@@ -258,11 +258,12 @@ namespace QuanLyNhaHang.Controllers
                 }).ToList(),
 
                 // 2. Danh sách dịch vụ (Lấy từ bảng DICH_VU - GiaDV)
+                // ĐOẠN ĐÃ SỬA
                 DichVu = order.TT_SuDungDichVus.Select(d => new {
                     TenDV = d.DichVu.TenDichVu,
                     SoLuong = d.SoLuong,
-                    // SỬA: Dùng GiaDV thay vì DonGia
-                    DonGia = string.Format(new CultureInfo("vi-VN"), "{0:C0}", d.DichVu.GiaDV ?? 0)
+                    // Bỏ "?? 0" đi là được
+                    DonGia = string.Format(new CultureInfo("vi-VN"), "{0:C0}", d.DichVu.GiaDV)
                 }).ToList()
             };
 
