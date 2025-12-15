@@ -1,0 +1,232 @@
+﻿@model QuanLyNhaHang.Models.DatTiec
+
+@{
+    ViewData["Title"] = "Chi tiết đơn tiệc " + Model.MaDatTiec;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    :root {
+        --luxury-gold: #d4af37; /* Màu vàng kim */
+        --luxury-black: #0f0f0f; /* Màu đen sâu */
+        --luxury-dark: #1a1a1a; /* Màu xám đen nền card */
+        --luxury-text: #f0f0f0; /* Màu chữ trắng ngà */
+    }
+
+    /* Chỉnh khoảng cách để không bị header che mất */
+    main.main {
+        margin-top: 160px;
+    }
+
+    /* Đảm bảo nền trang tối (nếu layout chưa set) */
+    body {
+        background-color: var(--luxury-black);
+    }
+
+    /* Card giao diện Luxury */
+    .card-luxury {
+        background-color: var(--luxury-dark);
+        border: 1px solid var(--luxury-gold);
+        border-radius: 4px;
+        color: var(--luxury-text);
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15); /* Đổ bóng vàng nhẹ */
+    }
+
+    .header-luxury {
+        background: linear-gradient(45deg, #000, #222);
+        border-bottom: 2px solid var(--luxury-gold);
+        padding: 15px 20px;
+        color: var(--luxury-gold);
+    }
+
+    .section-title {
+        color: var(--luxury-gold) !important;
+        border-bottom: 1px solid #444;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+        margin-top: 30px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+    }
+
+    /* Tùy chỉnh bảng cho nền tối */
+    .table-luxury {
+        background-color: transparent;
+        color: var(--luxury-text);
+        border: 1px solid #444;
+    }
+
+        .table-luxury thead {
+            background-color: #000;
+            color: var(--luxury-gold);
+            border-bottom: 2px solid #444;
+        }
+
+        .table-luxury td, .table-luxury th {
+            border-color: #444;
+            vertical-align: middle;
+        }
+
+        .table-luxury tbody tr:hover {
+            background-color: rgba(212, 175, 55, 0.08); /* Hover màu vàng nhạt */
+        }
+
+    .text-gold {
+        color: var(--luxury-gold) !important;
+    }
+
+    /* Nút bấm Vàng */
+    .btn-gold {
+        background-color: var(--luxury-gold);
+        color: #000;
+        font-weight: 700;
+        border: 1px solid var(--luxury-gold);
+        transition: all 0.3s;
+        text-transform: uppercase;
+        padding: 10px 30px;
+    }
+
+        .btn-gold:hover {
+            background-color: transparent;
+            color: var(--luxury-gold);
+            border-color: var(--luxury-gold);
+        }
+</style>
+
+<div class="container mb-5" style="margin-top: 50px;">
+    <div class="card card-luxury">
+        <div class="header-luxury d-flex justify-content-between align-items-center">
+            <h4 class="mb-0" style="font-weight: 700;">
+                <i class="fa fa-file-invoice"></i> CHI TIẾT ĐƠN: @Model.MaDatTiec
+            </h4>
+            <span style="font-size: 0.9rem; font-style: italic; color: #bbb;">
+                Ngày đặt: @(Model.NgayDatTiec.HasValue ? Model.NgayDatTiec.Value.ToString("dd/MM/yyyy HH:mm") : "")
+            </span>
+        </div>
+
+        <div class="card-body">
+            <h5 class="section-title">
+                <i class="fa fa-user-tie"></i> I. Thông tin tổ chức
+            </h5>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-2"><strong>Cô dâu - Chú rể:</strong> <span class="text-gold" style="font-size: 1.1rem; font-weight:bold; margin-left: 10px;">@Model.TenCoDau & @Model.TenChuRe</span></p>
+                    <p class="mb-2"><strong>Ngày tổ chức:</strong> <span class="ml-2">@(Model.NgayToChuc.HasValue ? Model.NgayToChuc.Value.ToString("dd/MM/yyyy") : "Chưa chốt")</span></p>
+                    <p class="mb-2"><strong>Giờ bắt đầu:</strong> <span class="ml-2">@Model.GioToChuc</span></p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-2"><strong>Số bàn đặt:</strong> <span class="badge badge-light ml-2">@Model.SoBanDat bàn</span></p>
+                    <p class="mb-2">
+                        <strong>Tổng tiền dự kiến:</strong>
+                        <span class="text-danger font-weight-bold ml-2" style="font-size: 1.3rem">
+                            @(Model.GiaBan.HasValue ? Model.GiaBan.Value.ToString("#,##0") : "0") VNĐ
+                        </span>
+                    </p>
+
+                    <p class="mb-2">
+                        <strong>Trạng thái:</strong>
+                        @{
+                            string trangThai = Model.TrangThai ?? "Chưa xác định";
+                            string badgeClass = "badge-secondary";
+
+                            if (trangThai.Contains("Hủy") || trangThai.Contains("Cancelled")) { badgeClass = "badge-danger"; }
+                            else if (trangThai.Contains("Cọc") || trangThai.Contains("Hoàn thành") || trangThai.Contains("Deposited")) { badgeClass = "badge-success"; }
+                            else if (trangThai.Contains("Duyệt") || trangThai.Contains("Đang xử lý")) { badgeClass = "badge-warning text-dark"; }
+                        }
+                        <span class="badge @badgeClass ml-2 p-2">
+                            @trangThai
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <h5 class="section-title">
+                <i class="fa fa-utensils"></i> II. Thực đơn đã chọn
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-luxury">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%">Tên món ăn</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-right">Đơn giá</th>
+                            <th class="text-right">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ChiTietThucDons != null && Model.ChiTietThucDons.Any())
+                        {
+                            foreach (var mon in Model.ChiTietThucDons)
+                            {
+                                decimal donGia = mon.MonAn?.DonGia ?? 0;
+                                decimal soLuong = mon.SoLuongMotBan ?? 0;
+
+                                <tr>
+                                    <td>
+                                        <strong class="text-gold">@(mon.MonAn?.TenMonAn ?? "Món đã xóa")</strong>
+                                        <small class="d-block" style="color: #888;">(@(mon.MonAn?.DonViTinh ?? "Phần"))</small>
+                                    </td>
+                                    <td class="text-center">@soLuong</td>
+                                    <td class="text-right">@donGia.ToString("#,##0") đ</td>
+                                    <td class="text-right font-weight-bold">@((donGia * soLuong).ToString("#,##0")) đ</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="4" class="text-center py-3" style="color: #777;">Chưa chọn thực đơn nào.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <h5 class="section-title">
+                <i class="fa fa-music"></i> III. Dịch vụ đi kèm
+            </h5>
+            <div class="table-responsive">
+                <table class="table table-luxury">
+                    <thead>
+                        <tr>
+                            <th style="width: 50%">Tên dịch vụ</th>
+                            <th class="text-center">Số lượng</th>
+                            <th class="text-right">Đơn giá</th>
+                            <th class="text-right">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.TT_SuDungDichVus != null && Model.TT_SuDungDichVus.Any())
+                        {
+                            foreach (var dv in Model.TT_SuDungDichVus)
+                            {
+                                decimal donGia = dv.DichVu?.GiaDV ?? 0;
+                                int soLuong = dv.SoLuong ?? 0;
+
+                                <tr>
+                                    <td>
+                                        <strong class="text-gold">@(dv.DichVu?.TenDichVu ?? "Dịch vụ đã xóa")</strong>
+                                    </td>
+                                    <td class="text-center">@soLuong</td>
+                                    <td class="text-right">@donGia.ToString("#,##0") đ</td>
+                                    <td class="text-right font-weight-bold">@((donGia * soLuong).ToString("#,##0")) đ</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="4" class="text-center py-3" style="color: #777;">Không sử dụng dịch vụ thêm.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-5 text-center">
+                <a asp-action="Index" class="btn btn-gold shadow">
+                    <i class="fa fa-arrow-left"></i> QUAY LẠI DANH SÁCH
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+Đang hiển thị 2244749161204791795.
