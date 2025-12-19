@@ -177,6 +177,50 @@ namespace QuanLyNhaHang.Controllers
                         }
                         _context.SaveChanges();
                     }
+                    if (!string.IsNullOrEmpty(model.LoaiDichVu))
+                    {
+                        if (model.LoaiDichVu == "TuChon" && !string.IsNullOrEmpty(model.DichVuTuChonJson))
+                        {
+                            // Giải mã danh sách dịch vụ tự chọn từ JSON
+                            var danhSachDV = JsonConvert.DeserializeObject<List<DichVuTuChonItem>>(model.DichVuTuChonJson);
+                            if (danhSachDV != null)
+                            {
+                                foreach (var item in danhSachDV)
+                                {
+                                    if (string.IsNullOrEmpty(item.MaDichVu)) continue;
+
+                                    _context.TT_SuDungDichVus.Add(new TT_SuDungDichVu
+                                    {
+                                        MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20),
+                                        MaDatTiec = tiec.MaDatTiec,
+                                        MaDichVu = item.MaDichVu,
+                                        SoLuong = item.SoLuong,
+                                        NgaySuDung = tiec.NgayToChuc,
+                                        GhiChu = "Dịch vụ tự chọn"
+                                    });
+                                }
+                            }
+                        }
+                        else // Trường hợp chọn Combo Basic hoặc VIP
+                        {
+                            string tenDichVuCanTim = (model.LoaiDichVu == "Basic") ? "Combo Trang Trí Cơ Bản" : "Combo Trang Trí VIP";
+                            var dichVuDb = _context.DichVus.FirstOrDefault(d => d.TenDichVu == tenDichVuCanTim);
+
+                            if (dichVuDb != null)
+                            {
+                                _context.TT_SuDungDichVus.Add(new TT_SuDungDichVu
+                                {
+                                    MaThongTinDV = Guid.NewGuid().ToString().Substring(0, 20),
+                                    MaDatTiec = tiec.MaDatTiec,
+                                    MaDichVu = dichVuDb.MaDichVu,
+                                    SoLuong = 1,
+                                    NgaySuDung = tiec.NgayToChuc,
+                                    GhiChu = "Gói: " + model.LoaiDichVu
+                                });
+                            }
+                        }
+                        _context.SaveChanges(); // Lưu tất cả dịch vụ vào DB
+                    }
 
                     // ... (Đoạn tính tiền món ăn ở trên giữ nguyên) ...
 
