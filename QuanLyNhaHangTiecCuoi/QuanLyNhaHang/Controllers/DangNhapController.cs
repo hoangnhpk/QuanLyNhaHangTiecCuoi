@@ -26,7 +26,7 @@ namespace QuanLyNhaHang.Controllers
         }
 
         // ==========================================================
-        // 1. ĐĂNG NHẬP HỆ THỐNG (GIỮ NGUYÊN)
+        // 1. ĐĂNG NHẬP HỆ THỐNG (MẬT KHẨU)
         // ==========================================================
         [HttpGet]
         public IActionResult Index(string returnUrl = null)
@@ -51,43 +51,10 @@ namespace QuanLyNhaHang.Controllers
                 }
 
                 string tenHienThi = user.UserName;
-                string userId = user.MaTaiKhoan.ToString();
-                string vaiTro = (user.VaiTro ?? "Khách hàng").Trim();
+                var khach = _context.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == user.MaTaiKhoan);
+                if (khach != null) tenHienThi = khach.TenKhachHang;
 
-                if (vaiTro == "Admin" || vaiTro == "Quản lý")
-                {
-                    var qtv = _context.QuanTriViens.FirstOrDefault(q => q.MaTaiKhoan == user.MaTaiKhoan);
-                    if (qtv != null) tenHienThi = qtv.TenQuanTriVien;
-                }
-                else
-                {
-                    var khach = _context.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == user.MaTaiKhoan);
-                    if (khach != null)
-                    {
-                        tenHienThi = khach.TenKhachHang;
-                        HttpContext.Session.SetString("MaKhachHang", khach.MaKhachHang);
-                        HttpContext.Session.SetString("TenKhachHang", khach.TenKhachHang);
-                        HttpContext.Session.SetString("SdtKhachHang", khach.SdtKhachHang ?? "");
-                        HttpContext.Session.SetString("EmailKhachHang", user.Email ?? "");
-                    }
-                }
-
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, tenHienThi),
-                    new Claim(ClaimTypes.NameIdentifier, userId),
-                    new Claim(ClaimTypes.Role, MapRoleToCode(vaiTro)),
-                    new Claim("Email", user.Email ?? "")
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-                TempData["Type"] = "success";
-                if (vaiTro == "Admin") return RedirectToAction("Index", "QuanTriVien", new { area = "Admin" });
-                if (vaiTro == "Quản lý") return RedirectToAction("Index", "QuanLyThucDon", new { area = "Admin" });
-
-                return Redirect(Url.Action("Index", "Home") + "#book-a-table");
+                return await SignInSystem(user, tenHienThi);
             }
 
             TempData["Type"] = "error";
@@ -96,7 +63,7 @@ namespace QuanLyNhaHang.Controllers
         }
 
         // ==========================================================
-        // 2. QUÊN MẬT KHẨU / OTP (GIỮ NGUYÊN)
+        // 2. QUÊN MẬT KHẨU / OTP
         // ==========================================================
         [HttpGet] public IActionResult QuenMatKhau() => View();
 
@@ -104,14 +71,22 @@ namespace QuanLyNhaHang.Controllers
         public IActionResult QuenMatKhau(string Email)
         {
             var taiKhoan = _context.TaiKhoans.FirstOrDefault(t => t.Email == Email);
-            if (taiKhoan == null) { TempData["Message"] = "Email không tồn tại."; return View(); }
+            if (taiKhoan == null)
+            {
+                TempData["Type"] = "error";
+                TempData["Message"] = "Email không tồn tại.";
+                return View();
+            }
 
             string otp = new Random().Next(100000, 999999).ToString();
             HttpContext.Session.SetString("OTP_Reset", otp);
             HttpContext.Session.SetString("OTP_Email", Email);
             HttpContext.Session.SetString("OTP_Expiry", DateTime.Now.AddMinutes(10).ToString());
 
-            _emailService.GuiEmail(Email, "Mã OTP", $"Mã OTP của bạn là: {otp}");
+            _emailService.GuiEmail(Email, "Mã OTP Đặt Lại Mật Khẩu", $"<h3>Mã OTP của bạn là: <span style='color:red'>{otp}</span></h3><p>Có hiệu lực trong 10 phút.</p>");
+
+            TempData["Type"] = "success";
+            TempData["Message"] = $"Mã OTP đã được gửi đến <b>{Email}</b>";
             return RedirectToAction("XacThucOtp");
         }
 
@@ -143,7 +118,7 @@ namespace QuanLyNhaHang.Controllers
         }
 
         // ==========================================================
-        // 3. LOGIC ĐĂNG NHẬP GOOGLE (PHẦN CẦN SỬA)
+        // 3. ĐĂNG NHẬP GOOGLE
         // ==========================================================
 
         [HttpGet]
@@ -161,20 +136,17 @@ namespace QuanLyNhaHang.Controllers
             var email = result.Principal.FindFirstValue(ClaimTypes.Email);
             var name = result.Principal.FindFirstValue(ClaimTypes.Name);
 
-            // 1. Kiểm tra Email có tồn tại trong hệ thống chưa
             var user = _context.TaiKhoans.FirstOrDefault(t => t.Email == email);
 
             if (user != null)
             {
-                // THỐNG NHẤT: NẾU ĐÃ CÓ TÀI KHOẢN -> ĐĂNG NHẬP THẲNG
+                // Nếu đã có Gmail trong hệ thống -> Đăng nhập thẳng
                 var khachInfo = _context.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == user.MaTaiKhoan);
-                string tenHienThi = khachInfo?.TenKhachHang ?? name;
-
-                return await SignInSystem(user, tenHienThi);
+                return await SignInSystem(user, khachInfo?.TenKhachHang ?? name);
             }
             else
             {
-                // TH2: CHƯA CÓ TRONG DB -> CHUYỂN ĐẾN TRANG NHẬP THÔNG TIN BỔ SUNG
+                // Nếu chưa có -> Lưu tạm session và sang trang hoàn thiện thông tin
                 HttpContext.Session.SetString("GG_Email", email);
                 HttpContext.Session.SetString("GG_Name", name);
                 return RedirectToAction("HoanThienThongTin");
@@ -197,22 +169,19 @@ namespace QuanLyNhaHang.Controllers
 
             if (string.IsNullOrEmpty(email)) return RedirectToAction("Index");
 
-            // Kiểm tra trùng CCCD trong Database
             if (_context.KhachHangs.Any(k => k.CccdKhachHang == model.Cccd))
                 ModelState.AddModelError("Cccd", "Số CCCD này đã tồn tại trên hệ thống.");
 
             if (!ModelState.IsValid) return View(model);
 
-            // Tạo mã định danh mới
-            string shortTicks = DateTime.Now.Ticks.ToString().Substring(10);
-            string maTK = "TK" + shortTicks;
-            string maKH = "KH" + shortTicks;
+            string maTK = "TK" + DateTime.Now.Ticks.ToString().Substring(10);
+            string maKH = "KH" + DateTime.Now.Ticks.ToString().Substring(10);
 
             var newUser = new TaiKhoan
             {
                 MaTaiKhoan = maTK,
                 UserName = email,
-                Password = Guid.NewGuid().ToString().Substring(0, 8), // Mật khẩu ngẫu nhiên
+                Password = Guid.NewGuid().ToString().Substring(0, 8),
                 Email = email,
                 VaiTro = "Khách hàng",
                 TrangThai = "Hoạt động"
@@ -233,7 +202,6 @@ namespace QuanLyNhaHang.Controllers
             _context.KhachHangs.Add(newKhach);
             await _context.SaveChangesAsync();
 
-            // Xóa thông tin tạm sau khi lưu thành công
             HttpContext.Session.Remove("GG_Email");
             HttpContext.Session.Remove("GG_Name");
 
@@ -246,7 +214,6 @@ namespace QuanLyNhaHang.Controllers
 
         private async Task<IActionResult> SignInSystem(TaiKhoan user, string tenHienThi)
         {
-            // Nạp dữ liệu vào Session cho các chức năng khác
             var khach = _context.KhachHangs.FirstOrDefault(k => k.MaTaiKhoan == user.MaTaiKhoan);
             if (khach != null)
             {
@@ -269,7 +236,6 @@ namespace QuanLyNhaHang.Controllers
             TempData["Type"] = "success";
             TempData["Message"] = $"Chào mừng <b>{tenHienThi}</b>!";
 
-            // Phân quyền điều hướng
             if (user.VaiTro == "Admin") return RedirectToAction("Index", "QuanTriVien", new { area = "Admin" });
             if (user.VaiTro == "Quản lý") return RedirectToAction("Index", "QuanLyThucDon", new { area = "Admin" });
 

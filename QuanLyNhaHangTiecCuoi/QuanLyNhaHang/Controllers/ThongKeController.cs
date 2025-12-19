@@ -52,7 +52,7 @@ namespace QuanLyNhaHang.Controllers
                                       || (x.NgayDatTiec.HasValue && x.NgayDatTiec.Value.Year == y));
             }
 
-            // 2. LỌC THEO TRẠNG THÁI (Nếu người dùng chọn ở danh sách đơn hàng)
+            // 2. LỌC THEO TRẠNG THÁI
             if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "Tất cả")
             {
                 if (statusFilter == "Đã hủy") query = query.Where(x => x.TrangThai == "huy");

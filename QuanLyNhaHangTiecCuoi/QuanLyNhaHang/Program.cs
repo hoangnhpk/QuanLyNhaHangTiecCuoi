@@ -2,7 +2,7 @@
 using QuanLyNhaHang.Models;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google; // Thêm thư viện Google
+using Microsoft.AspNetCore.Authentication.Google; // GIỮ: Thư viện Google chúng ta vừa thêm
 using QuanLyNhaHang.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<QuanLyNhaHangContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Cấu hình Cache & Session (Giữ nguyên)
+// Cấu hình Cache & Session (Gộp cài đặt của cả hai)
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -23,11 +23,11 @@ builder.Services.AddSession(options =>
     options.Cookie.Name = ".NhaHang.Session";
 });
 
-// --- PHẦN SỬA ĐỔI: Tích hợp Google vào Authentication ---
+// --- GIỮ: Tích hợp Google vào Authentication (Phần chúng ta vừa làm) ---
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme; // Ưu tiên Google khi có yêu cầu đăng nhập ngoài
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
 })
     .AddCookie(options =>
     {
@@ -37,16 +37,16 @@ builder.Services.AddAuthentication(options =>
     })
     .AddGoogle(options =>
     {
-        // Lấy thông tin từ file appsettings.json mà bạn đã dán mã vào
+        // Lấy thông tin từ file appsettings.json
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
     });
-// -------------------------------------------------------
 
-// Đăng ký các dịch vụ khác (Giữ nguyên)
+// Đăng ký các dịch vụ khác
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddHttpContextAccessor();
 
+// GIỮ: Đăng ký Controller & Fix lỗi JSON vòng lặp (Phần của người khác)
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
@@ -62,10 +62,15 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-// THỨ TỰ QUAN TRỌNG: Session -> Routing -> Auth (Giữ nguyên thứ tự của bạn)
+// --- GIỮ: Thứ tự Middleware kèm chú thích chi tiết của người khác ---
+
+// 1. Kích hoạt Session ĐẦU TIÊN (để các bước sau có thể dùng dữ liệu session)
 app.UseSession();
+
+// 2. Sau đó mới đến định tuyến
 app.UseRouting();
 
+// 3. Cuối cùng là xác thực và phân quyền
 app.UseAuthentication();
 app.UseAuthorization();
 

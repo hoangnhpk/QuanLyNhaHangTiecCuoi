@@ -384,9 +384,6 @@
                                 <div class="info-value d-flex align-items-center">
                                     <i class="fas fa-address-card icon-gold"></i>
                                     @Model.CccdKhachHang
-                                    <small class="text-muted ms-3">
-                                        <i class="fas fa-lock"></i> (Không thể thay đổi)
-                                    </small>
                                 </div>
                             </div>
 
@@ -511,8 +508,7 @@
 
                             <div class="alert alert-warning mb-4">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Thông tin cố định:</strong> CCCD/CMND, Số điện thoại và Email không thể thay đổi.
-                                <br>CCCD hiện tại: <strong>${data.cccdKhachHang || 'Chưa có'}</strong>
+                                <strong>Thông tin cố định:</strong> Số điện thoại và Email không thể thay đổi.
                                 <br>SDT hiện tại: <strong>${data.sdtKhachHang || 'Chưa có'}</strong>
                                 <br>Email hiện tại: <strong>${data.email || 'Chưa có email'}</strong>
                             </div>
@@ -521,16 +517,16 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">Họ và tên *</label>
                                     <input type="text" name="TenKhachHang" class="form-control"
-                                               value="${data.tenKhachHang || ''}" required />
+                                           value="${data.tenKhachHang || ''}" required />
                                     <div class="invalid-feedback">Vui lòng nhập tên khách hàng.</div>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label fw-bold">CCCD/CMND</label>
-                                    <input type="text" class="form-control bg-dark text-white"
-                                               value="${data.cccdKhachHang || ''}" readonly
-                                               style="cursor: not-allowed; opacity: 0.7;" />
-                                    <small class="text-muted">(Không thể thay đổi)</small>
+                                    <label class="form-label fw-bold">CCCD/CMND *</label>
+                                    <input type="text" name="CccdKhachHang" class="form-control"
+                                           value="${data.cccdKhachHang || ''}" required
+                                           pattern="\\d+" title="Chỉ được nhập số" />
+                                    <div class="invalid-feedback">Vui lòng nhập số CCCD/CMND hợp lệ.</div>
                                 </div>
                             </div>
 
@@ -538,16 +534,16 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">Số điện thoại</label>
                                     <input type="text" class="form-control bg-dark text-white"
-                                               value="${data.sdtKhachHang || ''}" readonly
-                                               style="cursor: not-allowed; opacity: 0.7;" />
+                                           value="${data.sdtKhachHang || ''}" readonly
+                                           style="cursor: not-allowed; opacity: 0.7;" />
                                     <small class="text-muted">(Không thể thay đổi)</small>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">Email</label>
                                     <input type="text" class="form-control bg-dark text-white"
-                                               value="${data.email || 'Chưa có email'}" readonly
-                                               style="cursor: not-allowed; opacity: 0.7;" />
+                                           value="${data.email || 'Chưa có email'}" readonly
+                                           style="cursor: not-allowed; opacity: 0.7;" />
                                     <small class="text-muted">(Không thể thay đổi)</small>
                                 </div>
                             </div>
@@ -556,6 +552,19 @@
                                 <label class="form-label fw-bold">Địa chỉ</label>
                                 <textarea name="DiaChiKhachHang" class="form-control" rows="3">${data.diaChiKhachHang || ''}</textarea>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Trạng thái *</label>
+                                    <select name="TrangThaiKhachHang" class="form-select" required>
+                                        <option value="">-- Chọn trạng thái --</option>
+                                        <option value="Hoạt động" ${data.trangThaiKhachHang === 'Hoạt động' ? 'selected' : ''}>Hoạt động</option>
+                                        <option value="Tạm khóa" ${data.trangThaiKhachHang === 'Tạm khóa' ? 'selected' : ''}>Tạm khóa</option>
+                                        <option value="Ngừng hoạt động" ${data.trangThaiKhachHang === 'Ngừng hoạt động' ? 'selected' : ''}>Ngừng hoạt động</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Ghi chú</label>
                                 <textarea name="GhiChu" class="form-control" rows="4">${data.ghiChu || ''}</textarea>
@@ -618,9 +627,10 @@
                                 </div>
                             `);
 
-                            // Cập nhật thông tin hiển thị (Nếu có thay đổi)
-                            // Hiện tại chỉ có Tên, Địa chỉ, Ghi chú được sửa.
-                            // Để cập nhật các trường không sửa (SDT, Email, CCCD), cần reload trang
+                            // Cập nhật thông tin hiển thị
+                            if (response.sdt) {
+                                $('#currentSdt').text(response.sdt);
+                            }
 
                             // Đóng modal sau 1.5 giây và reload trang
                             setTimeout(function() {

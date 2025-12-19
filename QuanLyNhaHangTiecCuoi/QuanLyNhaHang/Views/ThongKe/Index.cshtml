@@ -1,4 +1,6 @@
-﻿@{
+﻿@model QuanLyNhaHang.Models.DatTiec
+
+@{
     ViewData["Title"] = "Thống kê & Báo cáo";
     Layout = "_LayoutAdmin";
 }
@@ -244,7 +246,10 @@
 
     <div class="grid-box">
         <div class="my-card">
-            <div class="card-head"><span>Biểu đồ Đặt tiệc</span><div style="font-size:12px;"><span style="color:var(--gold)">■ Tổng</span> &nbsp; <span style="color:var(--red)">■ Hủy</span></div></div>
+            <div class="card-head">
+                <span>Biểu đồ Đặt tiệc</span>
+                <div style="font-size:12px;"><span style="color:var(--gold)">■ Tổng</span> &nbsp; <span style="color:var(--red)">■ Hủy</span></div>
+            </div>
             <div class="chart-area" id="chartContainer"></div>
         </div>
         <div class="my-card">
@@ -267,14 +272,35 @@
                 <option value="Đã hủy">Đã hủy</option>
             </select>
         </div>
-        <div class="table-wrap"><table class="nice-table"><thead><tr><th>Mã ĐT</th><th>Ngày TC</th><th>Khách hàng</th><th>Tổng tiền</th><th>Trạng thái</th><th style="text-align:center">Chi tiết</th></tr></thead><tbody id="tableBody"></tbody></table></div>
-        <div style="text-align:right; margin-top:15px;"><button class="my-select" id="btnPrev" disabled> < </button><span id="pageInfo" style="margin:0 10px; color:#888;">1/1</span><button class="my-select" id="btnNext" disabled> > </button></div>
+        <div class="table-wrap">
+            <table class="nice-table">
+                <thead>
+                    <tr>
+                        <th>Mã ĐT</th>
+                        <th>Ngày TC</th>
+                        <th>Khách hàng</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th style="text-align:center">Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        <div style="text-align:right; margin-top:15px;">
+            <button class="my-select" id="btnPrev" disabled> < </button>
+            <span id="pageInfo" style="margin:0 10px; color:#888;">1/1</span>
+            <button class="my-select" id="btnNext" disabled> > </button>
+        </div>
     </div>
 </div>
 
 <div class="backdrop" id="backdrop" onclick="closePanel()"></div>
 <div class="side-panel" id="sidePanel">
-    <div class="p-header"><div style="color:var(--gold); font-weight:bold;">CHI TIẾT: <span id="p_Ma" style="color:#fff"></span></div><button onclick="closePanel()" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">×</button></div>
+    <div class="p-header">
+        <div style="color:var(--gold); font-weight:bold;">CHI TIẾT: <span id="p_Ma" style="color:#fff"></span></div>
+        <button onclick="closePanel()" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">×</button>
+    </div>
     <div class="p-body">
         <div class="info-box" id="p_Info"></div>
         <div style="color:var(--gold); margin-bottom:10px; font-weight:bold;">THỰC ĐƠN / DỊCH VỤ</div>
@@ -309,7 +335,9 @@
         if(t==='year') d += "-01-01";
         fetch(`/ThongKe/GetStatData?type=${t}&date=${d}&statusFilter=${st}&page=${currentPage}`)
             .then(r => r.json()).then(data => {
-                renderStats(data.tongHop); renderChart(data.bieudo); renderTable(data.danhSachDonHang);
+                renderStats(data.tongHop);
+                renderChart(data.bieudo);
+                renderTable(data.danhSachDonHang);
             });
     }
 
@@ -322,7 +350,8 @@
     }
 
     function renderChart(d) {
-        const c = document.getElementById('chartContainer'); c.innerHTML = '';
+        const c = document.getElementById('chartContainer');
+        c.innerHTML = '';
         d.forEach(i => {
             const hC = i.totalCount > 0 ? (i.cancelCount/i.totalCount)*i.percentage : 0;
             c.innerHTML += `<div class="col-group"><div class="col-pair"><div class="bar-col bg-gold" data-v="${i.totalCount}" style="height:${i.percentage}%"></div><div class="bar-col bg-red" data-v="${i.cancelCount}" style="height:${hC}%"></div></div><div class="lbl-date">${i.label}</div></div>`;
@@ -330,7 +359,8 @@
     }
 
     function renderTable(l) {
-        const b = document.getElementById('tableBody'); b.innerHTML = '';
+        const b = document.getElementById('tableBody');
+        b.innerHTML = '';
         document.getElementById('pageInfo').innerText = `${l.currentPage}/${l.totalPages||1}`;
         document.getElementById('btnPrev').disabled = l.currentPage <= 1;
         document.getElementById('btnNext').disabled = l.currentPage >= l.totalPages;
@@ -355,5 +385,8 @@
         });
     }
 
-    function closePanel() { document.getElementById('sidePanel').classList.remove('open'); document.getElementById('backdrop').classList.remove('show'); }
+    function closePanel() {
+        document.getElementById('sidePanel').classList.remove('open');
+        document.getElementById('backdrop').classList.remove('show');
+    }
 </script>

@@ -2,749 +2,791 @@
 <html lang="vi">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quản Trị Nhà Hàng Tiệc Cưới</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@500;700&display=swap"
-    rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Trị Nhà Hàng Tiệc Cưới</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@500;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" href="~/css/QL_KhachHang.css" />
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- ASP.NET Core Validation Scripts -->
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    :root {
-      --primary: #cda45e;
-      --primary-soft: rgba(205, 164, 94, 0.12);
-      --bg: #0c0b09;
-      --bg-elevated: #15120f;
-      --bg-elevated-soft: #1d1914;
-      --border-subtle: rgba(255, 255, 255, 0.06);
-      --text-main: #f4f4f4;
-      --text-muted: #a6a6a6;
-      --danger: #ff5c5c;
-      --success: #4caf50;
-      --warning: #ffb74d;
-      --radius-lg: 14px;
-      --radius-md: 10px;
-      --radius-pill: 999px;
-      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, #262015 0, #0c0b09 45%);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-    }
-
-    /* Layout */
-    .admin-shell {
-      display: flex;
-      width: 100%;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #0c0b09 0, #15120f 45%, #0c0b09 100%);
-    }
-
-    .sidebar {
-      width: 260px;
-      background: rgba(12, 11, 9, 0.96);
-      border-right: 1px solid var(--border-subtle);
-      backdrop-filter: blur(20px);
-      padding: 18px 18px 24px;
-      display: flex;
-      flex-direction: column;
-      position: sticky;
-      left: 0;
-      top: 0;
-      max-height: 100vh;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 8px 22px;
-      border-bottom: 1px solid var(--border-subtle);
-      margin-bottom: 12px;
-    }
-
-    .brand-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: radial-gradient(circle at 25% 0, #ffeac0, #cda45e 45%, #6f5224 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
-      font-family: "Playfair Display", serif;
-      font-weight: 700;
-      font-size: 20px;
-      color: #120f0a;
-    }
-
-    .brand-title {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .brand-title-main {
-      font-family: "Playfair Display", serif;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 15px;
-    }
-
-    .brand-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
-
-    .sidebar-section-title {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--text-muted);
-      margin: 18px 6px 8px;
-    }
-
-    .nav-list {
-      list-style: none;
-    }
-
-    .nav-item {
-      margin-bottom: 4px;
-    }
-
-    .nav-link {
-      width: 100%;
-      border-radius: 10px;
-      padding: 9px 11px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      font-size: 13px;
-      cursor: pointer;
-      background: transparent;
-      transition: all 0.18s ease-out;
-    }
-
-    .nav-link span.icon {
-      width: 22px;
-      text-align: center;
-      font-size: 16px;
-    }
-
-    .nav-link.active {
-      background: linear-gradient(120deg, rgba(205, 164, 94, 0.16), rgba(205, 164, 94, 0.03));
-      border-color: rgba(205, 164, 94, 0.55);
-      color: #fdf6e8;
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
-    }
-
-    .nav-link:not(.active):hover {
-      background: rgba(255, 255, 255, 0.03);
-      border-color: rgba(255, 255, 255, 0.06);
-      color: #f7f3ea;
-      transform: translateY(-1px);
-    }
-
-    .sidebar-footer {
-      margin-top: auto;
-      padding-top: 16px;
-      border-top: 1px solid var(--border-subtle);
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .role-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      background: rgba(205, 164, 94, 0.08);
-      border: 1px solid rgba(205, 164, 94, 0.5);
-      font-size: 11px;
-      margin-bottom: 6px;
-    }
-
-    .main {
-      flex: 1;
-      padding: 18px 26px 26px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .page-title {
-      font-size: 22px;
-      font-family: "Playfair Display", serif;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .page-subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .chip {
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      border: 1px dashed rgba(255, 255, 255, 0.22);
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .btn {
-      border: none;
-      outline: none;
-      padding: 8px 16px;
-      border-radius: var(--radius-pill);
-      background: linear-gradient(135deg, #cda45e, #b4883d);
-      color: #120f0a;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.16s ease-out;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.75);
-      filter: brightness(1.04);
-    }
-
-    .btn.btn-ghost {
-      background: transparent;
-      color: var(--text-main);
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      box-shadow: none;
-      padding-inline: 12px;
-    }
-
-    .btn.btn-ghost:hover {
-      border-color: rgba(255, 255, 255, 0.5);
-      background: rgba(255, 255, 255, 0.04);
-    }
-
-    .content {
-      flex: 1;
-      border-radius: var(--radius-lg);
-      background: radial-gradient(circle at top left, rgba(205, 164, 94, 0.18), transparent 55%),
-        radial-gradient(circle at bottom right, rgba(205, 164, 94, 0.1), transparent 50%),
-        rgba(12, 11, 9, 0.96);
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 18px 18px 20px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .tabs-header {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      overflow-x: auto;
-      scrollbar-width: thin;
-    }
-
-    .tab-pill {
-      white-space: nowrap;
-      border-radius: var(--radius-pill);
-      padding: 5px 11px;
-      font-size: 12px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      color: var(--text-muted);
-      background: transparent;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.16s ease-out;
-    }
-
-    .tab-pill span.dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.18);
-    }
-
-    .tab-pill.active {
-      background: rgba(205, 164, 94, 0.14);
-      border-color: rgba(205, 164, 94, 0.7);
-      color: #fff7e7;
-    }
-
-    .tab-pill:not(.active):hover {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: rgba(255, 255, 255, 0.14);
-      color: #f3eee3;
-    }
-
-    .module-view {
-      display: none;
-      flex: 1;
-      overflow: auto;
-      padding-right: 4px;
-    }
-
-    .module-view.active {
-      display: block;
-    }
-
-    .module-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .module-title {
-      font-size: 17px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-family: "Playfair Display", serif;
-    }
-
-    .module-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .search-input {
-      min-width: 230px;
-      padding: 7px 10px;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(12, 11, 9, 0.92);
-      color: var(--text-main);
-      font-size: 12px;
-    }
-
-    .search-input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .filter-select {
-      padding: 7px 10px;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(12, 11, 9, 0.92);
-      color: var(--text-main);
-      font-size: 12px;
-    }
-
-    .data-card {
-      background: linear-gradient(135deg, #15120f, #110f0c);
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 10px 10px 6px;
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-
-    thead {
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    th,
-    td {
-      padding: 8px 6px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    }
-
-    th {
-      font-weight: 500;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-    }
-
-    tbody tr:hover {
-      background: rgba(255, 255, 255, 0.03);
-    }
-
-    .badge {
-      padding: 3px 8px;
-      border-radius: var(--radius-pill);
-      font-size: 11px;
-      border: 1px solid transparent;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .badge.badge-warning {
-      border-color: rgba(255, 183, 77, 0.6);
-      background: rgba(255, 183, 77, 0.15);
-      color: #ffcc80;
-    }
-
-    .badge.badge-success {
-      border-color: rgba(76, 175, 80, 0.6);
-      background: rgba(76, 175, 80, 0.14);
-      color: #b9f6ca;
-    }
-
-    .badge.badge-info {
-      border-color: rgba(144, 202, 249, 0.7);
-      background: rgba(144, 202, 249, 0.13);
-      color: #e3f2fd;
-    }
-
-    .badge.badge-neutral {
-      border-color: rgba(255, 255, 255, 0.25);
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-main);
-    }
-
-    .table-actions {
-      display: flex;
-      gap: 4px;
-    }
-
-    .btn-icon {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      background: transparent;
-      color: var(--text-main);
-      font-size: 13px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.16s ease-out;
-    }
-
-    .btn-icon:hover {
-      background: rgba(255, 255, 255, 0.08);
-      transform: translateY(-1px);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 26px 10px;
-      color: var(--text-muted);
-      font-size: 13px;
-    }
-
-    /* Split layout helpers */
-    .split-columns {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 12px;
-      margin-top: 6px;
-    }
-
-    .card {
-      background: #15120f;
-      border-radius: var(--radius-md);
-      padding: 10px 10px 8px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
-    }
-
-    .card-title {
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      margin-bottom: 8px;
-      color: #f3e5c8;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px 10px;
-      font-size: 12px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .form-group label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.09em;
-      color: var(--text-muted);
-    }
-
-    .input,
-    .select,
-    textarea {
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 7px 9px;
-      background: rgba(12, 11, 9, 0.92);
-      color: var(--text-main);
-      font-size: 12px;
-      resize: vertical;
-      min-height: 32px;
-    }
-
-    textarea {
-      min-height: 70px;
-    }
-
-    .input::placeholder,
-    textarea::placeholder {
-      color: var(--text-muted);
-    }
-
-    .form-footer {
-      margin-top: 8px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    /* Simple chart placeholder */
-    .chart-bars {
-      display: flex;
-      align-items: flex-end;
-      gap: 8px;
-      height: 150px;
-      padding-top: 8px;
-    }
-
-    .chart-bar {
-      flex: 1;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(205, 164, 94, 0.9), rgba(205, 164, 94, 0.16));
-      position: relative;
-      overflow: hidden;
-    }
-
-    .chart-bar span {
-      position: absolute;
-      bottom: 4px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 10px;
-      color: #120f0a;
-      font-weight: 600;
-    }
-
-    .chart-legend {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .stat-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 12px;
-      padding: 4px 0;
-      border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
-    }
-
-    .stat-row:last-child {
-      border-bottom: none;
-    }
-
-    /* Modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 50;
-    }
-
-    .modal-backdrop.active {
-      display: flex;
-    }
-
-    .modal {
-      width: min(960px, 96vw);
-      max-height: 88vh;
-      background: #15120f;
-      border-radius: 18px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .modal-header {
-      padding: 14px 18px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: radial-gradient(circle at top left, rgba(205, 164, 94, 0.22), transparent 60%);
-    }
-
-    .modal-title {
-      font-family: "Playfair Display", serif;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      font-size: 14px;
-    }
-
-    .modal-body {
-      padding: 12px 16px 14px;
-      overflow: auto;
-      font-size: 13px;
-    }
-
-    .modal-footer {
-      padding: 10px 16px 12px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    .btn-close {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 18px;
-    }
-
-    .pill {
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--text-muted);
-    }
-
-    /* Responsive */
-    media (max-width: 960px) {
-      .sidebar {
-        display: none;
-      }
-
-      body {
-        display: block;
-      }
-
-      .admin-shell {
-        flex-direction: column;
-      }
-    }
-
-    media (max-width: 768px) {
-      .split-columns {
-        grid-template-columns: 1fr;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+    <style>
+        :root {
+            --primary: #cda45e;
+            --primary-soft: rgba(205, 164, 94, 0.12);
+            --bg: #0c0b09;
+            --bg-elevated: #15120f;
+            --bg-elevated-soft: #1d1914;
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --text-main: #f4f4f4;
+            --text-muted: #a6a6a6;
+            --text-dim: #888;
+            --danger: #ff5c5c;
+            --success: #4caf50;
+            --warning: #ffb74d;
+            --radius-lg: 14px;
+            --radius-md: 10px;
+            --radius-pill: 999px;
+            --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top left, #262015 0, #0c0b09 45%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden; /* CHẶN TRÀN MÀN HÌNH NGANG */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Layout */
+        .admin-shell {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0c0b09 0, #15120f 45%, #0c0b09 100%);
+        }
+
+        .sidebar {
+            width: 260px;
+            background: rgba(12, 11, 9, 0.96);
+            border-right: 1px solid var(--border-subtle);
+            backdrop-filter: blur(20px);
+            padding: 18px 18px 24px;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            left: 0;
+            top: 0;
+            max-height: 100vh;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 8px 22px;
+            border-bottom: 1px solid var(--border-subtle);
+            margin-bottom: 12px;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: radial-gradient(circle at 25% 0, #ffeac0, #cda45e 45%, #6f5224 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
+            font-family: "Playfair Display", serif;
+            font-weight: 700;
+            font-size: 20px;
+            color: #120f0a;
+        }
+
+        .brand-title {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand-title-main {
+            font-family: "Playfair Display", serif;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 15px;
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .sidebar-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--text-muted);
+            margin: 18px 6px 8px;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 4px;
+        }
+
+        .nav-link {
+            width: 100%;
+            border-radius: 10px;
+            padding: 9px 11px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.18s ease-out;
+        }
+
+            .nav-link span.icon {
+                width: 22px;
+                text-align: center;
+                font-size: 16px;
+            }
+
+            .nav-link.active {
+                background: linear-gradient(120deg, rgba(205, 164, 94, 0.16), rgba(205, 164, 94, 0.03));
+                border-color: rgba(205, 164, 94, 0.55);
+                color: #fdf6e8;
+                box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
+            }
+
+            .nav-link:not(.active):hover {
+                background: rgba(255, 255, 255, 0.03);
+                border-color: rgba(255, 255, 255, 0.06);
+                color: #f7f3ea;
+                transform: translateY(-1px);
+            }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .role-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+            background: rgba(205, 164, 94, 0.08);
+            border: 1px solid rgba(205, 164, 94, 0.5);
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+        .main {
+            flex: 1;
+            padding: 18px 26px 26px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-family: "Playfair Display", serif;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .page-subtitle {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chip {
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+            border: 1px dashed rgba(255, 255, 255, 0.22);
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .btn {
+            border: none;
+            outline: none;
+            padding: 8px 16px;
+            border-radius: var(--radius-pill);
+            background: linear-gradient(135deg, #cda45e, #b4883d);
+            color: #120f0a;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.7);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.16s ease-out;
+        }
+
+            .btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 16px 34px rgba(0, 0, 0, 0.75);
+                filter: brightness(1.04);
+            }
+
+            .btn.btn-ghost {
+                background: transparent;
+                color: var(--text-main);
+                border: 1px solid rgba(255, 255, 255, 0.24);
+                box-shadow: none;
+                padding-inline: 12px;
+            }
+
+                .btn.btn-ghost:hover {
+                    border-color: rgba(255, 255, 255, 0.5);
+                    background: rgba(255, 255, 255, 0.04);
+                }
+
+        .content {
+            flex: 1;
+            border-radius: var(--radius-lg);
+            background: radial-gradient(circle at top left, rgba(205, 164, 94, 0.18), transparent 55%), radial-gradient(circle at bottom right, rgba(205, 164, 94, 0.1), transparent 50%), rgba(12, 11, 9, 0.96);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 18px 18px 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tabs-header {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+
+        .tab-pill {
+            white-space: nowrap;
+            border-radius: var(--radius-pill);
+            padding: 5px 11px;
+            font-size: 12px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.16s ease-out;
+        }
+
+            .tab-pill span.dot {
+                width: 6px;
+                height: 6px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.18);
+            }
+
+            .tab-pill.active {
+                background: rgba(205, 164, 94, 0.14);
+                border-color: rgba(205, 164, 94, 0.7);
+                color: #fff7e7;
+            }
+
+            .tab-pill:not(.active):hover {
+                background: rgba(255, 255, 255, 0.04);
+                border-color: rgba(255, 255, 255, 0.14);
+                color: #f3eee3;
+            }
+
+        .module-view {
+            display: none;
+            flex: 1;
+            overflow: auto;
+            padding-right: 4px;
+        }
+
+            .module-view.active {
+                display: block;
+            }
+
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .module-title {
+            font-size: 17px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-family: "Playfair Display", serif;
+        }
+
+        .module-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .search-input {
+            min-width: 230px;
+            padding: 7px 10px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(12, 11, 9, 0.92);
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+            .search-input::placeholder {
+                color: var(--text-muted);
+            }
+
+        .filter-select {
+            padding: 7px 10px;
+            border-radius: var(--radius-pill);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(12, 11, 9, 0.92);
+            color: var(--text-main);
+            font-size: 12px;
+        }
+
+        .data-card {
+            background: linear-gradient(135deg, #15120f, #110f0c);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px 10px 6px;
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        thead {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        th,
+        td {
+            padding: 8px 6px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        th {
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: var(--radius-pill);
+            font-size: 11px;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .badge.badge-warning {
+                border-color: rgba(255, 183, 77, 0.6);
+                background: rgba(255, 183, 77, 0.15);
+                color: #ffcc80;
+            }
+
+            .badge.badge-success {
+                border-color: rgba(76, 175, 80, 0.6);
+                background: rgba(76, 175, 80, 0.14);
+                color: #b9f6ca;
+            }
+
+            .badge.badge-info {
+                border-color: rgba(144, 202, 249, 0.7);
+                background: rgba(144, 202, 249, 0.13);
+                color: #e3f2fd;
+            }
+
+            .badge.badge-neutral {
+                border-color: rgba(255, 255, 255, 0.25);
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--text-main);
+            }
+
+        .table-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: transparent;
+            color: var(--text-main);
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.16s ease-out;
+        }
+
+            .btn-icon:hover {
+                background: rgba(255, 255, 255, 0.08);
+                transform: translateY(-1px);
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 26px 10px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* Split layout helpers */
+        .split-columns {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .card {
+            background: #15120f;
+            border-radius: var(--radius-md);
+            padding: 10px 10px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.65);
+        }
+
+        .card-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            margin-bottom: 8px;
+            color: #f3e5c8;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px 10px;
+            font-size: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+            .form-group label {
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.09em;
+                color: var(--text-muted);
+            }
+
+        .input,
+        .select,
+        textarea {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 7px 9px;
+            background: rgba(12, 11, 9, 0.92);
+            color: var(--text-main);
+            font-size: 12px;
+            resize: vertical;
+            min-height: 32px;
+        }
+
+        textarea {
+            min-height: 70px;
+        }
+
+            .input::placeholder,
+            textarea::placeholder {
+                color: var(--text-muted);
+            }
+
+        .form-footer {
+            margin-top: 8px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        /* Simple chart placeholder */
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 150px;
+            padding-top: 8px;
+        }
+
+        .chart-bar {
+            flex: 1;
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(205, 164, 94, 0.9), rgba(205, 164, 94, 0.16));
+            position: relative;
+            overflow: hidden;
+        }
+
+            .chart-bar span {
+                position: absolute;
+                bottom: 4px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 10px;
+                color: #120f0a;
+                font-weight: 600;
+            }
+
+        .chart-legend {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 4px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+            .stat-row:last-child {
+                border-bottom: none;
+            }
+
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+
+            .modal-backdrop.active {
+                display: flex;
+            }
+
+        .modal {
+            width: min(960px, 96vw);
+            max-height: 88vh;
+            background: #15120f;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 14px 18px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: radial-gradient(circle at top left, rgba(205, 164, 94, 0.22), transparent 60%);
+        }
+
+        .modal-title {
+            font-family: "Playfair Display", serif;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-size: 14px;
+        }
+
+        .modal-body {
+            padding: 12px 16px 14px;
+            overflow: auto;
+            font-size: 13px;
+        }
+
+        .modal-footer {
+            padding: 10px 16px 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .pill {
+            padding: 2px 7px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--text-muted);
+        }
+
+        /* Side Panel CSS */
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9998;
+            display: none; /* Mặc định ẩn */
+        }
+
+            .backdrop.show {
+                display: block;
+            }
+
+        /* Thanh trượt từ phải sang */
+        .side-panel {
+            position: fixed;
+            top: 0;
+            right: -700px; /* Giấu bên phải */
+            width: 650px;
+            max-width: 90%;
+            height: 100vh;
+            background: #181818;
+            z-index: 9999;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.8);
+            border-left: 2px solid var(--primary);
+            transition: right 0.3s ease-out; /* Hiệu ứng trượt mượt */
+            display: flex;
+            flex-direction: column;
+        }
+
+            .side-panel.open {
+                right: 0; /* Trượt ra */
+            }
+
+        /* Responsive */
+        @@media (max-width: 960px) {
+            .sidebar {
+                display: none;
+            }
+
+            body {
+                display: block;
+            }
+
+            .admin-shell {
+                flex-direction: column;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .split-columns {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div class="admin-shell">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-logo">LP</div>
-        <div class="brand-title">
-          <div class="brand-title-main">Long Phụng</div>
-          <div class="brand-sub">Wedding &amp; Catering</div>
-        </div>
-      </div>
+    <div class="admin-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">LP</div>
+                <div class="brand-title">
+                    <div class="brand-title-main">Long Phụng</div>
+                    <div class="brand-sub">Wedding &amp; Catering</div>
+                </div>
+            </div>
 
-      <div class="sidebar-section-title">Điều hướng</div>
-      <ul class="nav-list">
-        <li class="nav-item">
+            <div class="sidebar-section-title">Điều hướng</div>
+            <ul class="nav-list">
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="AdminDatTiec" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">📜</span>
                         <span>Duyệt đơn đặt tiệc</span>
                     </a>
-        </li>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="QuanLyThucDon" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">🍽️</span>
                         <span>Quản lý thực đơn</span>
                     </a>
                 </li>
-        <li class="nav-item">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="QuanLyThucDon" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">📜</span>
+                        <span>Quản lý thực đơn</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="QL_KhachHang" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">👤</span>
                         <span>Quản lý khách hàng</span>
                     </a>
-        </li>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="QuanTriVien" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">🧑‍</span>
@@ -758,71 +800,63 @@
                     </a>
                 </li>
 
-                @* <li class="nav-item">
-                    <a class="nav-link" asp-controller="NhanVienPartTime" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="GuiThongBao" asp-action="SoanEmail" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">⏱️</span>
-                        <span>Nhân viên Part-time</span>
+                        <span>Gửi thông báo</span>
                     </a>
-                </li> *@
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="GuiThongBao" asp-action="SoanEmail" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">📜</span>
                         <span>Gửi thông báo</span>
                     </a>
                 </li>
-        <li class="nav-item">
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="QLDichVu" asp-action="SoanEmail" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">⏱️</span>
                         <span>Quản Lý Dịch Vụ</span>
                     </a>
-        </li>
-        <li class="nav-item">
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="ThanhToan" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">💳</span>
                         <span>Quản lý thanh toán</span>
                     </a>
-        </li>
-        @* <li class="nav-item"> *@
-        @*   <button class="nav-link" data-module="events"> *@
-        @*     <span class="icon">🏛️</span> *@
-        @*     <span>Quản lý bữa tiệc</span> *@
-        @*   </button> *@
-        @* </li> *@
-        <li class="nav-item">
-          <button class="nav-link" data-module="analytics">
-            <span class="icon">📊</span>
-            <span>Thống kê</span>
-          </button>
-        </li>
-      </ul>
-           
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-module="analytics">
+                        <span class="icon">📊</span>
+                        <span>Thống kê</span>
+                    </button>
+                </li>
+            </ul>
 
-      <div class="sidebar-footer">
-        <div class="role-pill">
-          <span>●</span> Admin &amp; Quản lý
-        </div>
-        <div>Phiên làm việc: <strong>Hôm nay</strong></div>
-      </div>
-    </aside>
 
-    <!-- MAIN -->
-    <main class="main">
-      <div class="topbar">
-        <div>
-          <div class="page-title">Bảng điều khiển quản trị</div>
-          <div class="page-subtitle">Quản lý toàn bộ hoạt động của nhà hàng tiệc cưới Long Phụng.</div>
-        </div>
-        <div class="topbar-actions">
-          <div class="chip">Vai trò hiện tại: <strong>Admin / Quản lý</strong></div>
+            <div class="sidebar-footer">
+                <div class="role-pill">
+                    <span>●</span> Admin &amp; Quản lý
+                </div>
+                <div>Phiên làm việc: <strong>Hôm nay</strong></div>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="topbar">
+                <div>
+                    <div class="page-title">Bảng điều khiển quản trị</div>
+                    <div class="page-subtitle">Quản lý toàn bộ hoạt động của nhà hàng tiệc cưới Long Phụng.</div>
+                </div>
+                <div class="topbar-actions">
+                    <div class="chip">Vai trò hiện tại: <strong>Admin / Quản lý</strong></div>
                     <a asp-controller="DangNhap" asp-action="DangXuat"><button class="btn btn-ghost">Đăng xuất</button></a>
-          
-        </div>
-      </div>
+                </div>
+            </div>
 
-      <section class="content">
-        <div class="tabs-header" id="tabsHeader">
-                    < <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminDatTiec" ? "active" : "")"
-                         asp-controller="AdminDatTiec" asp-action="Index" style="text-decoration:none;">
+            <section class="content">
+                <div class="tabs-header" id="tabsHeader">
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminDatTiec" ? "active" : "")"
+                       asp-controller="AdminDatTiec" asp-action="Index" style="text-decoration:none;">
                         <span class="dot"></span> Nhân viên
                     </a>
                     <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "QuanLyThucDon" ? "active" : "")"
@@ -840,888 +874,342 @@
 
                     <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienFullTime" ? "active" : "")"
                        asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration:none;">
-                        <span class="dot"></span> Quản lý nhân viên
+                        <span class="dot"></span> Nhân viên
                     </a>
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "QLDichVu" ? "active" : "")"
+                       asp-controller="QlDichVu" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Dịch Vụ
+                    </a>
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "ThanhToan" ? "active" : "")"
+                       asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Thanh Toán
+                    </a>
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienFullTime" ? "active" : "")"
+                       asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Thống Kê
+                    </a>
+                </div>
+                @RenderBody()
+            </section>
+        </main>
+    </div>
 
-                  @*   <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienPartTime" ? "active" : "")"
-                       asp-controller="NhanVienPartTime" asp-action="Index" style="text-decoration:none;">
-                        <span class="dot"></span> Nhân viên Part-time
-                    </a> *@
-          <button class="tab-pill" data-module="services">
-            <span class="dot"></span> Dịch vụ
-          </button>
-          <button class="tab-pill" data-module="payments">
-            <span class="dot"></span> Thanh toán
-          </button>
-          <button class="tab-pill" data-module="events">
-            <span class="dot"></span> Bữa tiệc
-          </button>
-          <button class="tab-pill" data-module="analytics">
-            <span class="dot"></span> Thống kê
-          </button>
-        </div>
-        @RenderBody()
-      </section>
-    </main>
-  </div>
-
-  <!-- Modal mẫu: Chi tiết đơn đặt tiệc -->
-  <div class="modal-backdrop" id="orderDetailModal">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Mẫu hiển thị</div>
-          <div class="modal-title">Chi tiết đơn đặt tiệc</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="split-columns">
-          <div>
-            <div class="card-title">Thông tin chung</div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label>Họ &amp; tên</label>
-                <input class="input" value="Nguyễn Minh An" />
-              </div>
-              <div class="form-group">
-                <label>Số điện thoại</label>
-                <input class="input" value="0901 234 567" />
-              </div>
-              <div class="form-group">
-                <label>Email</label>
-                <input class="input" value="an.nguyen@example.com" />
-              </div>
-              <div class="form-group">
-                <label>Ngày đặt đơn</label>
-                <input class="input" value="12/11/2025" />
-              </div>
-              <div class="form-group">
-                <label>Ngày tổ chức</label>
-                <input class="input" value="25/11/2025" />
-              </div>
-              <div class="form-group">
-                <label>Số khách / Số bàn</label>
-                <input class="input" value="250 khách / 25 bàn" />
-              </div>
-              <div class="form-group">
-                <label>Tên cô dâu</label>
-                <input class="input" value="Trần Ngọc Lan" />
-              </div>
-              <div class="form-group">
-                <label>Tên chú rể</label>
-                <input class="input" value="Nguyễn Minh An" />
-              </div>
+    <div class="modal-backdrop" id="orderDetailModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <div class="pill">Mẫu hiển thị</div>
+                    <div class="modal-title">Chi tiết đơn đặt tiệc</div>
+                </div>
+                <button class="btn-close" data-close-modal>&times;</button>
             </div>
-          </div>
-          <div>
-            <div class="card-title">Thực đơn &amp; dịch vụ</div>
-            <div class="form-group">
-              <label>Thực đơn</label>
-              <textarea rows="4" class="input">Combo Bạch Kim (10 món): 
+            <div class="modal-body">
+                <div class="split-columns">
+                    <div>
+                        <div class="card-title">Thông tin chung</div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Họ &amp; tên</label>
+                                <input class="input" value="Nguyễn Minh An" />
+                            </div>
+                            <div class="form-group">
+                                <label>Số điện thoại</label>
+                                <input class="input" value="0901 234 567" />
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input class="input" value="an.nguyen@example.com" />
+                            </div>
+                            <div class="form-group">
+                                <label>Ngày đặt đơn</label>
+                                <input class="input" value="12/11/2025" />
+                            </div>
+                            <div class="form-group">
+                                <label>Ngày tổ chức</label>
+                                <input class="input" value="25/11/2025" />
+                            </div>
+                            <div class="form-group">
+                                <label>Số khách / Số bàn</label>
+                                <input class="input" value="250 khách / 25 bàn" />
+                            </div>
+                            <div class="form-group">
+                                <label>Tên cô dâu</label>
+                                <input class="input" value="Trần Ngọc Lan" />
+                            </div>
+                            <div class="form-group">
+                                <label>Tên chú rể</label>
+                                <input class="input" value="Nguyễn Minh An" />
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="card-title">Thực đơn &amp; dịch vụ</div>
+                        <div class="form-group">
+                            <label>Thực đơn</label>
+                            <textarea rows="4" class="input">Combo Bạch Kim (10 món): 
 - Súp tôm hùm 
 - Salad Caesar 
 - Tôm càng nướng phô mai 
 - Bò nướng sốt rượu vang 
 ...</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Dịch vụ</label>
+                            <textarea rows="3" class="input">Combo VIP Trang trí, Hệ thống âm thanh ánh sáng cao cấp, Quay phim - Chụp ảnh trọn gói.</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Trạng thái duyệt</label>
+                            <select class="select">
+                                <option>Chờ duyệt</option>
+                                <option>Đã duyệt</option>
+                                <option>Mới thay đổi - chờ duyệt</option>
+                                <option>Mới thay đổi - đã duyệt</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-              <label>Dịch vụ</label>
-              <textarea rows="3" class="input">Combo VIP Trang trí, Hệ thống âm thanh ánh sáng cao cấp, Quay phim - Chụp ảnh trọn gói.</textarea>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" data-close-modal>Đóng</button>
+                <button class="btn">Lưu thay đổi</button>
             </div>
-            <div class="form-group">
-              <label>Trạng thái duyệt</label>
-              <select class="select">
-                <option>Chờ duyệt</option>
-                <option>Đã duyệt</option>
-                <option>Mới thay đổi - chờ duyệt</option>
-                <option>Mới thay đổi - đã duyệt</option>
-              </select>
-            </div>
-          </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Đóng</button>
-        <button class="btn">Lưu thay đổi</button>
-      </div>
     </div>
-  </div>
 
-  <!-- Modal: Thêm / sửa combo thực đơn -->
-  <div class="modal-backdrop" id="modalCombo">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Thực đơn</div>
-          <div class="modal-title">Thêm / Sửa combo món ăn</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã combo</label>
-            <input class="input" placeholder="VD: CB_VANG" />
-          </div>
-          <div class="form-group">
-            <label>Tên combo</label>
-            <input class="input" placeholder="VD: Thực đơn Vàng" />
-          </div>
-          <div class="form-group">
-            <label>Đơn giá (VNĐ/bàn)</label>
-            <input class="input" type="number" placeholder="1.000.000" />
-          </div>
-          <div class="form-group">
-            <label>Ghi chú combo</label>
-            <input class="input" placeholder="Áp dụng tối thiểu 10 bàn..." />
-          </div>
-          <div class="form-group" style="grid-column: span 2;">
-            <label>Các món trong combo (món 1 → 8)</label>
-            <textarea class="input" rows="4" placeholder="Liệt kê món 1, 2, 3,... hoặc chọn từ danh sách món lẻ."></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu combo</button>
-      </div>
-    </div>
-  </div>
+    <script>
+        // Đổi module theo sidebar & tab header
+        const navLinks = document.querySelectorAll('.nav-link');
+        const tabPills = document.querySelectorAll('.tab-pill[data-module]');
+        const modules = document.querySelectorAll('.module-view');
 
-  <!-- Modal: Thêm / sửa món lẻ -->
-  <div class="modal-backdrop" id="modalDish">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Thực đơn</div>
-          <div class="modal-title">Thêm / Sửa món ăn lẻ</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã món ăn</label>
-            <input class="input" placeholder="VD: MN001" />
-          </div>
-          <div class="form-group">
-            <label>Tên món ăn</label>
-            <input class="input" placeholder="VD: Súp tôm hùm" />
-          </div>
-          <div class="form-group">
-            <label>Đơn vị tính</label>
-            <input class="input" placeholder="Tô, đĩa, phần..." />
-          </div>
-          <div class="form-group">
-            <label>Đơn giá (VNĐ)</label>
-            <input type="number" class="input" placeholder="145000" />
-          </div>
-          <div class="form-group">
-            <label>Danh mục món ăn</label>
-            <select class="select">
-              <option>Khai vị</option>
-              <option>Salad</option>
-              <option>Món chính</option>
-              <option>Lẩu</option>
-              <option>Tráng miệng</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Ghi chú</label>
-            <input class="input" placeholder="Thêm ghi chú nếu có..." />
-          </div>
-          <div class="form-group" style="grid-column: span 2;">
-            <label>Mô tả món ăn</label>
-            <textarea class="input" rows="3" placeholder="Mô tả chi tiết món ăn, thành phần..."></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu món ăn</button>
-      </div>
-    </div>
-  </div>
+        function activateModule(moduleName) {
+          modules.forEach(m => {
+            m.classList.toggle('active', m.id === 'module-' + moduleName);
+          });
 
-  <!-- Modal: Thêm / sửa khách hàng -->
-  <div class="modal-backdrop" id="modalCustomer">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Khách hàng</div>
-          <div class="modal-title">Thêm / Sửa thông tin khách hàng</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã khách hàng</label>
-            <input class="input" placeholder="VD: KH001" />
-          </div>
-          <div class="form-group">
-            <label>Tên khách hàng</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>CCCD</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>SĐT</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Địa chỉ</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input class="input" type="email" />
-          </div>
-          <div class="form-group">
-            <label>Trạng thái</label>
-            <select class="select">
-              <option>Đang hoạt động</option>
-              <option>Ngừng hợp tác</option>
-              <option>Tiềm năng</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Ghi chú</label>
-            <input class="input" />
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu khách hàng</button>
-      </div>
-    </div>
-  </div>
+          navLinks.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.module === moduleName);
+          });
 
-  <!-- Modal: Sửa tài khoản khách hàng -->
-  <div class="modal-backdrop" id="modalCustomerAccount">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Khách hàng</div>
-          <div class="modal-title">Cập nhật tài khoản khách hàng</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã khách hàng</label>
-            <input class="input" value="KH001" />
-          </div>
-          <div class="form-group">
-            <label>Tài khoản đăng nhập</label>
-            <input class="input" value="thaomy.kh" />
-          </div>
-          <div class="form-group">
-            <label>Mật khẩu</label>
-            <input class="input" type="password" value="123456" />
-          </div>
-          <div class="form-group">
-            <label>Trạng thái tài khoản</label>
-            <select class="select">
-              <option>Hoạt động</option>
-              <option>Khóa tạm thời</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu tài khoản</button>
-      </div>
-    </div>
-  </div>
+          tabPills.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.module === moduleName);
+          });
+        }
 
-  <!-- Modal: Thêm / sửa nhân viên quản lý -->
-  <div class="modal-backdrop" id="modalManager">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Nhân viên quản lý</div>
-          <div class="modal-title">Thêm / Sửa nhân viên quản lý</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã NV</label>
-            <input class="input" placeholder="VD: QL001" />
-          </div>
-          <div class="form-group">
-            <label>Tên nhân viên</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>CCCD</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>SĐT</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Địa chỉ</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input class="input" type="email" />
-          </div>
-          <div class="form-group">
-            <label>Trạng thái</label>
-            <select class="select">
-              <option>Đang làm</option>
-              <option>Nghỉ làm</option>
-              <option>Tạm nghỉ</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Ghi chú</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Tài khoản</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Mật khẩu</label>
-            <input class="input" type="password" />
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu nhân viên</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Thêm / sửa nhân viên nhà hàng -->
-  <div class="modal-backdrop" id="modalStaff">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Nhân viên nhà hàng</div>
-          <div class="modal-title">Thêm / Sửa nhân viên nhà hàng</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã nhân viên</label>
-            <input class="input" placeholder="VD: NH001" />
-          </div>
-          <div class="form-group">
-            <label>Tên nhân viên</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>CCCD</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>SĐT</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Địa chỉ</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input class="input" type="email" />
-          </div>
-          <div class="form-group">
-            <label>Chức vụ</label>
-            <select class="select">
-              <option>Đầu bếp</option>
-              <option>Bếp phó</option>
-              <option>Phục vụ</option>
-              <option>Setup sảnh</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Trạng thái</label>
-            <select class="select">
-              <option>Đang làm</option>
-              <option>Nghỉ làm</option>
-              <option>Tạm nghỉ</option>
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu nhân viên</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Thêm / sửa nhân viên part-time -->
-  <div class="modal-backdrop" id="modalStaffPt">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Nhân viên part-time</div>
-          <div class="modal-title">Thêm / Sửa nhân viên part-time</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã NV part-time</label>
-            <input class="input" placeholder="VD: PT010" />
-          </div>
-          <div class="form-group">
-            <label>Tên NV part-time</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>SĐT</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Địa chỉ</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Số buổi đã làm</label>
-            <input class="input" type="number" />
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu nhân viên</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Thêm / sửa combo dịch vụ -->
-  <div class="modal-backdrop" id="modalServiceCombo">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Dịch vụ</div>
-          <div class="modal-title">Thêm / Sửa combo dịch vụ</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã combo DV</label>
-            <input class="input" placeholder="VD: CB_TRANGTRI_VIP" />
-          </div>
-          <div class="form-group">
-            <label>Tên combo DV</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Đơn giá</label>
-            <input class="input" type="number" />
-          </div>
-          <div class="form-group">
-            <label>Ghi chú</label>
-            <input class="input" />
-          </div>
-          <div class="form-group" style="grid-column: span 2;">
-            <label>Mô tả</label>
-            <textarea class="input" rows="3"></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu combo DV</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Thêm / sửa dịch vụ lẻ -->
-  <div class="modal-backdrop" id="modalServiceSingle">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Dịch vụ</div>
-          <div class="modal-title">Thêm / Sửa dịch vụ lẻ</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã dịch vụ</label>
-            <input class="input" placeholder="VD: DV_TRANGTRI_HOA" />
-          </div>
-          <div class="form-group">
-            <label>Tên dịch vụ</label>
-            <input class="input" />
-          </div>
-          <div class="form-group">
-            <label>Đơn giá</label>
-            <input class="input" type="number" />
-          </div>
-          <div class="form-group">
-            <label>Ghi chú</label>
-            <input class="input" />
-          </div>
-          <div class="form-group" style="grid-column: span 2;">
-            <label>Mô tả</label>
-            <textarea class="input" rows="3"></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu dịch vụ</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Quản lý thanh toán -->
-  <div class="modal-backdrop" id="modalPayment">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Thanh toán</div>
-          <div class="modal-title">Chi tiết / Cập nhật thanh toán</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã thanh toán</label>
-            <input class="input" value="TT_2301" />
-          </div>
-          <div class="form-group">
-            <label>Mã tiệc</label>
-            <input class="input" value="TIEC_2301" />
-          </div>
-          <div class="form-group">
-            <label>Mã khách hàng</label>
-            <input class="input" value="KH001" />
-          </div>
-          <div class="form-group">
-            <label>Tổng giá trị bữa tiệc</label>
-            <input class="input" value="150.000.000" />
-          </div>
-          <div class="form-group">
-            <label>Giá trị 30%</label>
-            <input class="input" value="45.000.000" />
-          </div>
-          <div class="form-group">
-            <label>Trạng thái</label>
-            <select class="select">
-              <option>Đã cọc 30%</option>
-              <option>Đã thanh toán hoàn toàn</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Ngày đặt cọc</label>
-            <input type="date" class="input" />
-          </div>
-          <div class="form-group">
-            <label>Ngày thanh toán hoàn toàn</label>
-            <input type="date" class="input" />
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu thanh toán</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Phân công bữa tiệc -->
-  <div class="modal-backdrop" id="modalEventDetail">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Bữa tiệc</div>
-          <div class="modal-title">Phân công nhân viên cho bữa tiệc</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Mã tiệc</label>
-            <input class="input" value="TIEC_2301" />
-          </div>
-          <div class="form-group">
-            <label>Ngày tổ chức</label>
-            <input class="input" value="25/11/2025" />
-          </div>
-          <div class="form-group">
-            <label>Sảnh</label>
-            <input class="input" value="Sảnh Diamond" />
-          </div>
-          <div class="form-group">
-            <label>Số bàn</label>
-            <input class="input" value="25" />
-          </div>
-        </div>
-        <hr style="border-color: rgba(255,255,255,0.08); margin:10px 0 12px;">
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Bếp trưởng</label>
-            <select class="select">
-              <option>NH001 - Võ Hoài Nam</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Bếp phó</label>
-            <select class="select">
-              <option>NH010 - Trần Đức Lộc</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Phục vụ (NV nhà hàng)</label>
-            <select class="select">
-              <option>NH042 - Đỗ Gia Huy</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Phục vụ (NV part-time)</label>
-            <select class="select">
-              <option>PT010 - Ngô Bảo Anh</option>
-              <option>PT024 - Phan Minh Tín</option>
-            </select>
-          </div>
-          <div class="form-group" style="grid-column: span 2;">
-            <label>Ghi chú bố trí nhân sự</label>
-            <textarea class="input" rows="3"></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Lưu phân công</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: Xác nhận xóa chung -->
-  <div class="modal-backdrop" id="modalConfirmDelete">
-    <div class="modal" style="max-width:420px;">
-      <div class="modal-header">
-        <div>
-          <div class="pill">Xóa dữ liệu</div>
-          <div class="modal-title">Bạn chắc chắn muốn xóa?</div>
-        </div>
-        <button class="btn-close" data-close-modal>&times;</button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size:13px; color:var(--text-muted);">
-          Thao tác này chỉ là giao diện minh họa, chưa kết nối cơ sở dữ liệu.
-          Khi tích hợp backend, bạn có thể gọi API xóa tại đây.
-        </p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" data-close-modal>Hủy</button>
-        <button class="btn">Xóa</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Đổi module theo sidebar & tab header
-    const navLinks = document.querySelectorAll('.nav-link');
-    const tabPills = document.querySelectorAll('.tab-pill[data-module]');
-    const modules = document.querySelectorAll('.module-view');
-
-    function activateModule(moduleName) {
-      modules.forEach(m => {
-        m.classList.toggle('active', m.id === 'module-' + moduleName);
-      });
-
-      navLinks.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.module === moduleName);
-      });
-
-      tabPills.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.module === moduleName);
-      });
-    }
-
-    navLinks.forEach(btn => {
-      btn.addEventListener('click', () => activateModule(btn.dataset.module));
-    });
-
-    tabPills.forEach(btn => {
-      btn.addEventListener('click', () => activateModule(btn.dataset.module));
-    });
-
-    // Sub-tab cho khách hàng
-    const subtabButtons = document.querySelectorAll('.tab-pill[data-subtab]');
-    subtabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = btn.dataset.subtab;
-        subtabButtons.forEach(b => b.classList.toggle('active', b === btn));
-        document.querySelectorAll('#module-customers .data-card').forEach(card => {
-          card.style.display = card.id === 'subtab-' + target ? 'block' : 'none';
+        navLinks.forEach(btn => {
+          btn.addEventListener('click', () => activateModule(btn.dataset.module));
         });
-      });
-    });
 
-    // Modal chi tiết đơn đặt tiệc (demo)
-    const orderDetailModal = document.getElementById('orderDetailModal');
-    const btnViewOrderDetail = document.getElementById('btnViewOrderDetail');
+        tabPills.forEach(btn => {
+          btn.addEventListener('click', () => activateModule(btn.dataset.module));
+        });
 
-    function openModal(modal) {
-      modal?.classList.add('active');
-    }
+        // Sub-tab cho khách hàng
+        const subtabButtons = document.querySelectorAll('.tab-pill[data-subtab]');
+        subtabButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const target = btn.dataset.subtab;
+            subtabButtons.forEach(b => b.classList.toggle('active', b === btn));
+            document.querySelectorAll('#module-customers .data-card').forEach(card => {
+              card.style.display = card.id === 'subtab-' + target ? 'block' : 'none';
+            });
+          });
+        });
 
-    function closeModal(modal) {
-      modal?.classList.remove('active');
-    }
-
-    // Nút mở modal chi tiết đơn (mẫu)
-    btnViewOrderDetail?.addEventListener('click', () => openModal(orderDetailModal));
-
-    // Cơ chế chung: mọi phần tử có data-open-modal="idModal" sẽ mở modal tương ứng
-    document.addEventListener('click', (e) => {
-      const trigger = e.target.closest('[data-open-modal]');
-      if (trigger) {
-        const id = trigger.getAttribute('data-open-modal');
-        const modal = document.getElementById(id);
-        openModal(modal);
-      }
-    });
-
-    // Đóng modal khi click nền hoặc nút có data-close-modal
-    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-      backdrop.addEventListener('click', (e) => {
-        if (e.target === backdrop || e.target.hasAttribute('data-close-modal')) {
-          closeModal(backdrop);
+        function openModal(modal) {
+          modal?.classList.add('active');
         }
-      });
-    });
-  </script>
+
+        function closeModal(modal) {
+          modal?.classList.remove('active');
+        }
+
+        // Cơ chế chung: mọi phần tử có data-open-modal="idModal" sẽ mở modal tương ứng
+        document.addEventListener('click', (e) => {
+          const trigger = e.target.closest('[data-open-modal]');
+          if (trigger) {
+            const id = trigger.getAttribute('data-open-modal');
+            const modal = document.getElementById(id);
+            openModal(modal);
+          }
+        });
+
+        // Đóng modal khi click nền hoặc nút có data-close-modal
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+          backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop || e.target.hasAttribute('data-close-modal')) {
+              closeModal(backdrop);
+            }
+          });
+        });
+    </script>
 
 
-  <div id="customConfirmModal" class="modal-overlay" style="display: none;">
-    <div class="modal-box">
-        <div class="modal-header">
-            <span class="modal-subtitle" id="modalSubtitle">XÁC NHẬN</span>
-            <span class="close-btn" onclick="closeModal()">×</span>
-        </div>
-        <div class="modal-title" id="modalTitle">BẠN CHẮC CHẮN MUỐN THỰC HIỆN?</div>
-        <div class="modal-desc" id="modalDesc">
-            Hành động này sẽ thay đổi dữ liệu hệ thống. Vui lòng kiểm tra kỹ trước khi xác nhận.
-        </div>
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeModal()">Hủy</button>
-            <button class="btn-confirm" id="btnConfirmAction" onclick="performAction()">Đồng ý</button>
+    <div id="customConfirmModal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="modal-subtitle" id="modalSubtitle">XÁC NHẬN</span>
+                <span class="close-btn" onclick="closeModal()">×</span>
+            </div>
+            <div class="modal-title" id="modalTitle">BẠN CHẮC CHẮN MUỐN THỰC HIỆN?</div>
+            <div class="modal-desc" id="modalDesc">
+                Hành động này sẽ thay đổi dữ liệu hệ thống. Vui lòng kiểm tra kỹ trước khi xác nhận.
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+                <button class="btn-confirm" id="btnConfirmAction" onclick="performAction()">Đồng ý</button>
+            </div>
         </div>
     </div>
-</div>
 
-<style>
-    .modal-overlay {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 9999;
-        display: flex; justify-content: center; align-items: center;
-        backdrop-filter: blur(2px);
-    }
-    .modal-box {
-        background: #1a1a1a; /* Màu nền tối */
-        width: 500px;
-        padding: 30px;
-        border-radius: 15px;
-        border: 1px solid #333;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        text-align: left;
-        color: white;
-        font-family: 'Playfair Display', serif; /* Font giống hình */
-    }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .modal-subtitle {
-        font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #9ca3af;
-        border: 1px solid #374151; padding: 4px 10px; border-radius: 20px;
-    }
-    .close-btn { cursor: pointer; font-size: 24px; color: #9ca3af; }
-    .modal-title {
-        font-size: 24px; font-weight: bold; margin-bottom: 15px; color: #f3f4f6;
-        text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .modal-desc { font-size: 14px; color: #9ca3af; line-height: 1.5; margin-bottom: 25px; font-family: sans-serif; }
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
-    .btn-cancel {
-        background: transparent; border: 1px solid #374151; color: white;
-        padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s;
-    }
-    .btn-cancel:hover { background: #374151; }
-    .btn-confirm {
-        background: #d4af37; /* Màu vàng đồng */
-        border: none; color: #1a1a1a; font-weight: bold;
-        padding: 10px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s;
-    }
-    .btn-confirm:hover { background: #b5952f; }
-</style>
-
-<script>
-    let targetFormId = null; // Biến lưu form nào đang chờ gửi
-
-    // Hàm gọi modal hiện lên
-    function showModal(formId, type) {
-        targetFormId = formId;
-        const modal = document.getElementById('customConfirmModal');
-        const title = document.getElementById('modalTitle');
-        const sub = document.getElementById('modalSubtitle');
-        const btn = document.getElementById('btnConfirmAction');
-
-        modal.style.display = 'flex';
-
-        // Tùy chỉnh nội dung dựa theo loại hành động
-        if (type === 'delete') {
-            sub.innerText = "XÓA DỮ LIỆU";
-            title.innerText = "BẠN CHẮC CHẮN MUỐN XÓA?";
-            btn.innerText = "Xóa";
-                btn.style.background = "#d4af37";
-            } else if (type === 'add') {
-            sub.innerText = "THÊM MỚI";
-            title.innerText = "XÁC NHẬN THÊM DỮ LIỆU?";
-            btn.innerText = "Thêm Mới";
-                btn.style.background = "#d4af37"; // Màu xanh lá
-        } else if (type === 'edit') {
-            sub.innerText = "CẬP NHẬT";
-            title.innerText = "LƯU THAY ĐỔI?";
-            btn.innerText = "Lưu";
-                btn.style.background ="#d4af37"; // Màu xanh dương
+    <style>
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
         }
-    }
 
-    // Hàm đóng modal
-    function closeModal() {
-        document.getElementById('customConfirmModal').style.display = 'none';
-        targetFormId = null;
-    }
-
-    // Hàm thực hiện gửi form khi bấm nút Đồng ý
-    function performAction() {
-        if (targetFormId) {
-            document.getElementById(targetFormId).submit();
+        .modal-box {
+            background: #1a1a1a; /* Màu nền tối */
+            width: 500px;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: left;
+            color: white;
+            font-family: 'Playfair Display', serif; /* Font giống hình */
         }
-    }
-</script>
-    <!-- Toast Notification Container -->
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .modal-subtitle {
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #9ca3af;
+            border: 1px solid #374151;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-size: 24px;
+            color: #9ca3af;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #f3f4f6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: #9ca3af;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-family: sans-serif;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid #374151;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .btn-cancel:hover {
+                background: #374151;
+            }
+
+        .btn-confirm {
+            background: #d4af37; /* Màu vàng đồng */
+            border: none;
+            color: #1a1a1a;
+            font-weight: bold;
+            padding: 10px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .btn-confirm:hover {
+                background: #b5952f;
+            }
+    </style>
+
+    <script>
+        let targetFormId = null; // Biến lưu form nào đang chờ gửi
+
+        // Hàm gọi modal hiện lên
+        function showModal(formId, type) {
+            targetFormId = formId;
+            const modal = document.getElementById('customConfirmModal');
+            const title = document.getElementById('modalTitle');
+            const sub = document.getElementById('modalSubtitle');
+            const btn = document.getElementById('btnConfirmAction');
+
+            modal.style.display = 'flex';
+
+            // Tùy chỉnh nội dung dựa theo loại hành động
+            if (type === 'delete') {
+                sub.innerText = "XÓA DỮ LIỆU";
+                title.innerText = "BẠN CHẮC CHẮN MUỐA XÓA?";
+                btn.innerText = "Xóa";
+                    btn.style.background = "#d4af37";
+                } else if (type === 'add') {
+                sub.innerText = "THÊM MỚI";
+                title.innerText = "XÁC NHẬN THÊM DỮ LIỆU?";
+                btn.innerText = "Thêm Mới";
+                    btn.style.background = "#d4af37"; // Màu xanh lá
+            } else if (type === 'edit') {
+                sub.innerText = "CẬP NHẬT";
+                title.innerText = "LƯU THAY ĐỔI?";
+                btn.innerText = "Lưu";
+                    btn.style.background ="#d4af37"; // Màu xanh dương
+            }
+        }
+
+        // Hàm đóng modal
+        function closeModal() {
+            document.getElementById('customConfirmModal').style.display = 'none';
+            targetFormId = null;
+        }
+
+        // Hàm thực hiện gửi form khi bấm nút Đồng ý
+        function performAction() {
+            if (targetFormId) {
+                document.getElementById(targetFormId).submit();
+            }
+        }
+    </script>
     <div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 10000; max-width: 400px;"></div>
 
     <style>
@@ -1883,9 +1371,9 @@
         document.addEventListener('DOMContentLoaded', function() {
         @if (TempData["ToastMessage"] != null)
         {
-            <text>
-                    showToast('@Html.Raw(TempData["ToastMessage"])', '@TempData["ToastType"]', '@TempData["ToastTitle"]');
-            </text>
+                <text>
+                        showToast('@Html.Raw(TempData["ToastMessage"])', '@TempData["ToastType"]', '@TempData["ToastTitle"]');
+                </text>
         }
 
             // Tự động hiển thị toast khi form submit thành công
@@ -1921,5 +1409,3 @@
 @await RenderSectionAsync("Scripts", required: false)
 
 </html>
-
-
