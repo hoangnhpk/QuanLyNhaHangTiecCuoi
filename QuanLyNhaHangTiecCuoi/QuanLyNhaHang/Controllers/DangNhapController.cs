@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using QuanLyNhaHang.Models;
-using Microsoft.AspNetCore.Http;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System;
-using QuanLyNhaHang.Services;
 // --- THÊM THƯ VIỆN ĐỂ DÙNG COOKIE AUTH ---
 using System.Security.Claims;
+using System.Security.Policy;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using QuanLyNhaHang.Models;
+using QuanLyNhaHang.Services;
 namespace QuanLyNhaHang.Controllers
 {
     public class DangNhapController : Controller
@@ -65,6 +66,7 @@ namespace QuanLyNhaHang.Controllers
 
                 // Chuẩn hóa chuỗi vai trò để so sánh (Trim để xóa khoảng trắng thừa nếu có)
                 vaiTro = vaiTro.Trim();
+                string maKhachHangHienTai = "";
 
                 if (vaiTro == "Admin" || vaiTro == "Quản lý") // "Quản lý" có dấu
                 {
@@ -77,6 +79,7 @@ namespace QuanLyNhaHang.Controllers
                     if (khach != null)
                     {
                         tenHienThi = khach.TenKhachHang;
+                        maKhachHangHienTai = khach.MaKhachHang;
 
                         // --- BỔ SUNG: LƯU THÔNG TIN VÀO SESSION ---
                         HttpContext.Session.SetString("MaKhachHang", khach.MaKhachHang);
@@ -92,6 +95,7 @@ namespace QuanLyNhaHang.Controllers
                 {
                     new Claim(ClaimTypes.Name, tenHienThi),
                     new Claim(ClaimTypes.NameIdentifier, userId),
+                   new Claim("MaKH", maKhachHangHienTai),
                     new Claim(ClaimTypes.Role, MapRoleToCode(vaiTro)),
                     new Claim("Email", user.Email ?? "")
                 };
