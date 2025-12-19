@@ -1,0 +1,668 @@
+﻿@model QuanLyNhaHang.Models.KhachHang
+
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Lấy email và SDT từ ViewBag (Controller đã lấy từ Database)
+    var email = ViewBag.Email as string;
+    var sdt = ViewBag.Sdt as string ?? Model?.SdtKhachHang;
+    var message = ViewBag.Message as string;
+}
+
+<style>
+    /* CSS với nền tối và viền vàng */
+    .main {
+        margin-top: 50px;
+    }
+
+    body {
+        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important;
+        color: #e0e0e0;
+        min-height: 100vh;
+    }
+
+    .dark-gold-container {
+        padding: 50px 0 80px 0;
+    }
+
+    .gold-border {
+        border: 2px solid #ffd700 !important;
+        border-radius: 15px;
+        position: relative;
+    }
+
+        .gold-border:before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            border-radius: 18px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+    .dark-card {
+        background: #2a2a2a;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        border: 1px solid #444;
+        transition: all 0.3s ease;
+        color: #e0e0e0;
+        margin-top: 30px;
+    }
+
+        .dark-card:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            transform: translateY(-5px);
+        }
+
+    .gold-title {
+        color: #ffd700 !important;
+        font-weight: 700;
+        text-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+        position: relative;
+        display: inline-block;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+
+        .gold-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
+            border-radius: 2px;
+        }
+
+    .info-label {
+        color: #aaa;
+        font-weight: 500;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .info-value {
+        color: #fff;
+        font-weight: 500;
+        font-size: 1.1rem;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 15px 20px;
+        border-radius: 10px;
+        border-left: 4px solid #ffd700;
+        margin-bottom: 25px;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .gold-btn {
+        background: linear-gradient(45deg, #ffd700, #ffed4e);
+        color: #000 !important;
+        border: none;
+        padding: 14px 35px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+        .gold-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(45deg, #ffed4e, #ffd700);
+            color: #000 !important;
+        }
+
+    .dark-btn {
+        background: linear-gradient(45deg, #444, #666);
+        color: #fff !important;
+        border: 1px solid #666;
+        padding: 14px 35px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+        .dark-btn:hover {
+            background: linear-gradient(45deg, #555, #777);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: #fff !important;
+        }
+
+    .avatar-section {
+        background: linear-gradient(135deg, #2a2a2a, #444);
+        padding: 40px 20px;
+        border-radius: 15px;
+        border: 2px solid #ffd700;
+        text-align: center;
+        height: 100%;
+    }
+
+    .avatar-icon {
+        font-size: 5rem;
+        color: #ffd700;
+        margin-bottom: 20px;
+        text-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+    }
+
+    .welcome-text {
+        font-size: 1.2rem;
+        color: #ccc;
+        font-style: italic;
+    }
+
+    .status-badge {
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .status-active {
+        background: linear-gradient(45deg, #27ae60, #2ecc71);
+        color: white;
+        box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+    }
+
+    .status-inactive {
+        background: linear-gradient(45deg, #c0392b, #e74c3c);
+        color: white;
+        box-shadow: 0 3px 10px rgba(192, 57, 43, 0.3);
+    }
+
+    .text-muted {
+        color: #888 !important;
+    }
+
+    .divider {
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #ffd700, transparent);
+        margin: 30px 0;
+    }
+
+    .icon-gold {
+        color: #ffd700;
+        margin-right: 10px;
+    }
+
+    /* Modal dark theme */
+    .modal-dark .modal-content {
+        background: #2a2a2a;
+        color: #e0e0e0;
+        border: 2px solid #ffd700;
+        border-radius: 15px;
+    }
+
+    .modal-dark .modal-header {
+        background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+        border-bottom: 2px solid #ffd700;
+        color: #ffd700;
+    }
+
+    .modal-dark .modal-footer {
+        border-top: 1px solid #444;
+    }
+
+    .modal-dark .form-control {
+        background: #333;
+        border: 1px solid #555;
+        color: #fff;
+    }
+
+        .modal-dark .form-control:focus {
+            background: #3a3a3a;
+            border-color: #ffd700;
+            color: #fff;
+            box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25);
+        }
+
+    .modal-dark .form-select {
+        background: #333;
+        border: 1px solid #555;
+        color: #fff;
+    }
+
+    .modal-dark .alert-warning {
+        background: rgba(255, 215, 0, 0.1);
+        border: 1px solid #ffd700;
+        color: #ffd700;
+    }
+
+    .spacer {
+        margin-top: 50px;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .dark-gold-container {
+            padding: 30px 0 60px 0;
+        }
+
+        .gold-btn, .dark-btn {
+            padding: 12px 20px;
+            font-size: 0.9rem;
+        }
+
+        .info-value {
+            padding: 12px 15px;
+            font-size: 1rem;
+        }
+    }
+
+    .action-buttons-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .button-row {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .button-row-center {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+    .full-width-btn {
+        width: 100%;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="dark-gold-container">
+    <div class="container">
+        <div class="text-center mb-5 pt-4">
+            <h1 class="display-4 mb-3 gold-title">
+                <i class="fas fa-user-circle icon-gold"></i>THÔNG TIN CÁ NHÂN
+            </h1>
+            <p class="text-muted fs-5">Quản lý và cập nhật thông tin cá nhân của bạn</p>
+
+            @if (!string.IsNullOrEmpty(message))
+            {
+                <div class="alert alert-success alert-dismissible fade show col-md-6 mx-auto" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> @message
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="dark-card gold-border p-0 mb-5">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <div class="avatar-section h-100">
+                                <i class="fas fa-user-circle avatar-icon"></i>
+                                <h4 class="text-white mb-3">@Model.TenKhachHang</h4>
+                                <p class="welcome-text">Chào mừng trở lại!</p>
+                                <div class="mt-4">
+                                    @if (Model.TrangThaiKhachHang == "Hoạt động")
+                                    {
+                                        <span class="status-badge status-active">
+                                            <i class="fas fa-check-circle me-1"></i> @Model.TrangThaiKhachHang
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-inactive">
+                                            <i class="fas fa-exclamation-circle me-1"></i> @Model.TrangThaiKhachHang
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="p-4 p-md-5">
+                                <h4 class="gold-title mb-4" style="font-size: 1.8rem;">TỔNG QUAN TÀI KHOẢN</h4>
+
+                                <div class="row">
+                                    <div class="col-md-12 mb-4">
+                                        <span class="info-label">MÃ KHÁCH HÀNG</span>
+                                        <div class="info-value d-flex align-items-center">
+                                            <i class="fas fa-id-card icon-gold"></i>
+                                            @Model.MaKhachHang
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <span class="info-label">GHI CHÚ</span>
+                                        <div class="info-value">
+                                            <i class="fas fa-sticky-note icon-gold"></i>
+                                            @(string.IsNullOrEmpty(Model.GhiChu) ? "Không có ghi chú" : Model.GhiChu)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dark-card gold-border p-4 p-md-5 mb-5">
+                    <h4 class="gold-title mb-5" style="font-size: 1.8rem;">CHI TIẾT THÔNG TIN</h4>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <span class="info-label">HỌ VÀ TÊN</span>
+                                <div class="info-value d-flex align-items-center">
+                                    <i class="fas fa-signature icon-gold"></i>
+                                    @Model.TenKhachHang
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <span class="info-label">CCCD/CMND</span>
+                                <div class="info-value d-flex align-items-center">
+                                    <i class="fas fa-address-card icon-gold"></i>
+                                    @Model.CccdKhachHang
+                                    <small class="text-muted ms-3">
+                                        <i class="fas fa-lock"></i> (Không thể thay đổi)
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <span class="info-label">SỐ ĐIỆN THOẠI</span>
+                                <div class="info-value d-flex align-items-center">
+                                    <i class="fas fa-phone-alt icon-gold"></i>
+                                    <span id="currentSdt">@sdt</span>
+                                    <small class="text-muted ms-3">
+                                        <i class="fas fa-lock"></i> (Không thể thay đổi)
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <span class="info-label">EMAIL</span>
+                                <div class="info-value d-flex align-items-center">
+                                    <i class="fas fa-envelope icon-gold"></i>
+                                    <span id="currentEmail">@(email ?? "Chưa có email")</span>
+                                    <small class="text-muted ms-3">
+                                        <i class="fas fa-lock"></i> (Không thể thay đổi)
+                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <span class="info-label">ĐỊA CHỈ</span>
+                                <div class="info-value d-flex align-items-center">
+                                    <i class="fas fa-map-marker-alt icon-gold"></i>
+                                    @(string.IsNullOrEmpty(Model.DiaChiKhachHang) ? "Chưa cập nhật" : Model.DiaChiKhachHang)
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <span class="info-label">NGÀY THAM GIA</span>
+                                <div class="info-value d-flex align-items-center">
+                                    <i class="fas fa-calendar-alt icon-gold"></i>
+                                    @DateTime.Now.ToString("dd/MM/yyyy")
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="dark-card gold-border p-4 p-md-5">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <button type="button" class="btn gold-btn w-100 py-3" onclick="loadEditForm()">
+                                <i class="fas fa-edit me-2"></i> CHỈNH SỬA THÔNG TIN
+                            </button>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <a href="@Url.Action("Index", "Home")" class="btn dark-btn w-100 py-3">
+                                <i class="fas fa-home me-2"></i> VỀ TRANG CHỦ
+                            </a>
+                        </div>
+                        <div class="button-row-center">
+                            <div class="col-md-8">
+                                <a asp-controller="LichSuDatTiec" asp-action="Index"
+                                   class="btn dark-btn full-width-btn py-3"
+                                   style="border: 2px solid #ffd700;">
+                                    <i class="fas fa-history me-2"></i> LỊCH SỬ ĐẶT TIỆC
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade modal-dark" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content gold-border">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">
+                    <i class="fas fa-user-edit me-2"></i>CHỈNH SỬA THÔNG TIN CÁ NHÂN
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="editForm" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body" id="editFormBody">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-warning" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3">Đang tải thông tin...</p>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function loadEditForm() {
+            // Hiển thị modal
+            var modal = new bootstrap.Modal(document.getElementById('editModal'));
+            modal.show();
+
+            // Load form bằng AJAX
+            $.ajax({
+                url: '@Url.Action("GetEditModel", "TTCaNhan")',
+                type: 'GET',
+                data: { id: '@Model.MaKhachHang' },
+                success: function(response) {
+                    if (response.success) {
+                        var data = response.data;
+                        var formHtml = `
+                            <input type="hidden" name="MaKhachHang" value="${data.maKhachHang}" />
+
+                            <div class="alert alert-warning mb-4">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>Thông tin cố định:</strong> CCCD/CMND, Số điện thoại và Email không thể thay đổi.
+                                <br>CCCD hiện tại: <strong>${data.cccdKhachHang || 'Chưa có'}</strong>
+                                <br>SDT hiện tại: <strong>${data.sdtKhachHang || 'Chưa có'}</strong>
+                                <br>Email hiện tại: <strong>${data.email || 'Chưa có email'}</strong>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Họ và tên *</label>
+                                    <input type="text" name="TenKhachHang" class="form-control"
+                                               value="${data.tenKhachHang || ''}" required />
+                                    <div class="invalid-feedback">Vui lòng nhập tên khách hàng.</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">CCCD/CMND</label>
+                                    <input type="text" class="form-control bg-dark text-white"
+                                               value="${data.cccdKhachHang || ''}" readonly
+                                               style="cursor: not-allowed; opacity: 0.7;" />
+                                    <small class="text-muted">(Không thể thay đổi)</small>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Số điện thoại</label>
+                                    <input type="text" class="form-control bg-dark text-white"
+                                               value="${data.sdtKhachHang || ''}" readonly
+                                               style="cursor: not-allowed; opacity: 0.7;" />
+                                    <small class="text-muted">(Không thể thay đổi)</small>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <input type="text" class="form-control bg-dark text-white"
+                                               value="${data.email || 'Chưa có email'}" readonly
+                                               style="cursor: not-allowed; opacity: 0.7;" />
+                                    <small class="text-muted">(Không thể thay đổi)</small>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Địa chỉ</label>
+                                <textarea name="DiaChiKhachHang" class="form-control" rows="3">${data.diaChiKhachHang || ''}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Ghi chú</label>
+                                <textarea name="GhiChu" class="form-control" rows="4">${data.ghiChu || ''}</textarea>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn dark-btn" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-2"></i> HỦY
+                                </button>
+                                <button type="submit" class="btn gold-btn">
+                                    <i class="fas fa-save me-2"></i> LƯU THAY ĐỔI
+                                </button>
+                            </div>
+                        `;
+
+                        $('#editFormBody').html(formHtml);
+                        $('#editForm').attr('action', '@Url.Action("Edit", "TTCaNhan")');
+                    } else {
+                        $('#editFormBody').html(`
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle me-2"></i> ${response.message}
+                            </div>
+                        `);
+                    }
+                },
+                error: function() {
+                    $('#editFormBody').html(`
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i> Lỗi kết nối máy chủ.
+                        </div>
+                    `);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            // Xử lý submit form bằng AJAX
+            $(document).on('submit', '#editForm', function(e) {
+                e.preventDefault();
+
+                var form = $(this);
+                var url = form.attr('action');
+                var formData = form.serialize();
+
+                // Hiển thị loading
+                var submitBtn = $('#editForm button[type="submit"]');
+                submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i> ĐANG LƯU...');
+                submitBtn.prop('disabled', true);
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            // Hiển thị thông báo thành công
+                            $('#editFormBody').prepend(`
+                                <div class="alert alert-success alert-dismissible fade show">
+                                    <i class="fas fa-check-circle me-2"></i>${response.message}
+                                </div>
+                            `);
+
+                            // Cập nhật thông tin hiển thị (Nếu có thay đổi)
+                            // Hiện tại chỉ có Tên, Địa chỉ, Ghi chú được sửa.
+                            // Để cập nhật các trường không sửa (SDT, Email, CCCD), cần reload trang
+
+                            // Đóng modal sau 1.5 giây và reload trang
+                            setTimeout(function() {
+                                $('#editModal').modal('hide');
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            $('#editFormBody').prepend(`
+                                <div class="alert alert-danger alert-dismissible fade show">
+                                    <i class="fas fa-exclamation-circle me-2"></i>${response.message}
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                                </div>
+                            `);
+                            submitBtn.html('<i class="fas fa-save me-2"></i> LƯU THAY ĐỔI');
+                            submitBtn.prop('disabled', false);
+                        }
+                    },
+                    error: function() {
+                        $('#editFormBody').prepend(`
+                            <div class="alert alert-danger alert-dismissible fade show">
+                                <i class="fas fa-exclamation-circle me-2"></i> Có lỗi kết nối máy chủ.
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                            </div>
+                        `);
+                        submitBtn.html('<i class="fas fa-save me-2"></i> LƯU THAY ĐỔI');
+                        submitBtn.prop('disabled', false);
+                    }
+                });
+            });
+
+            // Reset form khi modal đóng
+            $('#editModal').on('hidden.bs.modal', function () {
+                $('#editFormBody').html(`
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-warning" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3">Đang tải thông tin...</p>
+                    </div>
+                `);
+            });
+        });
+    </script>
+}

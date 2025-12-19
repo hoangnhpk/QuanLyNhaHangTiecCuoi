@@ -1,0 +1,64 @@
+﻿@model IEnumerable<QuanLyNhaHang.Models.DatTiec>
+
+@if (Model != null && Model.Any())
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            <td><strong>#@item.MaDatTiec</strong></td>
+            <td>
+                @if (item.KhachHang != null)
+                {
+                    <div>@item.KhachHang.TenKhachHang</div>
+                    <small style="color: #888;">@item.KhachHang.SdtKhachHang</small>
+                }
+                else
+                {
+                    <span>Vãng lai</span>
+                }
+            </td>
+            <td>
+                <div>@item.TenCoDau & @item.TenChuRe</div>
+            </td>
+            <td>
+                @(item.NgayToChuc.HasValue ? item.NgayToChuc.Value.ToString("dd/MM/yyyy") : "Chưa chốt")
+                <br />
+                <small style="color: #888;">@item.GioToChuc</small>
+            </td>
+            <td style="text-align: center;">@item.SoBanDat</td>
+            <td>
+                @if (item.TrangThai == "Mới đặt" || item.TrangThai == "Chờ duyệt")
+                {
+                    <span class="badge badge-warning">@item.TrangThai</span>
+                }
+                else if (item.TrangThai == "Đã duyệt" || item.TrangThai == "Đã cọc")
+                {
+                    <span class="badge badge-success">@item.TrangThai</span>
+                }
+                else if (item.TrangThai == "Hủy")
+                {
+                    <span class="badge" style="background: #444; color: #ccc;">@item.TrangThai</span>
+                }
+                else
+                {
+                    <span class="badge badge-info">@item.TrangThai</span>
+                }
+            </td>
+            <td>
+                <div class="table-actions">
+                    <button class="btn-icon" title="Xem chi tiết" onclick="loadDetails('@item.MaDatTiec')">👁</button>
+                    <button class="btn-icon" title="Duyệt đơn này" style="color: #4caf50;" onclick="updateStatus('@item.MaDatTiec', 'Đã duyệt')">✓</button>
+                    <button class="btn-icon" title="Hủy đơn" style="color: #ff5c5c;" onclick="updateStatus('@item.MaDatTiec', 'Hủy')">✕</button>
+                </div>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td colspan="7" class="empty-state" style="text-align: center; padding: 20px; color: #888;">
+            Không tìm thấy kết quả nào.
+        </td>
+    </tr>
+}

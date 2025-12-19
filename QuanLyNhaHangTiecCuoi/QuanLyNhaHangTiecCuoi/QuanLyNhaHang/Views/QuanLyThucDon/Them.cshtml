@@ -1,0 +1,107 @@
+﻿@model QuanLyNhaHang.Models.MonAn
+
+@{
+    ViewData["Title"] = "Thêm Món Ăn Mới";
+    Layout = "_LayoutAdmin";
+}
+
+<link href="~/css/QuanTri.css" rel="stylesheet">
+
+<div class="module-view active">
+    <div class="module-header">
+        <div class="module-title">THÊM MÓN ĂN MỚI</div>
+    </div>
+
+    <div class="card" style="max-width: 95%; margin: 20px auto;">
+
+        <form id="formThemMon" method="post" asp-action="Them" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <div class="card-title">Thông tin cơ bản</div>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div style="background: #450a0a; color: #fca5a5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ef4444; font-weight: 500;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span>⚠️</span> <strong>Vui lòng kiểm tra lại:</strong>
+                    </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger" style="margin-top: 5px; margin-left: 20px; color: #fca5a5;"></div>
+                </div>
+            }
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Mã món ăn (*)</label>
+                    <input asp-for="MaMonAn" class="input" placeholder="VD: MA001" maxlength="20" style="text-transform: uppercase;" />
+                    <span asp-validation-for="MaMonAn" class="text-danger"></span>
+                    <small style="color: #9ca3af;">Chỉ chữ IN HOA và số</small>
+                </div>
+                <div class="form-group">
+                    <label>Tên món ăn (*)</label>
+                    <input asp-for="TenMonAn" class="input" placeholder="VD: Gà bó xôi" />
+                    <span asp-validation-for="TenMonAn" class="text-danger"></span>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Hình ảnh món ăn (*)</label>
+                    <input type="file" name="imageFile" class="input" accept="image/*" />
+                    @Html.ValidationMessage("imageFile", new { @class = "text-danger", @style = "color: #ff6b6b; font-size: 12px;" })
+                </div>
+                <div class="form-group">
+                    <label>Đơn vị tính</label>
+                    <select asp-for="DonViTinh" class="select">
+                        <option value="">-- Chọn đơn vị --</option>
+                        <option value="Dĩa">Dĩa</option>
+                        <option value="Phần">Phần</option>
+                        <option value="Chén">Chén</option>
+                    </select>
+                    <span asp-validation-for="DonViTinh" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Đơn giá (VNĐ) (*)</label>
+                    <input asp-for="DonGia" class="input" placeholder="0" />
+                    <span asp-validation-for="DonGia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Danh mục món (*)</label>
+                    <select asp-for="LoaiMonAn" class="select">
+                        <option value="">-- Chọn danh mục --</option>
+                        <option value="Hải sản">Hải sản</option>
+                        <option value="Khai vị">Khai vị</option>
+                        <option value="Món chính">Món chính</option>
+                        <option value="Tráng miệng">Tráng miệng</option>
+                        <option value="Đồ uống">Đồ uống</option>
+                        <option value="Lẩu">Lẩu</option>
+                    </select>
+                    <span asp-validation-for="LoaiMonAn" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái (*)</label>
+                    <select asp-for="TrangThaiMonAn" class="select">
+                        <option value="Đang bán" selected>Đang bán</option>
+                        <option value="Hết món">Hết món</option>
+                        <option value="Ngừng bán">Ngừng bán</option>
+                    </select>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Mô tả chi tiết</label>
+                    <textarea asp-for="MoTaMonAn" class="input" rows="4"></textarea>
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Ghi chú</label>
+                    <textarea asp-for="GhiChu" class="input" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <a href="@Url.Action("Index")" class="btn">Hủy bỏ</a>
+                <button type="button" class="btn" onclick="showModal('formThemMon', 'add')">Lưu Món Ăn</button>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

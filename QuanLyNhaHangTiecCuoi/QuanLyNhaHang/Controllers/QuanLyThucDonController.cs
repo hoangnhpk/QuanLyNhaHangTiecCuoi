@@ -17,14 +17,26 @@ namespace QuanLyNhaHang.Controllers
 
         public async Task<IActionResult> Index(string searchString, string category)
         {
+            // 1. Lấy danh sách Combo và nạp kèm các món ăn thành phần
             var listCombo = await _context.ComboMons
                                           .Include(c => c.ChiTietCombos)
                                           .ThenInclude(ct => ct.MonAn)
                                           .OrderByDescending(c => c.NgayTaoCombo)
                                           .ToListAsync();
+
+            // 2. LỌC DỮ LIỆU: Chỉ giữ lại các chi tiết của món ăn ĐANG BÁN
+            // Nếu món ăn đã bị xóa/ẩn (Ngừng bán), nó sẽ không hiện trong danh sách món của Combo nữa
+            foreach (var cb in listCombo)
+            {
+                cb.ChiTietCombos = cb.ChiTietCombos
+                                     .Where(ct => ct.MonAn != null && ct.MonAn.TrangThaiMonAn != "Ngừng bán")
+                                     .ToList();
+            }
             ViewBag.ListCombo = listCombo;
 
+            // 3. Lấy danh sách món lẻ bên phải (chỉ lấy món chưa bị ẩn)
             var query = _context.MonAns.AsQueryable();
+            query = query.Where(m => m.TrangThaiMonAn != "Ngừng bán");
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -36,16 +48,7 @@ namespace QuanLyNhaHang.Controllers
                 query = query.Where(m => m.LoaiMonAn == category);
             }
 
-            // Lấy dữ liệu cuối cùng
             var listMonAn = await query.OrderBy(m => m.MaMonAn).ToListAsync();
-
-            // Lưu lại giá trị search/category để hiển thị lại trên View (giữ trạng thái)
-            ViewBag.SearchString = searchString;
-            ViewBag.CurrentCategory = category;
-
-            // Lấy danh sách các danh mục có sẵn để đổ vào dropdown
-            ViewBag.Categories = await _context.MonAns.Select(m => m.LoaiMonAn).Distinct().ToListAsync();
-
             return View(listMonAn);
         }
         public async Task<IActionResult> ThemCombo()
@@ -382,12 +385,33 @@ namespace QuanLyNhaHang.Controllers
         public async Task<IActionResult> Xoa(string id)
         {
             var item = await _context.MonAns.FindAsync(id);
-            if (item != null)
+            if (item == null) return NotFound();
+
+            try
             {
+                // Bước 1: Tìm và xóa sạch mọi liên kết của món này trong tất cả các Combo
+                var relatedDetails = _context.ChiTietCombos.Where(ct => ct.MaMonAn == id);
+                _context.ChiTietCombos.RemoveRange(relatedDetails);
+                await _context.SaveChangesAsync();
+
+                // Bước 2: Thử xóa món ăn khỏi database
                 _context.MonAns.Remove(item);
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Xóa thành công!";
+                TempData["SuccessMessage"] = "Đã xóa món ăn và gỡ khỏi mọi combo thành công!";
             }
+            catch (Exception)
+            {
+                // Bước 3: Nếu món đã nằm trong Hóa đơn cũ (không được xóa vật lý), hãy ẩn nó đi
+                var itemToHide = await _context.MonAns.FindAsync(id);
+                if (itemToHide != null)
+                {
+                    itemToHide.TrangThaiMonAn = "Ngừng bán";
+                    _context.Update(itemToHide);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Món ăn đã được ẩn khỏi danh sách và các combo liên quan!";
+                }
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }

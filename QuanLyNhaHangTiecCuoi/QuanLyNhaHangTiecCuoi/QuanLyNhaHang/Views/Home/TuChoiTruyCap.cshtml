@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Không có quyền truy cập";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section id="access-denied" class="d-flex align-items-center" style="min-height: 100vh; background-color: #0c0b09; padding-top: 100px;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+
+                <div class="error-content" style="background: #1a1814; padding: 40px; border-radius: 15px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+
+                    <img src="https://cdn.dribbble.com/userupload/42147088/file/original-33ab8b67969aa2604c025778b505b102.jpg?format=webp&resize=400x300&vertical=center"
+                         alt="403 Forbidden"
+                         class="img-fluid mb-4"
+                         style="border-radius: 10px; max-height: 250px; object-fit: cover;" />
+
+                    <h1 style="font-family: 'Playfair Display', serif; color: #cda45e; font-size: 2.5rem; font-weight: 700; text-transform: uppercase;">
+                        Truy cập bị từ chối
+                    </h1>
+
+                    <p style="color: #aaaaaa; font-size: 1.1rem; margin: 20px 0;">
+                        Xin lỗi, tài khoản <strong>@User.Identity.Name</strong> không có quyền truy cập vào khu vực quản trị này.<br>
+                        Vui lòng liên hệ Admin nếu bạn cho rằng đây là sự nhầm lẫn.
+                    </p>
+
+                    <div class="mt-4 d-flex justify-content-center gap-3">
+                        <a href="/" class="btn-custom btn-gold">
+                            <i class="bi bi-house-door"></i> Về Trang Chủ
+                        </a>
+
+                        <a href="/DangNhap/DangXuat" class="btn-custom btn-outline">
+                            <i class="bi bi-box-arrow-right"></i> Đăng nhập tài khoản khác
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* CSS Riêng cho trang này */
+    .btn-custom {
+        padding: 10px 25px;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Nút màu vàng */
+    .btn-gold {
+        background-color: #cda45e;
+        color: #000;
+        border: 2px solid #cda45e;
+    }
+
+        .btn-gold:hover {
+            background-color: transparent;
+            color: #cda45e;
+        }
+
+    /* Nút viền */
+    .btn-outline {
+        background-color: transparent;
+        color: #fff;
+        border: 2px solid rgba(255,255,255,0.3);
+    }
+
+        .btn-outline:hover {
+            border-color: #cda45e;
+            color: #cda45e;
+        }
+</style>

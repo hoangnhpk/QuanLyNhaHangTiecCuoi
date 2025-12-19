@@ -1,0 +1,104 @@
+﻿@model QuanLyNhaHang.Models.NhanVienPartTime
+
+@{
+    ViewData["Title"] = "Cập nhật NV Part-time";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<link href="~/css/QuanTri.css" rel="stylesheet">
+
+<div class="module-view active" style="display:block;">
+    <div class="module-header">
+        <div class="module-title">Sửa: @Model.TenNhanVienPT</div>
+        <a asp-action="Index" class="btn">Quay lại</a>
+    </div>
+
+    <div class="card">
+        <form asp-action="Sua" asp-route-id="@Model.MaNhanVienPT" method="post" id="form-edit">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="All" style="color:#dc3545; background:#ffe6e6; padding:10px; margin-bottom:20px; border-radius:5px;"></div>
+
+            <div class="form-grid" style="gap: 30px;">
+                <div class="form-group">
+                    <label asp-for="MaNhanVienPT">Mã NV PT</label>
+                    <input asp-for="MaNhanVienPT" class="input" readonly style="background:#333; color:#ccc; cursor:not-allowed;" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TenNhanVienPT">Họ và Tên <span style="color:red">*</span></label>
+                    <input asp-for="TenNhanVienPT" class="input" />
+                    <span asp-validation-for="TenNhanVienPT" style="color:red; font-size:0.9em"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CccdNVPT"></label>
+                    <input asp-for="CccdNVPT" class="input" />
+                    <span asp-validation-for="CccdNVPT" style="color:red; font-size:0.9em"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SdtNVPT">SĐT <span style="color:red">*</span></label>
+                    <input asp-for="SdtNVPT" class="input" />
+                    <span asp-validation-for="SdtNVPT" style="color:red; font-size:0.9em"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="EmailNVPT"></label>
+                    <input asp-for="EmailNVPT" class="input" />
+                    <span asp-validation-for="EmailNVPT" style="color:red; font-size:0.9em"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DiaChiNVPT">Địa Chỉ <span style="color:red">*</span></label>
+                    <input asp-for="DiaChiNVPT" class="input" required />
+                    <span asp-validation-for="DiaChiNVPT" style="color:red; font-size:0.9em"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TrangThaiNV"></label>
+                    <select asp-for="TrangThaiNV" class="select">
+                        <option value="Đang làm">Đang làm</option>
+                        <option value="Nghỉ làm">Nghỉ làm</option>
+                        <option value="Tạm nghỉ">Tạm nghỉ</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label asp-for="GhiChu"></label>
+                    <input asp-for="GhiChu" class="input" />
+                </div>
+            </div>
+
+            <div class="form-footer" style="margin-top:30px; display:flex; justify-content:flex-end;">
+                <button type="button" class="btn" onclick="openConfirmModal()">Cập nhật</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="confirmModal" class="custom-modal-overlay" style="display: none;">
+    <div class="custom-modal-box">
+        <span class="close-icon" onclick="closeConfirmModal()">×</span>
+
+        <div class="modal-tag">CẬP NHẬT</div>
+
+        <h3 class="modal-title">XÁC NHẬN SỬA?</h3>
+
+        <p class="modal-desc">
+            Cập nhật thông tin nhân viên Part-time: <b style="color:#fff;">@Model.TenNhanVienPT</b>?<br />
+            Vui lòng kiểm tra kỹ thông tin trước khi lưu.
+        </p>
+
+        <div class="modal-actions">
+            <button type="button" class="btn-cancel" onclick="closeConfirmModal()">Hủy bỏ</button>
+            <button type="button" class="btn-confirm" onclick="submitRealForm()">Cập Nhật</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openConfirmModal() { document.getElementById('confirmModal').style.display = 'flex'; }
+    function closeConfirmModal() { document.getElementById('confirmModal').style.display = 'none'; }
+    function submitRealForm() { document.getElementById('form-edit').submit(); }
+</script>
+

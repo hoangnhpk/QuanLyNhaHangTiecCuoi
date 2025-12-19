@@ -75,10 +75,19 @@
 
                                     <td style="color:#f3e5c8; font-weight:500;">
                                         @item.TenCombo
-                                        <div style="font-size: 11px; color: #9ca3af; margin-top: 2px;">
+                                        <div style="font-size: 11px; color: #9ca3af; margin-top: 4px; line-height: 1.4;">
                                             @if (item.ChiTietCombos != null && item.ChiTietCombos.Any())
                                             {
-                                                <span>(@item.ChiTietCombos.Count món)</span>
+                                                @foreach (var ct in item.ChiTietCombos)
+                                                {
+                                                    <div style="display: flex; justify-content: space-between; gap: 10px;">
+                                                        <span>• @(ct.MonAn?.TenMonAn ?? "Món không xác định")</span>
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span style="color: #6b7280; font-style: italic;">(Chưa có món thành phần)</span>
                                             }
                                         </div>
                                     </td>
@@ -181,6 +190,10 @@
                                         @if (!string.IsNullOrEmpty(item.HinhAnhMonAn))
                                         {
                                             <img src="@item.HinhAnhMonAn" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" />
+                                        }
+                                        else
+                                        {
+                                            <span style="font-size: 10px; color: #666;">No img</span>
                                         }
                                     </td>
                                     <td style="color:#f3e5c8; font-weight:500;">@item.TenMonAn</td>

@@ -1,0 +1,210 @@
+﻿@model IEnumerable<QuanLyNhaHang.Models.MonAn>
+
+@{
+    ViewData["Title"] = "Quản Lý Thực Đơn";
+    Layout = "_LayoutAdmin";
+    var listCombo = ViewBag.ListCombo as IEnumerable<QuanLyNhaHang.Models.ComboMon>;
+}
+
+<link href="~/css/QuanTri.css" rel="stylesheet">
+
+<div class="module-view active" style="display:block;">
+    <div class="module-header">
+        <div>
+            <div class="module-title">QUẢN LÝ THỰC ĐƠN</div>
+            <div class="module-desc">Quản lý danh sách món ăn và combo.</div>
+        </div>
+        <div class="toolbar">
+            <a href="@Url.Action("ThemCombo", "QuanLyThucDon")" class="btn" style="border-radius: 999px; padding: 10px 20px;">
+                Thêm combo
+            </a>
+            <a href="@Url.Action("Them", "QuanLyThucDon")" class="btn" style="border-radius: 999px; padding: 10px 20px;">
+                Thêm món lẻ
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div style="background: #1a4d2e; color: #4ade80; padding: 12px 20px; margin: 20px; border-radius: 8px; border: 1px solid #4ade80;">
+            ✓ @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div style="background: #4d1a1a; color: #f87171; padding: 12px 20px; margin: 20px; border-radius: 8px; border: 1px solid #f87171;">
+            ✕ @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="split-columns">
+        @* --- CỘT TRÁI: DANH SÁCH COMBO --- *@
+        <div class="card">
+            <div class="card-title">DANH SÁCH COMBO MÓN ĂN</div>
+            <div class="data-card" style="margin-top:6px; max-height: 600px; overflow:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Hình</th>
+                            <th>Tên Combo</th>
+                            <th>Giá bán</th>
+                            <th>Trạng thái</th>
+                            <th style="width: 90px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (listCombo != null && listCombo.Any())
+                        {
+                            foreach (var item in listCombo)
+                            {
+                                <tr>
+                                    <td><span class="badge badge-neutral">@item.MaComboMon</span></td>
+
+                                    @* Hiển thị ảnh *@
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.HinhAnhCombo))
+                                        {
+                                            <img src="@item.HinhAnhCombo" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #374151;" />
+                                        }
+                                        else
+                                        {
+                                            <span style="font-size: 10px; color: #666;">No img</span>
+                                        }
+                                    </td>
+
+                                    <td style="color:#f3e5c8; font-weight:500;">
+                                        @item.TenCombo
+                                        <div style="font-size: 11px; color: #9ca3af; margin-top: 2px;">
+                                            @if (item.ChiTietCombos != null && item.ChiTietCombos.Any())
+                                            {
+                                                <span>(@item.ChiTietCombos.Count món)</span>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td>@(item.GiaCombo?.ToString("#,##0"))</td>
+                                    <td>@item.TrangThai</td>
+                                    <td>
+                                        <div class="table-actions" style="justify-content: flex-end; gap: 8px;">
+                                            <a href="@Url.Action("SuaCombo", "QuanLyThucDon", new { id = item.MaComboMon })" class="btn-icon" title="Sửa" style="text-decoration: none;">✎</a>
+
+                                            <form id="form-delete-combo-@item.MaComboMon" method="post" asp-action="XoaCombo" asp-route-id="@item.MaComboMon" style="display:inline; margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <button type="button" class="btn-icon" title="Xóa"
+                                                        onclick="showModal('form-delete-combo-@item.MaComboMon', 'delete')">
+                                                    🗑
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6" class="empty-state">Chưa có combo nào.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @* --- CỘT PHẢI: MÓN LẺ --- *@
+        <div class="card">
+            <div class="card-title">MÓN LẺ CHO KHÁCH TỰ MIX</div>
+            <div class="filter-bar" style="margin: 15px 0; display: flex; gap: 10px;">
+                <form method="get" action="@Url.Action("Index")" style="display: flex; gap: 10px; width: 100%; align-items: center;">
+
+                    <div style="position: relative; flex: 1;">
+                        <input type="text" name="searchString" value="@ViewBag.SearchString" placeholder="Tìm tên món..."
+                               class="input" style="padding-left: 35px; height: 38px; font-size: 13px; background: #1f2937; border: 1px solid #374151;" />
+                        <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #9ca3af;">🔍</span>
+                    </div>
+
+                    <select name="category" class="select" onchange="this.form.submit()"
+                            style="width: 150px; height: 38px; font-size: 13px; background: #1f2937; border: 1px solid #374151; padding: 0 10px;">
+                        <option value="">-- Tất cả --</option>
+                        @if (ViewBag.Categories != null)
+                        {
+                            foreach (var cat in ViewBag.Categories)
+                            {
+                                // Kiểm tra để giữ trạng thái đã chọn
+                                if (!string.IsNullOrEmpty(cat))
+                                {
+                                    if (ViewBag.CurrentCategory == cat)
+                                    {
+                                        <option value="@cat" selected>@cat</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@cat">@cat</option>
+                                    }
+                                }
+                            }
+                        }
+                    </select>
+
+                    @if (!string.IsNullOrEmpty(ViewBag.SearchString) || !string.IsNullOrEmpty(ViewBag.CurrentCategory))
+                    {
+                        <a href="@Url.Action("Index")" class="btn" style="background: #4b5563; padding: 0 15px; height: 38px; line-height: 38px; font-size: 13px;">
+                            ✕ Bỏ lọc
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn" style="padding: 0 15px; height: 38px; font-size: 13px;">Tìm</button>
+                    }
+                </form>
+            </div>
+            <div class="data-card" style="margin-top:6px; max-height: 600px; overflow:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+
+							<th>Hình ảnh</th> @* Cột ảnh mới *@
+                            <th>Tên món</th>
+
+                            <th>ĐVT</th>
+                            <th>Giá</th>
+                            <th style="width: 100px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td><span class="badge badge-neutral">@item.MaMonAn</span></td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.HinhAnhMonAn))
+                                        {
+                                            <img src="@item.HinhAnhMonAn" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" />
+                                        }
+                                    </td>
+                                    <td style="color:#f3e5c8; font-weight:500;">@item.TenMonAn</td>
+                                    <td>@item.DonViTinh</td>
+                                    <td>@(item.DonGia?.ToString("#,##0"))</td>
+                                    
+                                    <td>
+                                        <div class="table-actions" style="justify-content: flex-end; gap: 8px;">
+                                            <a href="@Url.Action("Sua", "QuanLyThucDon", new { id = item.MaMonAn })" class="btn-icon" title="Sửa" style="text-decoration: none;">✎</a>
+                                            <form id="form-delete-mon-@item.MaMonAn" method="post" asp-action="Xoa" asp-route-id="@item.MaMonAn" style="display:inline; margin:0;">
+                                                @Html.AntiForgeryToken()
+                                                <button type="button" class="btn-icon" title="Xóa"
+                                                        onclick="showModal('form-delete-mon-@item.MaMonAn', 'delete')">
+                                                    🗑
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

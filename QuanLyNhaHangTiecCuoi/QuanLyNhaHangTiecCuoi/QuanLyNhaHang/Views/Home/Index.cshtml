@@ -1,0 +1,685 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "Trang Chủ";
+}
+
+<section id="hero" class="hero section dark-background"
+         style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://dp1.diamondplace.vn/wp-content/uploads/2022/05/LONG1770-min.jpg') center/cover;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 d-flex flex-column align-items-center align-items-lg-start">
+                <h2 data-aos="fade-up" data-aos-delay="100" style="color: #fff;">
+                    Chào mừng đến với<span style="color: #cda45e;"> Long Phụng</span>
+                </h2>
+                <p data-aos="fade-up" data-aos-delay="200" style="color: rgba(255,255,255,0.8);">
+                    Phục vụ tiệc cưới tuyệt vời hơn 18 năm kinh nghiệm!
+                </p>
+                <div class="d-flex mt-4" data-aos="fade-up" data-aos-delay="300">
+                    <a href="#menu" class="cta-btn" style="color: #fff; border: 2px solid #cda45e; padding: 10px 30px; border-radius: 50px; text-decoration: none; margin-right: 15px;">Thực Đơn</a>
+                    <a href="#book-a-table" class="cta-btn" style="color: #fff; border: 2px solid #cda45e; padding: 10px 30px; border-radius: 50px; text-decoration: none;">Đặt Tiệc</a>
+                </div>
+            </div>
+            <div class="col-lg-4 d-flex align-items-center justify-content-center mt-5 mt-lg-0">
+                <a href="https://youtu.be/NkLavXp-7JM" class="glightbox pulsating-play-btn"></a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="about section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+            <div class="col-lg-6 order-1 order-lg-2">
+                <img src="https://cdn.hoabinhevents.com/hbe/1-ban-tiec-cuoi-gia-bao-nhieu-1.jpeg"
+                     class="img-fluid about-img" alt="Về nhà hàng"
+                     style="width: 100%; border: 6px solid rgba(255,255,255,0.2);">
+            </div>
+            <div class="col-lg-6 order-2 order-lg-1 content">
+                <h3>Chất lượng đáng tin cậy</h3>
+                <p class="fst-italic">
+                    Chúng tôi cam kết mang đến bữa tiệc cưới vui vẻ, ngon miệng cùng các món ăn do các đầu bếp ưu tú thực hiện.
+                </p>
+                <ul>
+                    <li><i class="bi bi-check2-all"></i> <span>Không gian sang trọng, trang trí theo yêu cầu.</span></li>
+                    <li><i class="bi bi-check2-all"></i> <span>Đội ngũ đầu bếp giàu kinh nghiệm.</span></li>
+                    <li><i class="bi bi-check2-all"></i> <span>Âm thanh - ánh sáng hiện đại.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="menu" class="menu section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Thực Đơn</h2>
+        <p>Khám phá thực đơn hấp dẫn của chúng tôi</p>
+    </div>
+    <div class="container isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+        <div class="row" data-aos="fade-up" data-aos-delay="100">
+            <div class="col-lg-12 d-flex justify-content-center">
+                <ul class="menu-filters isotope-filters">
+                    <li data-filter="*" class="filter-active">Tất cả</li>
+                    <li data-filter=".filter-starters">Khai vị</li>
+                    <li data-filter=".filter-salads">Salad</li>
+                    <li data-filter=".filter-specialty">Đặc biệt</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row isotope-container" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-lg-6 menu-item isotope-item filter-starters">
+                <img src="https://images.unsplash.com/photo-1625944230945-1b7dd3b949ab?w=200" class="menu-img" alt="">
+                <div class="menu-content">
+                    <a href="#">Súp Tôm Hùm</a><span>145.000₫</span>
+                </div>
+                <div class="menu-ingredients">Tôm hùm, kem tươi, rượu vang.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="book-a-table" class="book-a-table section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>ĐẶT TIỆC</h2>
+        <p>Đặt tiệc ngay</p>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success text-center">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+            <div class="col-lg-6 reservation-img"
+                 style="background-image: url('https://huongpho.com.vn/wp-content/uploads/2018/05/nha-hang-tiec-cuoi-uy-tin.jpg'); min-height: 500px; background-size: cover; background-position: center;">
+            </div>
+
+            <div class="col-lg-6 reservation-form-bg">
+                <form asp-controller="DatTiec" asp-action="DatTiec" method="post" role="form" onsubmit="luuDuLieuTam()">
+                    <div class="row gy-4">
+                        <div class="col-lg-6 col-md-6">
+                            <input type="text" name="HoTen" class="form-control"
+                                   placeholder="Họ và tên người đặt" required
+                                   value="@HttpContextAccessor.HttpContext.Session.GetString("TenKhachHang")">
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <input type="text" class="form-control" name="SDT"
+                                   placeholder="Số điện thoại" required
+                                   value="@HttpContextAccessor.HttpContext.Session.GetString("SdtKhachHang")">
+                        </div>
+                        <div class="col-lg-12 col-md-12">
+                            <input type="email" class="form-control" name="Email"
+                                   placeholder="Email"
+                                   value="@HttpContextAccessor.HttpContext.Session.GetString("EmailKhachHang")">
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <input type="text" name="TenCoDau" class="form-control" placeholder="Tên cô dâu" required>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <input type="text" name="TenChuRe" class="form-control" placeholder="Tên chú rể" required>
+                        </div>
+                        <input type="hidden" name="LoaiThucDon" id="inputLoaiThucDon" />
+                        <input type="hidden" name="LoaiDichVu" id="inputLoaiDichVu" />
+                        <input type="hidden" name="ThucDonTuChonJson" id="inputThucDonTuChonJson" />
+                        <input type="hidden" name="DichVuTuChonJson" id="inputDichVuTuChonJson" />
+                        <div class="col-lg-6 col-md-6">
+                            <label>Ngày tổ chức</label>
+                            <input type="date" name="NgayToChuc" class="form-control" required onchange="tinhTongTienTam()">
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <label>Giờ bắt đầu</label>
+                            <input type="time" name="GioToChuc" class="form-control" required>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <input type="number" class="form-control" name="SoBanDat" placeholder="Số bàn muốn đặt" required>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <input type="number" class="form-control" name="SoBanDuPhong" placeholder="Số bàn dự phòng">
+                        </div>
+                        <div class="col-lg-12">
+                            <textarea class="form-control" id="txtGhiChu" placeholder="Ghi chú thêm (nếu có)" rows="3" onchange="document.getElementById('ghiChuInput').value = this.value"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <div class="row gy-4">
+                            <div class="col-lg-6 col-md-6">
+                                <button type="button" class="form-control btn-chon-modal" data-bs-toggle="modal" data-bs-target="#thucDonModal">
+                                    Chọn Thực Đơn
+                                </button>
+                            </div>
+                            <div class="col-lg-6 col-md-6">
+                                <button type="button" class="form-control btn-chon-modal" data-bs-toggle="modal" data-bs-target="#dichVuModal">
+                                    Chọn Dịch Vụ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="GhiChu" id="ghiChuInput" />
+                    <div class="alert alert-dark mt-3" style="background: #2c2a27; color: #fff; border: 1px solid #cda45e;">
+                        <div class="d-flex justify-content-between">
+                            <span>Đơn giá bàn (Menu + Dịch vụ):</span>
+                            <strong id="displayGiaBan" style="color: #cda45e;">0 VNĐ</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Tổng tiền dự kiến (<span id="txtSoBan">0</span> bàn):</span>
+                            <strong id="displayTongTien" style="color: #cda45e;">0 VNĐ</strong>
+                        </div>
+                        <hr style="border-color: #555;">
+                        <div class="d-flex justify-content-between">
+                            <span>Tiền cọc cần thanh toán (30%):</span>
+                            <strong id="displayTienCoc" style="color: #ffc107; font-size: 1.2em;">0 VNĐ</strong>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="GiaBan" id="inputGiaBan" value="0" />
+                    <input type="hidden" name="TongTien" id="inputTongTien" value="0" />
+                    <input type="hidden" name="TienCoc" id="inputTienCoc" value="0" />
+                    <div class="text-center mt-3">
+                        <button type="submit">Đặt Tiệc Ngay</button>
+                    </div>
+
+                    <div class="container">
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success text-center">
+                                @TempData["SuccessMessage"]
+                            </div>
+                        }
+
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger text-center">
+                                @TempData["ErrorMessage"]
+                            </div>
+                        }
+                    </div>
+                    <div class="container" data-aos="fade-up" data-aos-delay="100">
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="contact section">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Liên Hệ</h2>
+        <p>Liên hệ với chúng tôi</p>
+    </div>
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+            <div class="col-lg-4">
+                <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="300">
+                    <i class="bi bi-geo-alt flex-shrink-0"></i>
+                    <div>
+                        <h3>Địa chỉ</h3>
+                        <p>99 Nguyễn Văn Linh, Buôn Ma Thuột</p>
+                    </div>
+                </div>
+                <div class="info-item d-flex" data-aos="fade-up" data-aos-delay="400">
+                    <i class="bi bi-telephone flex-shrink-0"></i>
+                    <div>
+                        <h3>Điện thoại</h3>
+                        <p>+84 909 123 456</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <form action="" method="post" class="php-email-form">
+                    <div class="row gy-4">
+                        <div class="col-md-6"><input type="text" name="name" class="form-control" placeholder="Tên của bạn" required></div>
+                        <div class="col-md-6"><input type="email" class="form-control" name="email" placeholder="Email" required></div>
+                        <div class="col-md-12"><textarea class="form-control" name="message" rows="6" placeholder="Nội dung" required></textarea></div>
+                        <div class="col-md-12 text-center"><button type="submit">Gửi tin nhắn</button></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="thucDonModal" tabindex="-1" aria-labelledby="thucDonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-content" style="background-color: #29261f; color: rgba(255, 255, 255, 0.7);">
+            <div class="modal-header" style="border-bottom-color: rgba(255, 255, 255, 0.1);">
+                <h5 class="modal-title" id="thucDonModalLabel" style="color: #fff;">Chọn Thực Đơn</h5>
+                <button type="button" class="btn btn-outline-warning btn-sm ms-3" onclick="moModalTuChonMon()">
+                    <i class="bi bi-list-check"></i> Tự chọn món ăn
+                </button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="menu-item-card" id="cardVang" onclick="chonThucDon('Vàng')"
+                             style="border: 1px solid #444; padding: 15px; border-radius: 8px; cursor: pointer;">
+                            <h5 style="color: #cda45e;">Thực Đơn Vàng</h5>
+                            <p>1.000.000 VNĐ/bàn</p>
+                            <p class="text-muted" style="font-size: 12px;">(Gồm 5 món sang trọng)</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="menu-item-card" id="cardBachKim" onclick="chonThucDon('Bạch Kim')"
+                             style="border: 1px solid #444; padding: 15px; border-radius: 8px; cursor: pointer;">
+                            <h5 style="color: #cda45e;">Thực Đơn Bạch Kim</h5>
+                            <p>2.000.000 VNĐ/bàn</p>
+                            <p class="text-muted" style="font-size: 12px;">(Gồm 5 món LUXURY)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top-color: rgba(255, 255, 255, 0.1);">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="background-color: #cda45e; border: none;">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="dichVuModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background-color: #29261f; color: rgba(255, 255, 255, 0.7);">
+            <div class="modal-header" style="border-bottom-color: rgba(255, 255, 255, 0.1);">
+                <h5 class="modal-title" style="color: #fff;">Chọn Dịch Vụ</h5>
+                <button type="button" class="btn btn-outline-warning btn-sm ms-3" onclick="moModalTuChonDichVu()">
+                    <i class="bi bi-list-check"></i> Tự chọn dịch vụ
+                </button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="menu-item-card" id="cardBasic" onclick="chonDichVu('Basic')"
+                             style="border: 1px solid #444; padding: 15px; border-radius: 8px; cursor: pointer;">
+                            <h5 style="color: #cda45e;">Combo Cơ Bản</h5>
+                            <p>15.000.000 VNĐ</p>
+                            <p class="text-muted" style="font-size: 12px;">(Backdrop, bàn ghế tiêu chuẩn)</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="menu-item-card" id="cardVIP" onclick="chonDichVu('VIP')"
+                             style="border: 1px solid #444; padding: 15px; border-radius: 8px; cursor: pointer;">
+                            <h5 style="color: #cda45e;">Combo VIP</h5>
+                            <p>50.000.000 VNĐ</p>
+                            <p class="text-muted" style="font-size: 12px;">(Hoa tươi, đèn LED, sân khấu 3D)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top-color: rgba(255, 255, 255, 0.1);">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="background-color: #cda45e; border: none;">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tuChonMonModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="background-color: #1a1814; color: #fff;">
+            <div class="modal-header" style="border-bottom: 1px solid #333;">
+                <h5 class="modal-title">Tự xây dựng thực đơn</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="containerTuChonMon">
+                <div class="text-center p-5"><div class="spinner-border text-warning"></div></div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #333;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" style="background-color: #cda45e; border: none;" onclick="xacNhanTuChonMon()">
+                    Xác nhận thực đơn này
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="tuChonDichVuModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="background-color: #1a1814; color: #fff;">
+            <div class="modal-header" style="border-bottom: 1px solid #333;">
+                <h5 class="modal-title">Tự chọn dịch vụ</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="containerTuChonDichVu">
+                <div class="text-center p-5"><div class="spinner-border text-warning"></div></div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #333;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" style="background-color: #cda45e; border: none;" onclick="xacNhanTuChonDichVu()">
+                    Xác nhận dịch vụ này
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .book-a-table .php-email-form .btn-chon-modal {
+        text-align: left; font-weight: 400; font-size: 14px; padding: 10px 15px;
+        color: rgba(255, 255, 255, 0.7); background-color: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 0;
+    }
+    .book-a-table .php-email-form .btn-chon-modal:hover {
+        border-color: #cda45e;
+    }
+    .menu-item-card:hover { border-color: #cda45e !important; }
+    .menu-item-card.selected { background-color: rgba(205, 164, 94, 0.1); border-color: #cda45e !important; }
+</style>
+
+<script>
+        let giaMenuPerTable = 0; // Giá thực đơn/bàn
+    let giaDichVuTotal = 0;  // Giá dịch vụ (tính 1 lần cho cả tiệc)
+    function chonThucDon(loaiMenu) {
+        // 1. Gán giá trị vào input ẩn để gửi về Server
+        document.getElementById('inputLoaiThucDon').value = loaiMenu;
+
+        // 2. Đổi màu giao diện để người dùng biết đã chọn
+        // Reset màu cũ
+        document.getElementById('cardVang').style.backgroundColor = "transparent";
+        document.getElementById('cardBachKim').style.backgroundColor = "transparent";
+
+        // Highlight cái đang chọn
+        if (loaiMenu === 'Vàng') {
+            document.getElementById('cardVang').style.backgroundColor = "rgba(205, 164, 94, 0.2)";
+        } else {
+            document.getElementById('cardBachKim').style.backgroundColor = "rgba(205, 164, 94, 0.2)";
+        }
+
+        // 3. Cập nhật text nút bấm bên ngoài cho đẹp
+        document.querySelector('.btn-chon-modal').innerText = "Đã chọn: Thực Đơn " + loaiMenu;
+
+        // 4. Tự động đóng modal (tùy chọn, ở đây tôi để mở để khách bấm Xác nhận)
+        // Cập nhật giá
+    if (loaiMenu === 'Vàng') giaMenuPerTable = 1000000;
+    else if (loaiMenu === 'Bạch Kim') giaMenuPerTable = 2000000;
+
+    // Nếu là Tự chọn thì giá sẽ được cập nhật ở hàm xacNhanTuChonMon
+    tinhTongTienTam();
+    }
+        function chonDichVu(loaiDV) {
+        // 1. Gán giá trị vào input ẩn
+        document.getElementById('inputLoaiDichVu').value = loaiDV;
+
+        // 2. Đổi màu giao diện (Highlight cái được chọn)
+        document.getElementById('cardBasic').style.backgroundColor = "transparent";
+        document.getElementById('cardVIP').style.backgroundColor = "transparent";
+
+        if (loaiDV === 'Basic') {
+            document.getElementById('cardBasic').style.backgroundColor = "rgba(205, 164, 94, 0.2)";
+        } else {
+            document.getElementById('cardVIP').style.backgroundColor = "rgba(205, 164, 94, 0.2)";
+        }
+
+        // 3. Cập nhật text nút bấm ngoài form
+        // Tìm nút thứ 2 trong nhóm nút (nút Chọn Dịch Vụ)
+        document.querySelectorAll('.btn-chon-modal')[1].innerText = "Đã chọn: Combo " + loaiDV;
+        if (loaiDV === 'Basic') giaDichVuTotal = 15000000;
+    else if (loaiDV === 'VIP') giaDichVuTotal = 50000000;
+
+    tinhTongTienTam();
+    }
+
+        // Hàm mở Modal tự chọn và tải dữ liệu món ăn
+    function moModalTuChonMon() {
+        // 1. Ẩn modal chọn Combo cũ đi (Dùng jQuery cho chắc ăn)
+        $('#thucDonModal').modal('hide');
+
+        // 2. Hiện modal tự chọn mới
+        $('#tuChonMonModal').modal('show');
+
+        // 3. Gọi AJAX lấy danh sách món ăn từ Server
+        $.get("/DatTiec/GetThucDonTuChon", function(data) {
+            $("#containerTuChonMon").html(data);
+        }).fail(function() {
+            $("#containerTuChonMon").html("<p class='text-danger'>Lỗi tải dữ liệu. Vui lòng thử lại!</p>");
+        });
+    }
+        // --- LOGIC TỰ CHỌN MÓN ĂN ---
+
+    // 1. Hàm tính tiền và hiển thị ô số lượng
+    function tinhTienTuChon() {
+        let tongTien = 0;
+        let demMon = 0;
+
+        // Duyệt qua tất cả các checkbox món ăn
+        document.querySelectorAll('.item-checkbox').forEach(function (checkbox) {
+            let id = checkbox.value;
+            let qtyControl = document.getElementById('qty_' + id);
+            let inputQty = document.getElementById('input_qty_' + id);
+            let price = parseFloat(checkbox.getAttribute('data-price'));
+
+            if (checkbox.checked) {
+                // Nếu tick chọn: Hiện ô số lượng + Cộng tiền
+                qtyControl.style.display = 'block';
+                let sl = parseInt(inputQty.value) || 1;
+                tongTien += price * sl;
+                demMon++;
+            } else {
+                // Nếu bỏ tick: Ẩn ô số lượng + Reset về 1
+                qtyControl.style.display = 'none';
+                inputQty.value = 1;
+            }
+        });
+
+        // Cập nhật hiển thị tổng tiền
+        // Format tiền Việt Nam (VD: 1.000.000 VNĐ)
+        let strTien = tongTien.toLocaleString('vi-VN') + ' VNĐ';
+        document.getElementById('totalMoneyDisplay').innerText = strTien;
+    }
+
+    // 2. Hàm Xác nhận: Đóng gói dữ liệu gửi ra ngoài
+    function xacNhanTuChonMon() {
+        let danhSachDaChon = [];
+        let tongTien = 0;
+
+        // Gom dữ liệu các món đang được tick
+        document.querySelectorAll('.item-checkbox:checked').forEach(function (checkbox) {
+            let id = checkbox.value;
+            let name = checkbox.getAttribute('data-name');
+            let sl = parseInt(document.getElementById('input_qty_' + id).value);
+            let price = parseFloat(checkbox.getAttribute('data-price'));
+
+            // Đẩy vào mảng
+            danhSachDaChon.push({
+                MaMonAn: id,
+                TenMonAn: name,
+                SoLuong: sl,
+                DonGia: price,
+                ThanhTien: sl * price
+            });
+
+            tongTien += sl * price;
+        });
+        giaMenuPerTable = tongTien;
+        if (danhSachDaChon.length === 0) {
+            alert("Bạn chưa chọn món nào!");
+            return;
+        }
+
+        console.log(danhSachDaChon); // Debug xem lấy đúng chưa
+
+        // --- CẬP NHẬT GIAO DIỆN CHÍNH ---
+
+        // 1. Gán giá trị vào Input ẩn (Chuyển mảng thành chuỗi JSON)
+        document.getElementById('inputThucDonTuChonJson').value = JSON.stringify(danhSachDaChon);
+
+        // 2. Gán loại thực đơn là "TuChon"
+        document.getElementById('inputLoaiThucDon').value = "TuChon";
+
+        // 3. Đổi màu giao diện (Bỏ chọn các gói Combo cũ)
+        if(document.getElementById('cardVang'))
+            document.getElementById('cardVang').style.backgroundColor = "transparent";
+        if(document.getElementById('cardBachKim'))
+            document.getElementById('cardBachKim').style.backgroundColor = "transparent";
+
+        // 4. Cập nhật nút bấm bên ngoài
+        let strTongTien = tongTien.toLocaleString('vi-VN');
+        document.querySelector('.btn-chon-modal').innerHTML =
+            `Đã chọn: <b style="color:#cda45e">${danhSachDaChon.length} món</b> (${strTongTien} VNĐ)`;
+
+        $('#tuChonMonModal').modal('hide');
+        tinhTongTienTam();
+    }
+
+        // 1. Hàm lưu dữ liệu vào bộ nhớ trình duyệt
+    function luuDuLieuTam() {
+        // Tạo object chứa thông tin
+        var bookingData = {
+            HoTen: document.querySelector('input[name="HoTen"]').value,
+            SDT: document.querySelector('input[name="SDT"]').value,
+            Email: document.querySelector('input[name="Email"]').value,
+            TenCoDau: document.querySelector('input[name="TenCoDau"]').value,
+            TenChuRe: document.querySelector('input[name="TenChuRe"]').value,
+            NgayToChuc: document.querySelector('input[name="NgayToChuc"]').value,
+            SoBanDat: document.querySelector('input[name="SoBanDat"]').value,
+            SoBanDuPhong: document.querySelector('input[name="SoBanDuPhong"]').value,
+            // Lưu cả lựa chọn Thực đơn và Dịch vụ
+            LoaiThucDon: document.getElementById('inputLoaiThucDon').value,
+            LoaiDichVu: document.getElementById('inputLoaiDichVu').value,
+            GhiChu: document.getElementById('ghiChuInput').value
+        };
+
+        // Lưu vào LocalStorage (chuyển sang chuỗi JSON)
+        localStorage.setItem("PendingBooking", JSON.stringify(bookingData));
+    }
+        // HÀM TÍNH TOÁN CHÍNH
+    function tinhTongTienTam() {
+        let soBan = parseInt(document.querySelector('input[name="SoBanDat"]').value) || 0;
+        document.getElementById('txtSoBan').innerText = soBan;
+
+        // 1. Tính giá mỗi bàn (chỉ tính phần ăn)
+        let giaMoiBan = giaMenuPerTable;
+
+        // 2. Tổng tiền = (Giá ăn * Số bàn) + Giá dịch vụ
+        let tongTien = (giaMoiBan * soBan) + giaDichVuTotal;
+
+        // 3. Tiền cọc 30%
+        let tienCoc = tongTien * 0.3;
+
+        // Hiển thị ra màn hình (Format tiền Việt)
+        document.getElementById('displayGiaBan').innerText = giaMoiBan.toLocaleString('vi-VN') + " VNĐ";
+        document.getElementById('displayTongTien').innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
+        document.getElementById('displayTienCoc').innerText = tienCoc.toLocaleString('vi-VN') + " VNĐ";
+
+        // Gán vào input ẩn để gửi về Server
+        document.getElementById('inputGiaBan').value = giaMoiBan;
+        document.getElementById('inputTongTien').value = tongTien;
+        document.getElementById('inputTienCoc').value = tienCoc;
+    }
+
+        // --- LOGIC TỰ CHỌN DỊCH VỤ ---
+
+    function moModalTuChonDichVu() {
+        $('#dichVuModal').modal('hide'); // Đóng modal combo cũ
+        $('#tuChonDichVuModal').modal('show'); // Mở modal mới
+
+        // Gọi AJAX lấy danh sách dịch vụ
+        $.get("/DatTiec/GetDichVuTuChon", function(data) {
+            $("#containerTuChonDichVu").html(data);
+        });
+    }
+
+    function tinhTienDichVuTuChon() {
+        let tongTienDV = 0;
+
+        document.querySelectorAll('.service-checkbox').forEach(function (checkbox) {
+            let id = checkbox.value;
+            let qtyControl = document.getElementById('qty_dv_' + id);
+            let inputQty = document.getElementById('input_qty_dv_' + id);
+            let price = parseFloat(checkbox.getAttribute('data-price'));
+
+            if (checkbox.checked) {
+                qtyControl.style.display = 'block';
+                let sl = parseInt(inputQty.value) || 1;
+                tongTienDV += price * sl; // Giá * Số lượng (Cộng thẳng)
+            } else {
+                qtyControl.style.display = 'none';
+                inputQty.value = 1;
+            }
+        });
+
+        let strTien = tongTienDV.toLocaleString('vi-VN') + ' VNĐ';
+        document.getElementById('totalServiceMoneyDisplay').innerText = strTien;
+    }
+
+    function xacNhanTuChonDichVu() {
+        let danhSachDV = [];
+        let tongTienDV = 0;
+
+        document.querySelectorAll('.service-checkbox:checked').forEach(function (checkbox) {
+            let id = checkbox.value;
+            let sl = parseInt(document.getElementById('input_qty_dv_' + id).value);
+            let price = parseFloat(checkbox.getAttribute('data-price'));
+
+            danhSachDV.push({
+                MaDichVu: id,
+                SoLuong: sl,
+                DonGia: price // Lưu để controller tham khảo (không tin tưởng hoàn toàn)
+            });
+
+            tongTienDV += price * sl;
+        });
+
+        // 1. Lưu JSON
+        document.getElementById('inputDichVuTuChonJson').value = JSON.stringify(danhSachDV);
+
+        // 2. Gán loại là "TuChon"
+        document.getElementById('inputLoaiDichVu').value = "TuChon";
+
+        // 3. Reset giao diện
+        if(document.getElementById('cardBasic')) document.getElementById('cardBasic').style.backgroundColor = "transparent";
+        if(document.getElementById('cardVIP')) document.getElementById('cardVIP').style.backgroundColor = "transparent";
+
+        // 4. Cập nhật nút bấm
+        document.querySelectorAll('.btn-chon-modal')[1].innerText =
+            `Đã chọn: ${danhSachDV.length} dịch vụ (${tongTienDV.toLocaleString('vi-VN')} VNĐ)`;
+
+        // 5. Cập nhật biến toàn cục để tính tổng tiền đơn hàng
+        // LƯU Ý: Biến giaDichVuTotal này phải được khai báo ở đầu file script (bước trước mình đã làm)
+        giaDichVuTotal = tongTienDV;
+
+        // 6. Tính lại tổng tiền form chính
+        tinhTongTienTam();
+
+        $('#tuChonDichVuModal').modal('hide');
+    }
+
+    // Gắn sự kiện khi thay đổi số bàn thì tính lại tiền
+    document.querySelector('input[name="SoBanDat"]').addEventListener('input', tinhTongTienTam);
+
+    // 2. Hàm khôi phục dữ liệu (Chạy ngay khi trang web tải xong)
+    document.addEventListener("DOMContentLoaded", function() {
+        // Kiểm tra xem có dữ liệu cũ không
+        var savedData = localStorage.getItem("PendingBooking");
+
+        if (savedData) {
+            var data = JSON.parse(savedData);
+
+            // -- Chỉ điền lại nếu các ô đang trống (tránh ghi đè nếu khách đang nhập dở) --
+
+            // Điền các ô text
+            if(data.HoTen) document.querySelector('input[name="HoTen"]').value = data.HoTen;
+            if(data.SDT) document.querySelector('input[name="SDT"]').value = data.SDT;
+            if(data.Email) document.querySelector('input[name="Email"]').value = data.Email;
+            if(data.TenCoDau) document.querySelector('input[name="TenCoDau"]').value = data.TenCoDau;
+            if(data.TenChuRe) document.querySelector('input[name="TenChuRe"]').value = data.TenChuRe;
+            if(data.NgayToChuc) document.querySelector('input[name="NgayToChuc"]').value = data.NgayToChuc;
+            if(data.SoBanDat) document.querySelector('input[name="SoBanDat"]').value = data.SoBanDat;
+            if(data.SoBanDuPhong) document.querySelector('input[name="SoBanDuPhong"]').value = data.SoBanDuPhong;
+            if(data.GhiChu) document.getElementById('ghiChuInput').value = data.GhiChu;
+
+            // Khôi phục lựa chọn Thực đơn & Dịch vụ (Và trigger lại hiệu ứng chọn)
+            if (data.LoaiThucDon) {
+                chonThucDon(data.LoaiThucDon); // Gọi lại hàm chọn cũ của bạn để nó đổi màu
+            }
+            if (data.LoaiDichVu) {
+                chonDichVu(data.LoaiDichVu); // Gọi lại hàm chọn cũ
+            }
+
+            // Tùy chọn: Xóa dữ liệu sau khi đã điền xong để lần sau không hiện lại
+            // localStorage.removeItem("PendingBooking");
+            // (Hoặc giữ lại phòng trường hợp khách reload trang, tùy bạn)
+        }
+    });
+</script>
