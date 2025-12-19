@@ -771,7 +771,7 @@
                     </a>
                 </li>
         <li class="nav-item">
-                    <a class="nav-link" asp-controller="QLDichVu" asp-action="SoanEmail" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <a class="nav-link" asp-controller="QLDichVu" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
                         <span class="icon">⏱️</span>
                         <span>Quản Lý Dịch Vụ</span>
                     </a>
@@ -847,9 +847,10 @@
                        asp-controller="NhanVienPartTime" asp-action="Index" style="text-decoration:none;">
                         <span class="dot"></span> Nhân viên Part-time
                     </a> *@
-          <button class="tab-pill" data-module="services">
-            <span class="dot"></span> Dịch vụ
-          </button>
+                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienFullTime" ? "active" : "")"
+                       asp-controller="QLDichVu" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Quản lý Dịch Vụ
+                    </a>
           <button class="tab-pill" data-module="payments">
             <span class="dot"></span> Thanh toán
           </button>
