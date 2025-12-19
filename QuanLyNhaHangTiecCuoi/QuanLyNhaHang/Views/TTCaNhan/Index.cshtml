@@ -11,6 +11,22 @@
 }
 
 <style>
+    .button-row-center {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        width: 100%;
+    }
+
+    .full-width-btn {
+        width: 100%;
+        min-height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        border: 2px solid #ffd700 !important; /* Viền vàng đặc trưng */
+    }
     /* CSS với nền tối và viền vàng */
     .main {
         margin-top: 50px;
@@ -234,65 +250,8 @@
             box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.25);
         }
 
-    .modal-dark .form-select {
-        background: #333;
-        border: 1px solid #555;
-        color: #fff;
-    }
-
-    .modal-dark .alert-warning {
-        background: rgba(255, 215, 0, 0.1);
-        border: 1px solid #ffd700;
-        color: #ffd700;
-    }
-
     .spacer {
         margin-top: 50px;
-    }
-
-    /* Responsive adjustments */
-    @@media (max-width: 768px) {
-        .dark-gold-container {
-            padding: 30px 0 60px 0;
-        }
-
-        .gold-btn, .dark-btn {
-            padding: 12px 20px;
-            font-size: 0.9rem;
-        }
-
-        .info-value {
-            padding: 12px 15px;
-            font-size: 1rem;
-        }
-    }
-
-    .action-buttons-container {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .button-row {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .button-row-center {
-        display: flex;
-        justify-content: center;
-        margin: 20px 0;
-    }
-
-    .full-width-btn {
-        width: 100%;
-        min-height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.1rem;
     }
 </style>
 
@@ -325,7 +284,8 @@
                                 <h4 class="text-white mb-3">@Model.TenKhachHang</h4>
                                 <p class="welcome-text">Chào mừng trở lại!</p>
                                 <div class="mt-4">
-                                    @if (Model.TrangThaiKhachHang == "Hoạt động")
+                                    @* ĐÃ SỬA: Thêm .Trim() và xử lý trường hợp NULL trạng thái *@
+                                    @if (!string.IsNullOrEmpty(Model.TrangThaiKhachHang) && Model.TrangThaiKhachHang.Trim() == "Hoạt động")
                                     {
                                         <span class="status-badge status-active">
                                             <i class="fas fa-check-circle me-1"></i> @Model.TrangThaiKhachHang
@@ -334,7 +294,7 @@
                                     else
                                     {
                                         <span class="status-badge status-inactive">
-                                            <i class="fas fa-exclamation-circle me-1"></i> @Model.TrangThaiKhachHang
+                                            <i class="fas fa-exclamation-circle me-1"></i> @(string.IsNullOrEmpty(Model.TrangThaiKhachHang) ? "Chưa xác định" : Model.TrangThaiKhachHang)
                                         </span>
                                     }
                                 </div>
@@ -343,7 +303,6 @@
                         <div class="col-md-8">
                             <div class="p-4 p-md-5">
                                 <h4 class="gold-title mb-4" style="font-size: 1.8rem;">TỔNG QUAN TÀI KHOẢN</h4>
-
                                 <div class="row">
                                     <div class="col-md-12 mb-4">
                                         <span class="info-label">MÃ KHÁCH HÀNG</span>
@@ -352,7 +311,6 @@
                                             @Model.MaKhachHang
                                         </div>
                                     </div>
-
                                     <div class="col-md-12">
                                         <span class="info-label">GHI CHÚ</span>
                                         <div class="info-value">
@@ -368,7 +326,6 @@
 
                 <div class="dark-card gold-border p-4 p-md-5 mb-5">
                     <h4 class="gold-title mb-5" style="font-size: 1.8rem;">CHI TIẾT THÔNG TIN</h4>
-
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-4">
@@ -378,42 +335,32 @@
                                     @Model.TenKhachHang
                                 </div>
                             </div>
-
                             <div class="mb-4">
                                 <span class="info-label">CCCD/CMND</span>
                                 <div class="info-value d-flex align-items-center">
                                     <i class="fas fa-address-card icon-gold"></i>
                                     @Model.CccdKhachHang
-                                    <small class="text-muted ms-3">
-                                        <i class="fas fa-lock"></i> (Không thể thay đổi)
-                                    </small>
+                                    <small class="text-muted ms-3"><i class="fas fa-lock"></i> (Cố định)</small>
                                 </div>
                             </div>
-
                             <div class="mb-4">
                                 <span class="info-label">SỐ ĐIỆN THOẠI</span>
                                 <div class="info-value d-flex align-items-center">
                                     <i class="fas fa-phone-alt icon-gold"></i>
-                                    <span id="currentSdt">@sdt</span>
-                                    <small class="text-muted ms-3">
-                                        <i class="fas fa-lock"></i> (Không thể thay đổi)
-                                    </small>
+                                    <span>@sdt</span>
+                                    <small class="text-muted ms-3"><i class="fas fa-lock"></i> (Cố định)</small>
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <span class="info-label">EMAIL</span>
                                 <div class="info-value d-flex align-items-center">
                                     <i class="fas fa-envelope icon-gold"></i>
-                                    <span id="currentEmail">@(email ?? "Chưa có email")</span>
-                                    <small class="text-muted ms-3">
-                                        <i class="fas fa-lock"></i> (Không thể thay đổi)
-                                    </small>
+                                    <span>@(email ?? "Chưa có email")</span>
+                                    <small class="text-muted ms-3"><i class="fas fa-lock"></i> (Cố định)</small>
                                 </div>
                             </div>
-
                             <div class="mb-4">
                                 <span class="info-label">ĐỊA CHỈ</span>
                                 <div class="info-value d-flex align-items-center">
@@ -421,7 +368,6 @@
                                     @(string.IsNullOrEmpty(Model.DiaChiKhachHang) ? "Chưa cập nhật" : Model.DiaChiKhachHang)
                                 </div>
                             </div>
-
                             <div class="mb-4">
                                 <span class="info-label">NGÀY THAM GIA</span>
                                 <div class="info-value d-flex align-items-center">
@@ -463,23 +409,18 @@
     </div>
 </div>
 
-<div class="modal fade modal-dark" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+<div class="modal fade modal-dark" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content gold-border">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">
-                    <i class="fas fa-user-edit me-2"></i>CHỈNH SỬA THÔNG TIN CÁ NHÂN
-                </h5>
+                <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>CHỈNH SỬA THÔNG TIN</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
             <form id="editForm" method="post">
                 @Html.AntiForgeryToken()
                 <div class="modal-body" id="editFormBody">
                     <div class="text-center py-5">
-                        <div class="spinner-border text-warning" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
+                        <div class="spinner-border text-warning" role="status"></div>
                         <p class="mt-3">Đang tải thông tin...</p>
                     </div>
                 </div>
@@ -492,176 +433,80 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
     <script>
         function loadEditForm() {
-            // Hiển thị modal
             var modal = new bootstrap.Modal(document.getElementById('editModal'));
             modal.show();
 
-            // Load form bằng AJAX
+            // ĐÃ SỬA: Không truyền ID qua data, Server tự lấy từ Session
             $.ajax({
                 url: '@Url.Action("GetEditModel", "TTCaNhan")',
                 type: 'GET',
-                data: { id: '@Model.MaKhachHang' },
                 success: function(response) {
                     if (response.success) {
                         var data = response.data;
                         var formHtml = `
                             <input type="hidden" name="MaKhachHang" value="${data.maKhachHang}" />
-
                             <div class="alert alert-warning mb-4">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <strong>Thông tin cố định:</strong> CCCD/CMND, Số điện thoại và Email không thể thay đổi.
-                                <br>CCCD hiện tại: <strong>${data.cccdKhachHang || 'Chưa có'}</strong>
-                                <br>SDT hiện tại: <strong>${data.sdtKhachHang || 'Chưa có'}</strong>
-                                <br>Email hiện tại: <strong>${data.email || 'Chưa có email'}</strong>
+                                <strong>Thông tin cố định:</strong> CCCD, SĐT và Email không thể thay đổi.
                             </div>
-
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">Họ và tên *</label>
-                                    <input type="text" name="TenKhachHang" class="form-control"
-                                               value="${data.tenKhachHang || ''}" required />
-                                    <div class="invalid-feedback">Vui lòng nhập tên khách hàng.</div>
+                                    <input type="text" name="TenKhachHang" class="form-control" value="${data.tenKhachHang || ''}" required />
                                 </div>
-
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">CCCD/CMND</label>
-                                    <input type="text" class="form-control bg-dark text-white"
-                                               value="${data.cccdKhachHang || ''}" readonly
-                                               style="cursor: not-allowed; opacity: 0.7;" />
-                                    <small class="text-muted">(Không thể thay đổi)</small>
+                                    <input type="text" class="form-control bg-dark text-white" value="${data.cccdKhachHang || ''}" readonly style="opacity: 0.7;" />
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">Số điện thoại</label>
-                                    <input type="text" class="form-control bg-dark text-white"
-                                               value="${data.sdtKhachHang || ''}" readonly
-                                               style="cursor: not-allowed; opacity: 0.7;" />
-                                    <small class="text-muted">(Không thể thay đổi)</small>
+                                    <input type="text" class="form-control bg-dark text-white" value="${data.sdtKhachHang || ''}" readonly style="opacity: 0.7;" />
                                 </div>
-
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-bold">Email</label>
-                                    <input type="text" class="form-control bg-dark text-white"
-                                               value="${data.email || 'Chưa có email'}" readonly
-                                               style="cursor: not-allowed; opacity: 0.7;" />
-                                    <small class="text-muted">(Không thể thay đổi)</small>
+                                    <input type="text" class="form-control bg-dark text-white" value="${data.email || ''}" readonly style="opacity: 0.7;" />
                                 </div>
                             </div>
-
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Địa chỉ</label>
                                 <textarea name="DiaChiKhachHang" class="form-control" rows="3">${data.diaChiKhachHang || ''}</textarea>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Ghi chú</label>
-                                <textarea name="GhiChu" class="form-control" rows="4">${data.ghiChu || ''}</textarea>
+                                <textarea name="GhiChu" class="form-control" rows="3">${data.ghiChu || ''}</textarea>
                             </div>
-
                             <div class="modal-footer">
-                                <button type="button" class="btn dark-btn" data-bs-dismiss="modal">
-                                    <i class="fas fa-times me-2"></i> HỦY
-                                </button>
-                                <button type="submit" class="btn gold-btn">
-                                    <i class="fas fa-save me-2"></i> LƯU THAY ĐỔI
-                                </button>
+                                <button type="button" class="btn dark-btn" data-bs-dismiss="modal">HỦY</button>
+                                <button type="submit" class="btn gold-btn">LƯU THAY ĐỔI</button>
                             </div>
                         `;
-
                         $('#editFormBody').html(formHtml);
                         $('#editForm').attr('action', '@Url.Action("Edit", "TTCaNhan")');
-                    } else {
-                        $('#editFormBody').html(`
-                            <div class="alert alert-danger">
-                                <i class="fas fa-exclamation-circle me-2"></i> ${response.message}
-                            </div>
-                        `);
                     }
-                },
-                error: function() {
-                    $('#editFormBody').html(`
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-circle me-2"></i> Lỗi kết nối máy chủ.
-                        </div>
-                    `);
                 }
             });
         }
 
-        $(document).ready(function() {
-            // Xử lý submit form bằng AJAX
-            $(document).on('submit', '#editForm', function(e) {
-                e.preventDefault();
+        $(document).on('submit', '#editForm', function(e) {
+            e.preventDefault();
+            var submitBtn = $(this).find('button[type="submit"]');
+            submitBtn.prop('disabled', true).text('ĐANG LƯU...');
 
-                var form = $(this);
-                var url = form.attr('action');
-                var formData = form.serialize();
-
-                // Hiển thị loading
-                var submitBtn = $('#editForm button[type="submit"]');
-                submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i> ĐANG LƯU...');
-                submitBtn.prop('disabled', true);
-
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        if (response.success) {
-                            // Hiển thị thông báo thành công
-                            $('#editFormBody').prepend(`
-                                <div class="alert alert-success alert-dismissible fade show">
-                                    <i class="fas fa-check-circle me-2"></i>${response.message}
-                                </div>
-                            `);
-
-                            // Cập nhật thông tin hiển thị (Nếu có thay đổi)
-                            // Hiện tại chỉ có Tên, Địa chỉ, Ghi chú được sửa.
-                            // Để cập nhật các trường không sửa (SDT, Email, CCCD), cần reload trang
-
-                            // Đóng modal sau 1.5 giây và reload trang
-                            setTimeout(function() {
-                                $('#editModal').modal('hide');
-                                location.reload();
-                            }, 1500);
-                        } else {
-                            $('#editFormBody').prepend(`
-                                <div class="alert alert-danger alert-dismissible fade show">
-                                    <i class="fas fa-exclamation-circle me-2"></i>${response.message}
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-                                </div>
-                            `);
-                            submitBtn.html('<i class="fas fa-save me-2"></i> LƯU THAY ĐỔI');
-                            submitBtn.prop('disabled', false);
-                        }
-                    },
-                    error: function() {
-                        $('#editFormBody').prepend(`
-                            <div class="alert alert-danger alert-dismissible fade show">
-                                <i class="fas fa-exclamation-circle me-2"></i> Có lỗi kết nối máy chủ.
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
-                            </div>
-                        `);
-                        submitBtn.html('<i class="fas fa-save me-2"></i> LƯU THAY ĐỔI');
-                        submitBtn.prop('disabled', false);
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert(response.message);
+                        submitBtn.prop('disabled', false).text('LƯU THAY ĐỔI');
                     }
-                });
-            });
-
-            // Reset form khi modal đóng
-            $('#editModal').on('hidden.bs.modal', function () {
-                $('#editFormBody').html(`
-                    <div class="text-center py-5">
-                        <div class="spinner-border text-warning" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-3">Đang tải thông tin...</p>
-                    </div>
-                `);
+                }
             });
         });
     </script>
