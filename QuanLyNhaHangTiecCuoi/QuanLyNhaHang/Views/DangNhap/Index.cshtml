@@ -235,7 +235,12 @@
 
                 <button type="submit" class="btn">Đăng Nhập</button>
             </form>
-
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="color: #888; margin-bottom: 15px;">--- Hoặc đăng nhập bằng ---</p>
+                <a href="@Url.Action("GoogleLogin", "DangNhap")" class="btn" style="background: #db4437; border-color: #db4437; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;">
+                    <i class="bi bi-google"></i> Tiếp tục với Google
+                </a>
+            </div>
             @if (ViewBag.ThongBao != null)
             {
                 <div style="color:red; text-align:center;">@ViewBag.ThongBao</div>

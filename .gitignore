@@ -6,4 +6,7 @@
 # Build results
 [Bb]in/
 [Oo]bj/
-
+*.mdf
+*.ldf
+*.zip
+*.rar

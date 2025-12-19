@@ -19,6 +19,13 @@ namespace QuanLyNhaHang.Models
                 // Lưu ý: Trong C# string dùng @ đằng trước thì 
                 optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-ANJJC90;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Trust Server Certificate=True");
 
+                if (!optionsBuilder.IsConfigured)
+                {
+
+
+
+                    optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-NVBKKGJ\SQLEXPRESS;Initial Catalog=QL_NhaHangTiecCuoiLongPhung;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+                }
             }
         }
 

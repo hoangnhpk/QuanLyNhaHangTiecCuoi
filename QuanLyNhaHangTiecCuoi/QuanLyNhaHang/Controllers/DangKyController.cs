@@ -7,7 +7,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text.Json;
-using System.Collections.Generic; // Thêm namespace này
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace QuanLyNhaHang.Controllers
 {
@@ -29,37 +30,45 @@ namespace QuanLyNhaHang.Controllers
         [HttpPost]
         public IActionResult Index(KhachHangDangKyViewModel model)
         {
-            // --- 1. KIỂM TRA TRÙNG LẶP DB (Thêm lỗi vào ModelState) ---
+            // --- 1. KIỂM TRA ĐỊNH DẠNG & TÊN MIỀN EMAIL ---
+            if (!string.IsNullOrEmpty(model.EmailKhachHang) && !IsValidEmail(model.EmailKhachHang))
+            {
+                ModelState.AddModelError("EmailKhachHang", "Email không đúng định dạng hoặc tên miền không tồn tại.");
+            }
 
-            // Kiểm tra trùng Tài khoản
+            // --- 2. KIỂM TRA TRÙNG LẶP TRONG DATABASE ---
+
+            // Kiểm tra trùng Tài khoản (Bảng TaiKhoans)
             if (_context.TaiKhoans.Any(t => t.UserName == model.TaiKhoanKhachHang))
             {
-                // Tham số đầu tiên phải trùng KHỚP với tên biến trong Model
                 ModelState.AddModelError("TaiKhoanKhachHang", "Tài khoản này đã được sử dụng.");
             }
 
-            // Kiểm tra trùng Email
+            // Kiểm tra trùng Email (Bảng TaiKhoans)
             if (_context.TaiKhoans.Any(t => t.Email == model.EmailKhachHang))
             {
                 ModelState.AddModelError("EmailKhachHang", "Email này đã tồn tại trong hệ thống.");
             }
 
-            // Kiểm tra trùng SĐT
+            // Kiểm tra trùng Số điện thoại (Bảng KhachHangs)
             if (_context.KhachHangs.Any(k => k.SdtKhachHang == model.SdtKhachHang))
             {
                 ModelState.AddModelError("SdtKhachHang", "Số điện thoại này đã được đăng ký.");
             }
 
-            // --- 2. KIỂM TRA TỔNG THỂ ---
-            // ModelState.IsValid sẽ trả về false nếu:
-            // - Vi phạm Validate trong Model (Regex, Required...)
-            // - HOẶC vi phạm lỗi DB vừa add ở trên
-            if (!ModelState.IsValid)
+            // Kiểm tra trùng CCCD/CMND (Bảng KhachHangs)
+            if (_context.KhachHangs.Any(k => k.CccdKhachHang == model.CccdKhachHang))
             {
-                return View(model); // Trả về View để hiện lỗi span đỏ
+                ModelState.AddModelError("CccdKhachHang", "Số CCCD/CMND này đã được sử dụng.");
             }
 
-            // --- 3. NẾU KHÔNG CÓ LỖI -> GỬI OTP ---
+            // --- 3. KIỂM TRA TỔNG THỂ ---
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // --- 4. NẾU KHÔNG CÓ LỖI -> GỬI OTP ---
             string otp = new Random().Next(100000, 999999).ToString();
 
             try
@@ -72,13 +81,12 @@ namespace QuanLyNhaHang.Controllers
                 return View(model);
             }
 
-            // Serialize và Lưu Session
+            // Lưu dữ liệu tạm thời vào Session
             string modelJson = JsonSerializer.Serialize(model);
             HttpContext.Session.SetString("Pending_Register", modelJson);
             HttpContext.Session.SetString("OTP_Code", otp);
             HttpContext.Session.SetString("OTP_Expiry", DateTime.Now.AddMinutes(5).ToString());
 
-            // Cấu hình Popup Thành Công
             TempData["Type"] = "success";
             TempData["Title"] = "Đã gửi mã OTP";
             TempData["Message"] = $"Mã xác thực đã được gửi tới <b>{model.EmailKhachHang}</b>";
@@ -86,7 +94,21 @@ namespace QuanLyNhaHang.Controllers
             return RedirectToAction("XacThucOtp");
         }
 
-        // ... (Giữ nguyên các hàm XacThucOtp và SendEmailOtp cũ)
+        // Hàm kiểm tra định dạng và sự tồn tại của tên miền Email
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var regex = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+                if (!regex.IsMatch(email)) return false;
+
+                var host = email.Split('@')[1];
+                var hostEntry = Dns.GetHostAddresses(host);
+                return hostEntry.Length > 0;
+            }
+            catch { return false; }
+        }
+
         [HttpGet]
         public IActionResult XacThucOtp()
         {
@@ -125,6 +147,7 @@ namespace QuanLyNhaHang.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Lưu chính thức vào Database
             var model = JsonSerializer.Deserialize<KhachHangDangKyViewModel>(modelJson);
             string maTK = "TK" + DateTime.Now.Ticks.ToString().Substring(10);
             string maKH = "KH" + DateTime.Now.Ticks.ToString().Substring(10);
@@ -154,6 +177,7 @@ namespace QuanLyNhaHang.Controllers
             _context.KhachHangs.Add(khachHang);
             _context.SaveChanges();
 
+            // Xóa session sau khi xong
             HttpContext.Session.Remove("Pending_Register");
             HttpContext.Session.Remove("OTP_Code");
             HttpContext.Session.Remove("OTP_Expiry");

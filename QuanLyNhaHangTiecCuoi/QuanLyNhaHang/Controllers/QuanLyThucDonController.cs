@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using QuanLyNhaHang.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuanLyNhaHang.Models;
 
 namespace QuanLyNhaHang.Controllers
 {
+    [Authorize(Roles = "QuanLy")]
     public class QuanLyThucDonController : Controller
     {
         private readonly QuanLyNhaHangContext _context;
@@ -13,20 +15,36 @@ namespace QuanLyNhaHang.Controllers
             _context = context;
         }
 
-        // --- 1. TRANG CHỦ (INDEX) ---
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string category)
         {
-            // Lấy danh sách Món lẻ (cho cột phải)
-            var listMonAn = await _context.MonAns.OrderBy(m => m.MaMonAn).ToListAsync();
-
-            // Lấy danh sách Combo (cho cột trái) - kèm chi tiết món
             var listCombo = await _context.ComboMons
                                           .Include(c => c.ChiTietCombos)
                                           .ThenInclude(ct => ct.MonAn)
                                           .OrderByDescending(c => c.NgayTaoCombo)
                                           .ToListAsync();
-
             ViewBag.ListCombo = listCombo;
+
+            var query = _context.MonAns.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(m => m.TenMonAn.Contains(searchString) || m.MaMonAn.Contains(searchString));
+            }
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                query = query.Where(m => m.LoaiMonAn == category);
+            }
+
+            // Lấy dữ liệu cuối cùng
+            var listMonAn = await query.OrderBy(m => m.MaMonAn).ToListAsync();
+
+            // Lưu lại giá trị search/category để hiển thị lại trên View (giữ trạng thái)
+            ViewBag.SearchString = searchString;
+            ViewBag.CurrentCategory = category;
+
+            // Lấy danh sách các danh mục có sẵn để đổ vào dropdown
+            ViewBag.Categories = await _context.MonAns.Select(m => m.LoaiMonAn).Distinct().ToListAsync();
 
             return View(listMonAn);
         }
@@ -38,7 +56,6 @@ namespace QuanLyNhaHang.Controllers
                                       .ToListAsync();
             return View();
         }
-        // --- THÊM COMBO (POST) ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ThemCombo(ComboMon model, List<string> monAnChon, IFormFile imageFile)
@@ -66,7 +83,7 @@ namespace QuanLyNhaHang.Controllers
                     // Tạo tên file độc nhất
                     var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_" + imageFile.FileName;
 
-                    // Đường dẫn thư mục: wwwroot/assets/img/combos
+
                     var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "img", "menu");
 
                     // Nếu thư mục chưa có thì tự tạo
@@ -79,7 +96,7 @@ namespace QuanLyNhaHang.Controllers
                         await imageFile.CopyToAsync(stream);
                     }
 
-                    // Lưu đường dẫn hiển thị vào DB: /assets/img/combos/ten_file.jpg
+                 
                     model.HinhAnhCombo = "/assets/img/menu/" + fileName;
                 }
 
@@ -127,8 +144,6 @@ namespace QuanLyNhaHang.Controllers
 
     if (combo == null) return NotFound();
 
-    // 2. Lấy danh sách TẤT CẢ món ăn để người dùng có thể chọn thêm/bớt
-    // Sắp xếp theo tên cho dễ nhìn
     ViewBag.ListMonAn = await _context.MonAns
                               .OrderBy(m => m.TenMonAn)
                               .ToListAsync();
@@ -136,7 +151,6 @@ namespace QuanLyNhaHang.Controllers
     return View(combo);
 }
 
-        // --- SỬA COMBO (POST) ---
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SuaCombo(string id, ComboMon model, List<string> monAnChon, IFormFile imageFile)
@@ -165,7 +179,6 @@ namespace QuanLyNhaHang.Controllers
                     comboDB.TrangThai = model.TrangThai;
                     comboDB.MoTa = model.MoTa;
 
-                    // 1. XỬ LÝ ẢNH (Sửa đường dẫn tại đây)
                     if (imageFile != null && imageFile.Length > 0)
                     {
                         var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_" + imageFile.FileName;
@@ -246,9 +259,6 @@ namespace QuanLyNhaHang.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ============================================================
-        // XỬ LÝ MÓN LẺ (CÓ HÌNH ẢNH)
-        // ============================================================
 
         public IActionResult Them() { return View(); }
 
@@ -307,7 +317,6 @@ namespace QuanLyNhaHang.Controllers
             return View(model);
         }
 
-        // --- SỬA MÓN ĂN ---
         public async Task<IActionResult> Sua(string id)
         {
             if (string.IsNullOrEmpty(id)) return NotFound();

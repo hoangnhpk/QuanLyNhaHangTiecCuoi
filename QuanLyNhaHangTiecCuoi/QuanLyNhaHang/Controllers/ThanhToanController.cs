@@ -1,13 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyNhaHang.Models;
 using QuanLyNhaHang.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuanLyNhaHang.Controllers
 {
-    // Định tuyến mặc định cho API là: domain/api/ThanhToan
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "QuanLy")]
     public class ThanhToanController : Controller
     {
         private readonly QuanLyNhaHangContext _context;
@@ -17,63 +22,41 @@ namespace QuanLyNhaHang.Controllers
             _context = context;
         }
 
-        // --- 1. ACTION TRẢ VỀ GIAO DIỆN (VIEW) ---
-
-        // Dấu "~" giúp ghi đè route của class. 
-        // URL sẽ là: https://localhost:port/ThanhToan
         [HttpGet]
         [Route("~/ThanhToan")]
-        [Route("~/ThanhToan/Index")]
         public IActionResult Index()
         {
             return View();
         }
 
-        // --- 2. CÁC API XỬ LÝ DỮ LIỆU ---
-
-        // GET: api/ThanhToan (Lấy danh sách)
+        // GET: api/ThanhToan
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ThanhToanViewModel>>> GetThanhToans([FromQuery] ThanhToanFilterModel filter)
         {
-            // Join DatTiec và PhieuThanhToan (Left Join vì có thể chưa có phiếu thanh toán)
             var query = from d in _context.DatTiecs
                         join p in _context.PhieuThanhToans on d.MaDatTiec equals p.MaDatTiec into pd
                         from p in pd.DefaultIfEmpty()
-                            // Chỉ lấy những đơn đã đặt cọc (TienCoc > 0)
                         where d.TienCoc > 0
                         select new { DatTiec = d, Phieu = p };
 
-            // Lọc theo trạng thái
             if (!string.IsNullOrEmpty(filter.TrangThai) && filter.TrangThai != "Tất cả trạng thái")
             {
                 if (filter.TrangThai == "Đã cọc 30%")
-                    query = query.Where(x => x.Phieu == null); // Chưa có phiếu thanh toán cuối
+                    query = query.Where(x => x.Phieu == null && x.DatTiec.TrangThai != "huy");
                 else if (filter.TrangThai == "Thanh toán hoàn toàn")
                     query = query.Where(x => x.Phieu != null);
-            }
-
-            // Lọc theo ngày (Ngày đặt cọc hoặc ngày thanh toán)
-            if (filter.FromDate.HasValue)
-            {
-                var searchDate = filter.FromDate.Value.Date; // Lấy ngày (bỏ giờ phút)
-
-                // Logic: Tìm những đơn mà (Ngày cọc trùng ngày tìm) HOẶC (Ngày thanh toán trùng ngày tìm)
-                query = query.Where(x =>
-                    (x.DatTiec.NgayDatTiec.HasValue && x.DatTiec.NgayDatTiec.Value.Date == searchDate)
-                    ||
-                    (x.Phieu != null && x.Phieu.NgayThanhToan.HasValue && x.Phieu.NgayThanhToan.Value.Date == searchDate)
-                );
+                else if (filter.TrangThai == "Hủy")
+                    query = query.Where(x => x.DatTiec.TrangThai == "huy");
             }
 
             var result = await query.Select(x => new ThanhToanViewModel
             {
                 MaDatTiec = x.DatTiec.MaDatTiec,
-                MaThanhToan = x.Phieu != null ? x.Phieu.MaPhieu : "", // Chưa thanh toán thì rỗng
+                MaThanhToan = x.Phieu != null ? x.Phieu.MaPhieu : "",
                 MaKhachHang = x.DatTiec.MaKhachHang,
-                // Giả định tổng giá trị = (Giá bàn * Số bàn). Cần điều chỉnh theo logic thực tế của bạn
-                TongGiaTri = (decimal)(x.DatTiec.GiaBan * x.DatTiec.SoBanDat),
+                TongGiaTri = (decimal)((x.DatTiec.GiaBan ?? 0) * (x.DatTiec.SoBanDat ?? 0)),
                 TienCoc = x.DatTiec.TienCoc ?? 0,
-                TrangThai = x.Phieu != null ? "Thanh toán hoàn toàn" : "Đã cọc 30%",
+                TrangThai = x.DatTiec.TrangThai, 
                 NgayDatCoc = x.DatTiec.NgayDatTiec,
                 NgayThanhToan = x.Phieu != null ? x.Phieu.NgayThanhToan : null,
                 IsCompleted = x.Phieu != null
@@ -82,7 +65,7 @@ namespace QuanLyNhaHang.Controllers
             return Ok(result);
         }
 
-        // GET: api/ThanhToan/Detail/TIEC_001 (Lấy chi tiết)
+        // GET: api/ThanhToan/Detail/{id}
         [HttpGet("Detail/{maDatTiec}")]
         public async Task<ActionResult<ThanhToanDetailModel>> GetDetail(string maDatTiec)
         {
@@ -90,56 +73,80 @@ namespace QuanLyNhaHang.Controllers
             if (datTiec == null) return NotFound();
 
             var phieu = await _context.PhieuThanhToans.FirstOrDefaultAsync(p => p.MaDatTiec == maDatTiec);
-
-            decimal tongTien = (decimal)(datTiec.GiaBan * datTiec.SoBanDat); // Logic tính tổng tiền
+            decimal tongTien = (decimal)((datTiec.GiaBan ?? 0) * (datTiec.SoBanDat ?? 0));
 
             return new ThanhToanDetailModel
             {
                 MaDatTiec = datTiec.MaDatTiec,
-                MaThanhToan = phieu?.MaPhieu ?? $"TT_{datTiec.MaDatTiec}", // Tự generate mã hiển thị nếu chưa có
+                MaThanhToan = phieu?.MaPhieu ?? $"TT_{datTiec.MaDatTiec}",
                 MaKhachHang = datTiec.MaKhachHang,
                 TongGiaTri = tongTien,
                 TienCoc = datTiec.TienCoc ?? 0,
                 ConLai = tongTien - (datTiec.TienCoc ?? 0),
-                TrangThai = phieu != null ? "Thanh toán hoàn toàn" : "Đã cọc 30%",
+                TrangThai = datTiec.TrangThai,
                 NgayDatCoc = datTiec.NgayDatTiec,
                 NgayThanhToan = phieu?.NgayThanhToan,
                 PhuongThucThanhToan = phieu?.PhuongThucThanhToan,
-                GhiChu = phieu?.GhiChu
+                GhiChu = datTiec.TrangThai == "huy" ? datTiec.ChiTiet : (phieu?.GhiChu ?? ""),
+                // Bổ sung NgayToChuc vào ViewModel để Frontend có thể kiểm tra
+                NgayToChuc = datTiec.NgayToChuc 
             };
         }
 
-        // POST: api/ThanhToan/Confirm (Xác nhận thanh toán)
+        // POST: api/ThanhToan/Confirm
         [HttpPost("Confirm")]
         public async Task<IActionResult> ConfirmPayment([FromBody] ThanhToanDetailModel model)
         {
-            var datTiec = await _context.DatTiecs.FindAsync(model.MaDatTiec);
-            if (datTiec == null) return NotFound("Không tìm thấy tiệc.");
-
-            // Kiểm tra đã thanh toán chưa
-            var existingPhieu = await _context.PhieuThanhToans.FirstOrDefaultAsync(p => p.MaDatTiec == model.MaDatTiec);
-            if (existingPhieu != null) return BadRequest("Đơn này đã thanh toán hoàn tất rồi.");
-
-            // Tạo phiếu thanh toán mới
-            var phieu = new PhieuThanhToan
+            try 
             {
-                MaPhieu = model.MaThanhToan, // Hoặc tự sinh GUID
-                MaDatTiec = model.MaDatTiec,
-                NgayThanhToan = DateTime.Now,
-                PhuongThucThanhToan = "Chuyển khoản/Tiền mặt", // Có thể lấy từ UI nếu cần
-                TongTien = model.TongGiaTri, // Lưu tổng tiền chốt
-                TrangThai = "Completed",
-                GhiChu = "Thanh toán phần còn lại"
-            };
+                var datTiec = await _context.DatTiecs.FindAsync(model.MaDatTiec);
+                if (datTiec == null) return NotFound("Không tìm thấy đơn tiệc.");
 
-            _context.PhieuThanhToans.Add(phieu);
+                if (model.TrangThai == "Hủy")
+                {
+                    // RÀNG BUỘC: Chỉ được hủy trước ít nhất 3 ngày
+                    if (datTiec.NgayToChuc.HasValue)
+                    {
+                        var daysRemaining = (datTiec.NgayToChuc.Value.Date - DateTime.Now.Date).Days;
+                        if (daysRemaining < 3)
+                        {
+                            return BadRequest($"Không thể hủy tiệc. Tiệc diễn ra vào ngày {datTiec.NgayToChuc.Value.ToString("dd/MM/yyyy")}, chỉ được hủy trước ngày tổ chức tối thiểu 3 ngày.");
+                        }
+                    }
 
-            // Cập nhật trạng thái Đặt tiệc (nếu cần đồng bộ)
-            datTiec.TrangThai = "Completed";
+                    datTiec.TrangThai = "huy"; 
+                    datTiec.ChiTiet = model.GhiChu;
 
-            await _context.SaveChangesAsync();
+                    var oldPhieu = await _context.PhieuThanhToans.FirstOrDefaultAsync(p => p.MaDatTiec == model.MaDatTiec);
+                    if (oldPhieu != null) _context.PhieuThanhToans.Remove(oldPhieu);
+                }
+                else if (model.TrangThai == "Thanh toán hoàn toàn")
+                {
+                    var phieu = await _context.PhieuThanhToans.FirstOrDefaultAsync(p => p.MaDatTiec == model.MaDatTiec);
+                    if (phieu == null)
+                    {
+                        phieu = new PhieuThanhToan
+                        {
+                            MaPhieu = model.MaThanhToan,
+                            MaDatTiec = model.MaDatTiec,
+                            NgayThanhToan = DateTime.Now,
+                            PhuongThucThanhToan = model.PhuongThucThanhToan ?? "Tiền mặt",
+                            TongTien = model.TongGiaTri,
+                            TrangThai = "Completed",
+                            GhiChu = "Đã thanh toán đủ"
+                        };
+                        _context.PhieuThanhToans.Add(phieu);
+                    }
+                    datTiec.TrangThai = "Completed";
+                }
 
-            return Ok(new { success = true, message = "Thanh toán thành công" });
+                await _context.SaveChangesAsync();
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Lỗi hệ thống: " + ex.Message);
+            }
         }
     }
 }

@@ -46,7 +46,7 @@
                     <thead>
                         <tr>
                             <th>Mã</th>
-                            <th>Hình</th> @* Cột ảnh mới *@
+                            <th>Hình</th>
                             <th>Tên Combo</th>
                             <th>Giá bán</th>
                             <th>Trạng thái</th>
@@ -86,7 +86,7 @@
                                     <td>@item.TrangThai</td>
                                     <td>
                                         <div class="table-actions" style="justify-content: flex-end; gap: 8px;">
-                                            <a href="@Url.Action("SuaCombo", "QuanLyThucDon", new { id = item.MaComboMon })" class="btn-icon" title="Sửa">✎</a>
+                                            <a href="@Url.Action("SuaCombo", "QuanLyThucDon", new { id = item.MaComboMon })" class="btn-icon" title="Sửa" style="text-decoration: none;">✎</a>
 
                                             <form id="form-delete-combo-@item.MaComboMon" method="post" asp-action="XoaCombo" asp-route-id="@item.MaComboMon" style="display:inline; margin:0;">
                                                 @Html.AntiForgeryToken()
@@ -112,6 +112,50 @@
         @* --- CỘT PHẢI: MÓN LẺ --- *@
         <div class="card">
             <div class="card-title">MÓN LẺ CHO KHÁCH TỰ MIX</div>
+            <div class="filter-bar" style="margin: 15px 0; display: flex; gap: 10px;">
+                <form method="get" action="@Url.Action("Index")" style="display: flex; gap: 10px; width: 100%; align-items: center;">
+
+                    <div style="position: relative; flex: 1;">
+                        <input type="text" name="searchString" value="@ViewBag.SearchString" placeholder="Tìm tên món..."
+                               class="input" style="padding-left: 35px; height: 38px; font-size: 13px; background: #1f2937; border: 1px solid #374151;" />
+                        <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #9ca3af;">🔍</span>
+                    </div>
+
+                    <select name="category" class="select" onchange="this.form.submit()"
+                            style="width: 150px; height: 38px; font-size: 13px; background: #1f2937; border: 1px solid #374151; padding: 0 10px;">
+                        <option value="">-- Tất cả --</option>
+                        @if (ViewBag.Categories != null)
+                        {
+                            foreach (var cat in ViewBag.Categories)
+                            {
+                                // Kiểm tra để giữ trạng thái đã chọn
+                                if (!string.IsNullOrEmpty(cat))
+                                {
+                                    if (ViewBag.CurrentCategory == cat)
+                                    {
+                                        <option value="@cat" selected>@cat</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@cat">@cat</option>
+                                    }
+                                }
+                            }
+                        }
+                    </select>
+
+                    @if (!string.IsNullOrEmpty(ViewBag.SearchString) || !string.IsNullOrEmpty(ViewBag.CurrentCategory))
+                    {
+                        <a href="@Url.Action("Index")" class="btn" style="background: #4b5563; padding: 0 15px; height: 38px; line-height: 38px; font-size: 13px;">
+                            ✕ Bỏ lọc
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn" style="padding: 0 15px; height: 38px; font-size: 13px;">Tìm</button>
+                    }
+                </form>
+            </div>
             <div class="data-card" style="margin-top:6px; max-height: 600px; overflow:auto;">
                 <table>
                     <thead>
@@ -145,7 +189,7 @@
                                     
                                     <td>
                                         <div class="table-actions" style="justify-content: flex-end; gap: 8px;">
-                                            <a href="@Url.Action("Sua", "QuanLyThucDon", new { id = item.MaMonAn })" class="btn-icon" title="Sửa">✎</a>
+                                            <a href="@Url.Action("Sua", "QuanLyThucDon", new { id = item.MaMonAn })" class="btn-icon" title="Sửa" style="text-decoration: none;">✎</a>
                                             <form id="form-delete-mon-@item.MaMonAn" method="post" asp-action="Xoa" asp-route-id="@item.MaMonAn" style="display:inline; margin:0;">
                                                 @Html.AntiForgeryToken()
                                                 <button type="button" class="btn-icon" title="Xóa"
