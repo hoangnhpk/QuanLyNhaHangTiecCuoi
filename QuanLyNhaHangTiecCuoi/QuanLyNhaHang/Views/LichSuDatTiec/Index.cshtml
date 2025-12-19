@@ -2,72 +2,93 @@
 
 @{
     ViewData["Title"] = "Lịch sử đặt tiệc";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container mt-4">
-    <h2 class="text-center mb-4">LỊCH SỬ ĐẶT TIỆC</h2>
+    <h2 class="text-center mb-4 text-uppercase font-weight-bold">Lịch Sử Đặt Tiệc</h2>
 
-    <table class="table table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>Mã Đơn</th>
-                <th>Ngày Tạo</th>
-                <th>Tổng Tiền</th>
-                <th>Tiền Cọc</th>
-                <th>Trạng Thái</th>
-                <th>Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered shadow-sm">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@item.MaDatTiec</td>
-                    <td>@(item.NgayDatTiec.HasValue? item.NgayDatTiec.Value.ToString("dd/MM/yyyy HH:mm") : "")</td>
-                    <td>@(item.GiaBan.HasValue? item.GiaBan.Value.ToString("#,##0") : "0") đ</td>
-                    <td class="text-danger font-weight-bold">
-                        @(item.TienCoc.HasValue? item.TienCoc.Value.ToString("#,##0") : "0") đ
-                    </td>
-                    <td>
-                        @if (item.TrangThai == "Cancelled")
-                        {
-                            <span class="text-danger">Đã Hủy</span>
-                        }
-                        else if (item.TrangThai == "Deposited")
-                        {
-
-                            <span class="text-success">Đã Cọc</span>
-                        }
-                        else
-                        {
-
-                            <span class="text-warning">Chờ Duyệt</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="ChiTiet" asp-route-id="@item.MaDatTiec" class="btn btn-primary btn-sm" style="margin-right: 5px;">
-                            Xem chi tiết
-                        </a>
-
-                        @if (item.TrangThai != "Cancelled" && item.TrangThai != "Completed")
-                        {
-                            <a asp-action="XacNhanHuy" asp-route-id="@item.MaDatTiec" class="btn btn-danger btn-sm">
-                                Hủy Đơn
-                            </a>
-                        }
-                    </td>
+                    <th class="text-center">Mã Đơn</th>
+                    <th class="text-center">Ngày Tạo</th>
+                    <th class="text-right">Tổng Tiền</th>
+                    <th class="text-right">Tiền Cọc</th>
+                    <th class="text-center">Trạng Thái</th>
+                    <th class="text-center">Thao tác</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-center font-weight-bold">@item.MaDatTiec</td>
+                            <td class="text-center">@(item.NgayDatTiec.HasValue? item.NgayDatTiec.Value.ToString("dd/MM/yyyy HH:mm") : "---")</td>
+                            <td class="text-right">@(item.GiaBan.HasValue? item.GiaBan.Value.ToString("#,##0") : "0") đ</td>
+                            <td class="text-right text-danger font-weight-bold">
+                                @(item.TienCoc.HasValue? item.TienCoc.Value.ToString("#,##0") : "0") đ
+                            </td>
+                            <td>
+                                @if (item.TrangThai == "Hủy đơn" || item.TrangThai == "Cancelled")
+                                {
+                                    <span class="badge badge-danger p-2" style="min-width: 100px; background-color: #dc3545; color: white;">Đã Hủy</span>
+                                }
+                                else if (item.TrangThai == "Đã cọc" || item.TrangThai == "Deposited")
+                                {
+                                    <span class="badge badge-warning p-2 text-dark" style="min-width: 100px; background-color: #ffc107;">Đã Cọc</span>
+                                }
+                                else if (item.TrangThai == "Hoàn thành" || item.TrangThai == "Completed")
+                                {
+                                    <span class="badge badge-success p-2" style="min-width: 100px; background-color: #28a745; color: white;">Hoàn Thành</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-secondary p-2" style="min-width: 100px; background-color: #ffc107;">Chờ Duyệt</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <a asp-action="ChiTiet" asp-route-id="@item.MaDatTiec" class="btn btn-primary btn-sm mx-1">
+                                        <i class="fa fa-eye"></i> Xem
+                                    </a>
+
+                                    @* Ẩn nút Hủy nếu đơn đã Hủy hoặc đã Hoàn Thành *@
+                                    @if (item.TrangThai != "Cancelled" && item.TrangThai != "Hủy đơn" && item.TrangThai != "Completed")
+                                    {
+                                        <a asp-action="XacNhanHuy" asp-route-id="@item.MaDatTiec" class="btn btn-danger btn-sm mx-1">
+                                            <i class="fa fa-times"></i> Hủy
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">Bạn chưa có đơn đặt tiệc nào.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
 <style>
-    main{
-        margin-top: 160px;
-    }
     main.main {
-            margin-top: 160px;
+        margin-top: 160px; /* Giữ khoảng cách với header [cite: 67, 68] */
     }
-    
- </style>
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .badge {
+        min-width: 85px;
+    }
+</style>

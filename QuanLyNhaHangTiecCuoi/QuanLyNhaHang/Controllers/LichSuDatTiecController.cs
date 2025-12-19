@@ -15,12 +15,25 @@ namespace QuanLyNhaHang.Controllers
 
         public async Task<IActionResult> Index()
         {
-            string currentMaKH = "KH001";
+            // 1. Lấy mã khách hàng từ Session (Tên biến phải khớp 100% với DangNhapController)
+            string currentMaKH = HttpContext.Session.GetString("MaKhachHang");
 
+    // 2. Nếu Session trống (do restart dự án), lấy từ Cookie Claim "MaKH"
+    if (string.IsNullOrEmpty(currentMaKH))
+            {
+                 currentMaKH = User.Claims.FirstOrDefault(c => c.Type == "MaKH")?.Value; 
+    }
+
+            // 3. KIỂM TRA QUAN TRỌNG: Nếu chưa đăng nhập thì chuyển về trang DANG NHAP
+            // Không dùng Redirect sang Home vì sẽ gây hiểu lầm
+            if (string.IsNullOrEmpty(currentMaKH))
+            {
+                 return RedirectToAction("Index", "DangNhap"); 
+    }
+
+            // 4. Truy vấn dữ liệu
             var listDatTiec = await _context.DatTiecs
                                     .Where(x => x.MaKhachHang == currentMaKH)
-                                   
-                                    .Where(x => x.TrangThai != "Hủy đơn")
                                     .OrderByDescending(x => x.NgayDatTiec)
                                     .ToListAsync();
 
