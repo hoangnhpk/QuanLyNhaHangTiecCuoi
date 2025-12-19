@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>@ViewData["Title"] - Nhà Hàng Long Phụng</title>
+    <meta name="description" content="Nhà hàng cao cấp phục vụ món ăn ngon hơn 18 năm">
+    <meta name="keywords" content="nhà hàng, ẩm thực, đặt bàn">
+
+    <link href="~/assets/img/favicon.png" rel="icon">
+    <link href="~/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+    <link href="~/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="~/assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="~/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="~/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <link href="~/assets/css/main.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <style>
+        /* Thêm style để nút bấm giống input placeholder */
+        .book-a-table .php-email-form .btn-chon-modal {
+            text-align: left;
+            font-weight: 400;
+            font-size: 14px;
+            padding: 10px 15px;
+            box-shadow: none;
+            border-radius: 0;
+            color: color-mix(in srgb, var(--default-color), transparent 70%);
+            background-color: color-mix(in srgb, var(--background-color), transparent 20%);
+            border-color: color-mix(in srgb, var(--default-color), transparent 80%);
+        }
+
+            .book-a-table .php-email-form .btn-chon-modal:hover {
+                border-color: var(--accent-color);
+                color: color-mix(in srgb, var(--default-color), transparent 70%);
+                background-color: color-mix(in srgb, var(--background-color), transparent 20%);
+            }
+
+        /* CSS bổ sung cho modal */
+        .menu-item-card:hover {
+            border-color: var(--accent-color) !important;
+            transform: translateY(-2px);
+        }
+
+        .menu-item-card.selected {
+            border-color: var(--accent-color) !important;
+            background-color: color-mix(in srgb, var(--accent-color), transparent 90%) !important;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        .form-check-input:disabled {
+            opacity: 0.3;
+        }
+
+        /* Đồng bộ font Footer */
+        .footer {
+            font-family: var(--default-font);
+        }
+
+            .footer h4, .footer .sitename {
+                font-family: var(--heading-font);
+            }
+
+            .footer .footer-links a, .footer .footer-contact p, .footer .footer-newsletter p {
+                font-family: var(--nav-font);
+            }
+
+            .footer .copyright p, .footer .credits {
+                font-family: var(--default-font);
+            }
+
+            .footer .footer-newsletter input[type=email] {
+                font-family: var(--default-font);
+            }
+
+            .footer .footer-newsletter input[type=submit] {
+                font-family: var(--nav-font);
+                font-weight: 500;
+            }
+    </style>
+</head>
+
+<body class="index-page">
+
+    <header id="header" class="header fixed-top">
+        <div class="topbar d-flex align-items-center">
+            <div class="container d-flex justify-content-center justify-content-md-between">
+                <div class="contact-info d-flex align-items-center">
+                    <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:lienhe@longphung.vn">lienhe@longphung.vn</a></i>
+                    <i class="bi bi-phone d-flex align-items-center ms-4"><span>+84 236 3888 888</span></i>
+                </div>
+                <div class="languages d-none d-md-flex align-items-center">
+                    <ul>
+                        <li>Vi</li>
+                        <li><a href="#">En</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="branding d-flex align-items-cente">
+            <div class="container position-relative d-flex align-items-center justify-content-between">
+                <a href="/" class="logo d-flex align-items-center me-auto me-xl-0">
+                    <h1 class="sitename">Long Phụng</h1>
+                </a>
+
+                <nav id="navmenu" class="navmenu">
+                    <ul>
+                        <li><a href="/#hero" class="active">Trang Chủ<br></a></li>
+                        <li><a href="/#about">Giới Thiệu</a></li>
+                        <li><a href="/#menu">Thực Đơn</a></li>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li><a asp-controller="DangKy" asp-action="Index">Đăng Ký</a></li>
+                            <li><a asp-controller="DangNhap" asp-action="Index">Đăng Nhập</a></li>
+                        }
+                        else
+                        {
+                            <li class="dropdown">
+                                <a href="#">
+                                    <span>Xin chào, @User.Identity.Name</span> <i class="bi bi-chevron-down"></i>
+                                </a>
+                                <ul>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a asp-area="Admin" asp-controller="QuanTriVien" asp-action="Index">Trang Admin</a></li>
+                                    }
+                                    @if (User.IsInRole("QuanLy"))
+                                    {
+                                        <li><a asp-area="Admin" asp-controller="QuanLyThucDon" asp-action="Index">Trang Quản Lý</a></li>
+                                    }
+                                    <li>
+                                        <a asp-controller="TTCaNhan" asp-action="Index">Thông Tin Cá Nhân</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onclick="confirmLogout(event)">Đăng xuất</a>
+                                    </li>
+                                    
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+                </nav>
+
+                <a class="btn-book-a-table d-none d-xl-block" href="/#book-a-table">Đặt Tiệc Cưới</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        @RenderBody()
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6 footer-about">
+                    <a href="index.html" class="logo d-flex align-items-center">
+                        <span class="sitename">Long Phụng</span>
+                    </a>
+                    <div class="footer-contact pt-3">
+                        <p>99 Nguyễn Văn Linh</p>
+                        <p>Ea Tu, Buôn Ma Thuột, Đắk Lắk</p>
+                        <p class="mt-3"><strong>Điện thoại:</strong> <span>+84 909 123 456</span></p>
+                        <p><strong>Email:</strong> <span>longphung@gmail.com</span></p>
+                    </div>
+                    <div class="social-links d-flex mt-4">
+                        <a href=""><i class="bi bi-twitter-x"></i></a>
+                        <a href=""><i class="bi bi-facebook"></i></a>
+                        <a href=""><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-12 footer-newsletter">
+                    <h4>Bản tin của chúng tôi</h4>
+                    <p>Đăng ký nhận bản tin và cập nhật tin tức mới nhất!</p>
+                    <form action="#" method="post" class="php-email-form">
+                        <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Đăng ký"></div>
+                        <div class="loading">Đang xử lý</div>
+                        <div class="error-message"></div>
+                        <div class="sent-message">Cảm ơn bạn đã đăng ký!</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="container copyright text-center mt-4">
+            <p>© <span>Bản quyền</span> <strong class="px-1 sitename">Long Phụng</strong> <span>Đã đăng ký bản quyền</span></p>
+        </div>
+    </footer>
+
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <div id="preloader"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/vendor/php-email-form/validate.js"></script>
+    <script src="~/assets/vendor/aos/aos.js"></script>
+    <script src="~/assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="~/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="~/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="~/assets/js/main.js"></script>
+
+    <script>
+        // Hàm xác nhận đăng xuất
+        function confirmLogout(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Đăng xuất?',
+                text: "Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#cda45e',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Đăng xuất',
+                cancelButtonText: 'Hủy',
+                background: '#1a1814',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/DangNhap/DangXuat';
+                }
+            })
+        }
+    </script>
+
+    @if (TempData["Type"] != null)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                Swal.fire({
+                    icon: '@TempData["Type"]',
+                    title: '@(TempData["Title"] ?? "Thông báo")',
+                    html: '@Html.Raw(TempData["Message"])',
+                    background: '#1a1814',
+                    color: '#fff',
+                    confirmButtonText: 'Đồng ý',
+                    confirmButtonColor: '#cda45e'
+                });
+            });
+        </script>
+    }
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

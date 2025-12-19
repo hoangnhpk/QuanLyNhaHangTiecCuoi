@@ -1,0 +1,18 @@
+﻿@* File: Views/Shared/_Notification.cshtml *@
+
+@if (TempData["Type"] != null && TempData["Message"] != null)
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: '@TempData["Type"]', // success, error, warning, info
+                title: '@(TempData["Title"] ?? "Thông báo")',
+                text: '@Html.Raw(TempData["Message"])',
+                confirmButtonText: 'Đồng ý',
+                confirmButtonColor: '#3085d6',
+                timer: 5000, // Tự tắt sau 5 giây
+                timerProgressBar: true
+            });
+        });
+    </script>
+}

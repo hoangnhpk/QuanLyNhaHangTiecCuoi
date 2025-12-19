@@ -1,0 +1,79 @@
+﻿@model IEnumerable<QuanLyNhaHang.Models.QuanTriVien>
+
+@{
+    ViewData["Title"] = "Danh sách Quản trị viên";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="module-view active" style="display:block;">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div style="background:#d1fae5; color:#065f46; padding:15px; margin-bottom:20px; border-radius:5px;">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="module-header">
+        <div class="module-title">Quản lý Admin</div>
+        <div class="toolbar">
+            <form asp-action="Index" method="get" style="display: flex; align-items: center; gap: 10px; margin-right: 20px; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 20px; padding-top: 5px; padding-bottom: 5px;">
+                <input type="text" name="tuKhoa" class="input" placeholder="Tên, Mã QTV..." value="@ViewBag.TuKhoa" />
+                <button type="submit" class="btn">Tìm kiếm</button>
+            </form>
+            <a asp-action="Them" class="btn" style="text-decoration: none;">Thêm mới</a>
+        </div>
+    </div>
+
+    <div class="data-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã QTV</th>
+                    <th>Mã TK</th>
+                    <th>Họ Tên</th>
+                    <th>SĐT</th>
+                    <th>Email</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.MaQuanTriVien</strong></td>
+                            <td>@(string.IsNullOrEmpty(item.MaTaiKhoan) ? "---" : item.MaTaiKhoan)</td>
+                            <td>@item.TenQuanTriVien</td>
+                            <td>@item.SdtNV</td>
+                            <td>@item.Email</td>
+                            <td>
+                                @if (item.TrangThai == "Hoạt động")
+                                {
+                                    <span class="badge badge-success" style="color:green">Hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning">@item.TrangThai</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="Sua" asp-route-id="@item.MaQuanTriVien" class="btn-icon" style="text-decoration: none;">✎</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="7" style="text-align:center; padding: 20px;">Không quản lý bạn tìm</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
