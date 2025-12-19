@@ -19,7 +19,9 @@ namespace QuanLyNhaHang.Models
         public DateTime? NgayTaoCombo { get; set; }
 
         [Range(1, 1000, ErrorMessage = "Số lượng phải từ 1 đến 1000")]
+        [Required(ErrorMessage = "Số lượng không được để trống")]
         public int? SoLuong { get; set; }
+
         [Range(0, double.MaxValue, ErrorMessage = "Giá bán không được âm")]
         [Required(ErrorMessage = "Giá bán không được để trống")]
         public decimal? GiaCombo { get; set; }

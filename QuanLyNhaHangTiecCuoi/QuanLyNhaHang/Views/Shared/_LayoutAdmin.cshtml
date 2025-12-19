@@ -777,7 +777,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="QuanLyThucDon" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
-                        <span class="icon">📜</span>
+                        <span class="icon">🍽️</span>
                         <span>Quản lý thực đơn</span>
                     </a>
                 </li>
@@ -800,9 +800,15 @@
                     </a>
                 </li>
 
+                @* <li class="nav-item">
+                    <a class="nav-link" asp-controller="NhanVienPartTime" asp-action="Index" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                        <span class="icon">⏱️</span>
+                        <span>Nhân viên Part-time</span>
+                    </a>
+                </li> *@
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="GuiThongBao" asp-action="SoanEmail" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
-                        <span class="icon">⏱️</span>
+                        <span class="icon">📜</span>
                         <span>Gửi thông báo</span>
                     </a>
                 </li>
@@ -874,19 +880,15 @@
 
                     <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienFullTime" ? "active" : "")"
                        asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration:none;">
-                        <span class="dot"></span> Nhân viên
-                    </a>
-                    <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "QLDichVu" ? "active" : "")"
-                       asp-controller="QlDichVu" asp-action="Index" style="text-decoration:none;">
-                        <span class="dot"></span> Dịch Vụ
+                        <span class="dot"></span> Quản lý nhân viên
                     </a>
                     <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "ThanhToan" ? "active" : "")"
                        asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration:none;">
                         <span class="dot"></span> Thanh Toán
                     </a>
                     <a class="tab-pill @(ViewContext.RouteData.Values["controller"]?.ToString() == "NhanVienFullTime" ? "active" : "")"
-                       asp-controller="NhanVienFullTime" asp-action="Index" style="text-decoration:none;">
-                        <span class="dot"></span> Thống Kê
+                       asp-controller="QLDichVu" asp-action="Index" style="text-decoration:none;">
+                        <span class="dot"></span> Quản lý Dịch Vụ
                     </a>
                 </div>
                 @RenderBody()

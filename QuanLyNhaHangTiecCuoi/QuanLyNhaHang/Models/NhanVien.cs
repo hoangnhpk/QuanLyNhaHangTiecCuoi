@@ -24,7 +24,7 @@ namespace QuanLyNhaHang.Models
 
         [StringLength(15)]
         [Required(ErrorMessage = "Vui lòng nhập CCCD.")]
-        [RegularExpression("^[0-9]*$", ErrorMessage = "CCCD chỉ được chứa số.")]
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "CCCD phải bao gồm đúng 12 chữ số.")]
         [Display(Name = "CCCD")]
         public string? CccdNV { get; set; }
 
