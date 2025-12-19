@@ -1,0 +1,96 @@
+﻿@model QuanLyNhaHang.ViewModels.HoanThienGoogleVM
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hoàn thiện thông tin</title>
+    <style>
+        body {
+            background: #1a1814;
+            color: #fff;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            padding-top: 80px;
+        }
+
+        .box {
+            background: rgba(12, 11, 9, 0.9);
+            padding: 40px;
+            border: 1px solid #cda45e;
+            width: 420px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px #000;
+        }
+
+        h2 {
+            color: #cda45e;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 5px;
+            background: transparent;
+            border: 1px solid #625b4b;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .error-text {
+            color: #ff4d4d;
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .validation-summary {
+            color: #ff4d4d;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #cda45e;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 50px;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+            .btn:hover {
+                background: #d9ba85;
+            }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>CẬP NHẬT HỒ SƠ</h2>
+        <p style="text-align: center; color: #aaa; font-size: 14px; margin-bottom: 25px;">Vui lòng bổ sung thông tin để hoàn tất đăng ký tài khoản Google.</p>
+
+        <form asp-action="HoanThienThongTin" method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <input asp-for="Cccd" placeholder="Nhập số CCCD / CMND" value="@Model?.Cccd" />
+            <span asp-validation-for="Cccd" class="error-text"></span>
+
+            <input asp-for="Sdt" placeholder="Nhập số điện thoại" value="@Model?.Sdt" />
+            <span asp-validation-for="Sdt" class="error-text"></span>
+
+            <input asp-for="DiaChi" placeholder="Nhập địa chỉ" value="@Model?.DiaChi" />
+            <span asp-validation-for="DiaChi" class="error-text"></span>
+
+            <button type="submit" class="btn">LƯU THÔNG TIN</button>
+        </form>
+    </div>
+</body>
+</html>
