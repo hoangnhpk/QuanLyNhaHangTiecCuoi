@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // Cần cái này để query async nếu muốn
+using Microsoft.EntityFrameworkCore;
 using QuanLyNhaHang.Models;
 using QuanLyNhaHang.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace QuanLyNhaHang.Controllers
 {
@@ -25,34 +25,47 @@ namespace QuanLyNhaHang.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetStatData(string type, DateTime? date, int page = 1)
+        public IActionResult GetStatData(string type, DateTime? date, string statusFilter = "Tất cả", int page = 1)
         {
             var selectedDate = date ?? DateTime.Now;
             var query = _context.DatTiecs.AsQueryable();
-            int pageSize = 5; // Số dòng mỗi trang
+            int pageSize = 5;
 
-            // 1. LỌC THỜI GIAN
+            // 1. LỌC THỜI GIAN: Kiểm tra cả Ngày Đặt và Ngày Tổ Chức
             if (type == "day")
             {
-                query = query.Where(x => x.NgayToChuc.HasValue && x.NgayToChuc.Value.Date == selectedDate.Date);
+                var d = selectedDate.Date;
+                query = query.Where(x => (x.NgayToChuc.HasValue && x.NgayToChuc.Value.Date == d)
+                                      || (x.NgayDatTiec.HasValue && x.NgayDatTiec.Value.Date == d));
             }
             else if (type == "month")
             {
-                query = query.Where(x => x.NgayToChuc.HasValue && x.NgayToChuc.Value.Month == selectedDate.Month && x.NgayToChuc.Value.Year == selectedDate.Year);
+                int m = selectedDate.Month;
+                int y = selectedDate.Year;
+                query = query.Where(x => (x.NgayToChuc.HasValue && x.NgayToChuc.Value.Month == m && x.NgayToChuc.Value.Year == y)
+                                      || (x.NgayDatTiec.HasValue && x.NgayDatTiec.Value.Month == m && x.NgayDatTiec.Value.Year == y));
             }
             else // year
             {
-                query = query.Where(x => x.NgayToChuc.HasValue && x.NgayToChuc.Value.Year == selectedDate.Year);
+                int y = selectedDate.Year;
+                query = query.Where(x => (x.NgayToChuc.HasValue && x.NgayToChuc.Value.Year == y)
+                                      || (x.NgayDatTiec.HasValue && x.NgayDatTiec.Value.Year == y));
             }
 
-            // Lấy dữ liệu thô về RAM để xử lý logic phức tạp (Status check)
-            // Lưu ý: Với dữ liệu cực lớn thì nên xử lý SQL Raw, nhưng với App quản lý nhà hàng thì OK.
+            // 2. LỌC THEO TRẠNG THÁI
+            if (!string.IsNullOrEmpty(statusFilter) && statusFilter != "Tất cả")
+            {
+                if (statusFilter == "Đã hủy") query = query.Where(x => x.TrangThai == "huy");
+                else if (statusFilter == "Hoàn tất") query = query.Where(x => x.TrangThai == "Completed");
+                else query = query.Where(x => x.TrangThai != "huy" && x.TrangThai != "Completed"); // Đã cọc
+            }
+
             var rawData = query.Include(x => x.KhachHang).ToList();
 
-            // 2. XỬ LÝ SỐ LIỆU TỔNG HỢP (KPIs)
-            decimal totalRevenue_Expected = 0; // Dự kiến
-            decimal totalRevenue_Actual = 0;   // Thực thu
-            decimal totalRemaining = 0;        // Còn lại
+            // 3. XỬ LÝ SỐ LIỆU TỔNG HỢP (KPIs)
+            decimal totalRevenue_Expected = 0;
+            decimal totalRevenue_Actual = 0;
+            decimal totalRemaining = 0;
             int countCoc = 0;
             int countDone = 0;
             int countCancel = 0;
@@ -61,91 +74,49 @@ namespace QuanLyNhaHang.Controllers
             {
                 decimal giaTriTiec = (item.GiaBan ?? 0) * (item.SoBanDat ?? 0);
                 decimal tienCoc = item.TienCoc ?? 0;
-                string status = (item.TrangThai ?? "").ToLower();
+                string st = (item.TrangThai ?? "").ToLower();
 
-                bool isCancelled = status.Contains("huy") || status.Contains("cancel");
-                bool isCompleted = status.Contains("hoan thanh") || status.Contains("thanh toan du") || status.Contains("completed");
-
-                if (isCancelled)
+                if (st == "huy")
                 {
                     countCancel++;
-                    // Hủy thì thực thu = cọc (mất cọc) hoặc hoàn cọc tùy chính sách. 
-                    // Giả sử: Hủy là mất cọc -> Doanh thu là tiền cọc.
                     totalRevenue_Actual += tienCoc;
-                    // Doanh thu dự kiến của đơn hủy coi như = 0 hoặc bằng tiền cọc (tùy nghiệp vụ). Ở đây tính là tiền cọc.
                     totalRevenue_Expected += tienCoc;
                 }
                 else
                 {
                     totalRevenue_Expected += giaTriTiec;
-
-                    if (isCompleted)
+                    if (st == "completed")
                     {
                         countDone++;
                         totalRevenue_Actual += giaTriTiec;
                     }
                     else
                     {
-                        countCoc++; // Coi như đang ở trạng thái cọc/chưa xong
+                        countCoc++;
                         totalRevenue_Actual += tienCoc;
                         totalRemaining += (giaTriTiec - tienCoc);
                     }
                 }
             }
 
-            // 3. XỬ LÝ BIỂU ĐỒ (Chart)
-            List<ChartDataPoint> chartData = new List<ChartDataPoint>();
-            if (type == "month")
-            {
-                // Chia 4 tuần
-                chartData = GenerateWeeklyChartV2(rawData);
-            }
-            else if (type == "year")
-            {
-                // Chia 12 tháng
-                chartData = GenerateMonthlyChartV2(rawData);
-            }
-            else
-            {
-                // Theo ngày (hiện 1 cột duy nhất hoặc chia theo giờ nếu muốn)
-                chartData.Add(new ChartDataPoint
-                {
-                    Label = selectedDate.ToString("dd/MM"),
-                    TotalCount = rawData.Count,
-                    CancelCount = countCancel,
-                    Percentage = 100
-                });
-            }
-
-            // 4. XỬ LÝ DANH SÁCH ĐƠN HÀNG (Phân trang)
-            // Sắp xếp ngày mới nhất
+            // 4. BIỂU ĐỒ & PHÂN TRANG
             var sortedList = rawData.OrderByDescending(x => x.NgayToChuc).ToList();
             int totalItems = sortedList.Count;
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
             var paginatedData = sortedList.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            var orderList = paginatedData.Select(x => {
-                decimal val = (x.GiaBan ?? 0) * (x.SoBanDat ?? 0);
-                string st = (x.TrangThai ?? "").ToLower();
-                bool isCan = st.Contains("huy");
-                bool isComp = st.Contains("hoan thanh") || st.Contains("completed");
-
-                string paymentStatus = isCan ? "Đã hủy" : (isComp ? "Thanh toán 100%" : "Cọc 30%");
-
-                return new OrderItem
-                {
-                    MaDatTiec = x.MaDatTiec,
-                    NgayToChuc = x.NgayToChuc?.ToString("dd/MM/yyyy") ?? "",
-                    KhachHang = x.KhachHang?.TenKhachHang ?? "Khách lẻ",
-                    TongTien = FormatCurrency(val),
-                    TrangThai = x.TrangThai,
-                    TinhTrangThanhToan = paymentStatus,
-                    IsCancelled = isCan
-                };
+            var orderList = paginatedData.Select(x => new OrderItem
+            {
+                MaDatTiec = x.MaDatTiec,
+                NgayToChuc = x.NgayToChuc?.ToString("dd/MM/yyyy") ?? "",
+                KhachHang = x.KhachHang?.TenKhachHang ?? "Khách lẻ",
+                TongTien = FormatCurrency((x.TrangThai == "huy") ? (x.TienCoc ?? 0) : (x.GiaBan ?? 0) * (x.SoBanDat ?? 0)),
+                TrangThai = x.TrangThai,
+                TinhTrangThanhToan = (x.TrangThai == "huy") ? "Đã hủy" : (x.TrangThai == "Completed" ? "Thanh toán 100%" : "Cọc 30%"),
+                IsCancelled = (x.TrangThai == "huy")
             }).ToList();
 
-            // 5. ĐÓNG GÓI
-            var model = new ThongKeViewModel
+            return Json(new ThongKeViewModel
             {
                 TongHop = new ThongKeTongHop
                 {
@@ -153,121 +124,65 @@ namespace QuanLyNhaHang.Controllers
                     SoTiecDaHuy = countCancel,
                     DoanhThuDuKien = FormatCurrency(totalRevenue_Expected),
                     ThucThu = FormatCurrency(totalRevenue_Actual),
-                    ConLai = FormatCurrency(totalRemaining),
-                    SoDonCoc = countCoc,
-                    SoDonHoanTat = countDone
+                    ConLai = FormatCurrency(totalRemaining)
                 },
-                Bieudo = chartData,
-                DanhSachDonHang = new OrderListResult
-                {
-                    Items = orderList,
-                    CurrentPage = page,
-                    TotalPages = totalPages
-                }
-            };
-
-            return Json(model);
+                Bieudo = (type == "month") ? GenerateWeeklyChartV2(rawData) : GenerateMonthlyChartV2(rawData),
+                DanhSachDonHang = new OrderListResult { Items = orderList, CurrentPage = page, TotalPages = totalPages }
+            });
         }
 
-        // --- HELPERS ---
-        private string FormatCurrency(decimal value)
-        {
-            return string.Format(new CultureInfo("vi-VN"), "{0:C0}", value);
-        }
+        private string FormatCurrency(decimal val) => string.Format(new CultureInfo("vi-VN"), "{0:C0}", val);
 
         private List<ChartDataPoint> GenerateWeeklyChartV2(List<DatTiec> data)
         {
-            var result = new List<ChartDataPoint>();
-            var weeks = new[] {
-                new { L = "Tuần 1", S = 1, E = 7 },
-                new { L = "Tuần 2", S = 8, E = 14 },
-                new { L = "Tuần 3", S = 15, E = 21 },
-                new { L = "Tuần 4", S = 22, E = 31 }
-            };
-
-            int maxVal = 0;
+            var res = new List<ChartDataPoint>();
+            var weeks = new[] { new { L = "Tuần 1", S = 1, E = 7 }, new { L = "Tuần 2", S = 8, E = 14 }, new { L = "Tuần 3", S = 15, E = 21 }, new { L = "Tuần 4", S = 22, E = 31 } };
+            int max = 0;
             foreach (var w in weeks)
             {
-                var subset = data.Where(x => x.NgayToChuc.Value.Day >= w.S && x.NgayToChuc.Value.Day <= w.E).ToList();
-                int total = subset.Count;
-                int cancel = subset.Count(x => (x.TrangThai ?? "").ToLower().Contains("huy"));
-                if (total > maxVal) maxVal = total;
-
-                result.Add(new ChartDataPoint { Label = w.L, TotalCount = total, CancelCount = cancel });
+                var sub = data.Where(x => x.NgayToChuc.HasValue && x.NgayToChuc.Value.Day >= w.S && x.NgayToChuc.Value.Day <= w.E).ToList();
+                if (sub.Count > max) max = sub.Count;
+                res.Add(new ChartDataPoint { Label = w.L, TotalCount = sub.Count, CancelCount = sub.Count(x => x.TrangThai == "huy") });
             }
-
-            // Tính %
-            foreach (var r in result) r.Percentage = maxVal > 0 ? ((double)r.TotalCount / maxVal) * 100 : 0;
-            return result;
+            res.ForEach(r => r.Percentage = max > 0 ? ((double)r.TotalCount / max) * 100 : 0);
+            return res;
         }
 
         private List<ChartDataPoint> GenerateMonthlyChartV2(List<DatTiec> data)
         {
-            var result = new List<ChartDataPoint>();
-            int maxVal = 0;
+            var res = new List<ChartDataPoint>();
+            int max = 0;
             for (int i = 1; i <= 12; i++)
             {
-                var subset = data.Where(x => x.NgayToChuc.Value.Month == i).ToList();
-                int total = subset.Count;
-                int cancel = subset.Count(x => (x.TrangThai ?? "").ToLower().Contains("huy"));
-                if (total > maxVal) maxVal = total;
-
-                result.Add(new ChartDataPoint { Label = "T" + i, TotalCount = total, CancelCount = cancel });
+                var sub = data.Where(x => x.NgayToChuc.HasValue && x.NgayToChuc.Value.Month == i).ToList();
+                if (sub.Count > max) max = sub.Count;
+                res.Add(new ChartDataPoint { Label = "T" + i, TotalCount = sub.Count, CancelCount = sub.Count(x => x.TrangThai == "huy") });
             }
-            foreach (var r in result) r.Percentage = maxVal > 0 ? ((double)r.TotalCount / maxVal) * 100 : 0;
-            return result;
+            res.ForEach(r => r.Percentage = max > 0 ? ((double)r.TotalCount / max) * 100 : 0);
+            return res;
         }
+
         [HttpGet]
         public IActionResult GetOrderDetail(string id)
         {
-            var order = _context.DatTiecs
-                .Include(x => x.KhachHang)
-                .Include(x => x.PhieuThanhToan)
-                // Include bảng Món ăn
-                .Include(x => x.ChiTietThucDons).ThenInclude(m => m.MonAn)
-                // Include bảng Dịch vụ
-                .Include(x => x.TT_SuDungDichVus).ThenInclude(d => d.DichVu)
-                .FirstOrDefault(x => x.MaDatTiec == id);
-
-            if (order == null) return NotFound();
-
-            var result = new
+            var o = _context.DatTiecs.Include(x => x.KhachHang).Include(x => x.ChiTietThucDons).ThenInclude(m => m.MonAn).Include(x => x.TT_SuDungDichVus).ThenInclude(d => d.DichVu).FirstOrDefault(x => x.MaDatTiec == id);
+            if (o == null) return NotFound();
+            bool isHuy = o.TrangThai == "huy";
+            return Json(new
             {
-                MaDatTiec = order.MaDatTiec,
-                NgayDat = order.NgayDatTiec?.ToString("dd/MM/yyyy"),
-                NgayToChuc = order.NgayToChuc?.ToString("dd/MM/yyyy"),
-                GioToChuc = order.GioToChuc?.ToString(@"hh\:mm"),
-                SoBan = order.SoBanDat,
-                TenKhach = order.KhachHang?.TenKhachHang ?? "Khách lẻ",
-                Sdt = order.KhachHang?.SdtKhachHang ?? "---",
-                GhiChu = order.ChiTiet ?? "Không có ghi chú",
-
-                // Tài chính
-                TongTien = string.Format(new CultureInfo("vi-VN"), "{0:C0}", (order.GiaBan ?? 0) * (order.SoBanDat ?? 0)),
-                TienCoc = string.Format(new CultureInfo("vi-VN"), "{0:C0}", order.TienCoc ?? 0),
-                TrangThai = order.TrangThai,
-
-                // --- SỬA LỖI TẠI ĐÂY ---
-
-                // 1. Danh sách món (Lấy từ bảng MON_AN - DonGia)
-                MonAn = order.ChiTietThucDons.Select(m => new {
-                    TenMon = m.MonAn.TenMonAn,
-                    SoLuong = m.SoLuongMotBan,
-                    // Nếu bảng chi tiết (m) không có giá, lấy từ bảng gốc (m.MonAn)
-                    DonGia = string.Format(new CultureInfo("vi-VN"), "{0:C0}", m.MonAn.DonGia ?? 0)
-                }).ToList(),
-
-                // 2. Danh sách dịch vụ (Lấy từ bảng DICH_VU - GiaDV)
-                // ĐOẠN ĐÃ SỬA
-                DichVu = order.TT_SuDungDichVus.Select(d => new {
-                    TenDV = d.DichVu.TenDichVu,
-                    SoLuong = d.SoLuong,
-                    // Bỏ "?? 0" đi là được
-                    DonGia = string.Format(new CultureInfo("vi-VN"), "{0:C0}", d.DichVu.GiaDV)
-                }).ToList()
-            };
-
-            return Json(result);
+                MaDatTiec = o.MaDatTiec,
+                NgayToChuc = o.NgayToChuc?.ToString("dd/MM/yyyy"),
+                GioToChuc = o.GioToChuc?.ToString(@"hh\:mm"),
+                SoBan = o.SoBanDat,
+                TenKhach = o.KhachHang?.TenKhachHang,
+                Sdt = o.KhachHang?.SdtKhachHang,
+                GhiChu = isHuy ? o.ChiTiet : "Không có ghi chú",
+                TongTien = FormatCurrency((o.GiaBan ?? 0) * (o.SoBanDat ?? 0)),
+                TienCoc = FormatCurrency(o.TienCoc ?? 0),
+                TrangThai = isHuy ? "Đã hủy" : o.TrangThai,
+                MonAn = o.ChiTietThucDons.Select(m => new { TenMon = m.MonAn.TenMonAn, SoLuong = m.SoLuongMotBan, DonGia = FormatCurrency(m.MonAn.DonGia ?? 0) }).ToList(),
+                DichVu = o.TT_SuDungDichVus.Select(d => new { TenDV = d.DichVu.TenDichVu, SoLuong = d.SoLuong, DonGia = FormatCurrency(d.DichVu.GiaDV) }).ToList()
+            });
         }
     }
 }

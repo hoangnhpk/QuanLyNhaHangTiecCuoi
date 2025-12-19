@@ -31,6 +31,7 @@ namespace QuanLyNhaHang.ViewModels
         public DateTime? NgayThanhToan { get; set; }
         public string PhuongThucThanhToan { get; set; }
         public string GhiChu { get; set; }
+        public DateTime? NgayToChuc { get; set; }
     }
 
     // Dùng để lọc dữ liệu
